@@ -1,65 +1,229 @@
 import Image from "next/image";
+import Link from "next/link";
+
+const WHATSAPP_NUMBER = "919999999999"; // replace with client number
+
+const categories = [
+  {
+    title: "Gold Jewellery",
+    image: "/images/gold.jpeg",
+    desc: "Hallmarked & timeless designs",
+    msg: "Hello, I want to enquire about Gold Jewellery",
+  },
+  {
+    title: "Silver Jewellery",
+    image: "/images/silver.jpeg",
+    desc: "Elegant everyday wear",
+    msg: "Hello, I want to enquire about Silver Jewellery",
+  },
+  {
+    title: "Artificial Jewellery",
+    image: "/images/artificial.jpeg",
+    desc: "Trendy & affordable styles",
+    msg: "Hello, I want to enquire about Artificial Jewellery",
+  },
+  {
+    title: "Nose Wear",
+    image: "/images/nose.png",
+    desc: "Traditional & modern nose pins",
+    msg: "Hello, I want to enquire about Nose Jewellery",
+  },
+  {
+    title: "Ear",
+    image: "/images/ear.jpeg",
+    desc: "Earrings for every occasion",
+    msg: "Hello, I want to enquire about Ear Wear",
+  },
+  {
+    title: "Hand Wear",
+    image: "/images/hand.jpg",
+    desc: "Bangles, bracelets & rings",
+    msg: "Hello, I want to enquire about Hand Jewellery",
+  },
+  { title: "Ring", image: "/images/ring1.webp", desc: "All kinds of rings" },
+  { title: "Necklace Set", image: "/images/necklace.webp", desc: "Necklace sets for all occasions" },
+  { title: "Mangalsutra", image: "/images/mangalsutra.webp", desc: "Daily wear & bridal mangalsutras" },
+  { title: "Payal", image: "/images/payal.webp", desc: "Anklets for every style" },
+  { title: "Toe Ring", image: "/images/toering.jpeg", desc: "Chutki / Bichhiya designs" },
+  { title: "Bangles", image: "/images/bangle.jpeg", desc: "Kade & bangles collection" },
+  { title: "Pendant / Locket", image: "/images/pendant.jpeg", desc: "Lockets and pendant chains" },
+  { title: "Maang Tikka", image: "/images/tikka.jpeg", desc: "Traditional & bridal tikka" },
+];
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <main className="bg-white text-gray-800">
+
+      {/* ================= HERO ================= */}
+      <section className="relative h-[90vh] flex items-center justify-center">
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
+          src="/images/hero.jpeg"
+          alt="Luxury Jewellery"
+          fill
           priority
+          className="object-cover"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+        <div className="absolute inset-0 bg-black/35" />
+
+        <div className="relative z-10 text-center max-w-4xl px-6">
+          <h1 className="font-serif text-4xl md:text-6xl text-white leading-tight mb-6">
+            Jewellery That Speaks <br /> Elegance & Tradition
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+
+          <p className="text-lg md:text-xl text-gray-200 mb-10">
+            Premium gold, silver & designer jewellery for weddings,
+            festivals and everyday elegance.
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-5">
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              target="_blank"
+              className="px-8 py-3 border border-white text-white tracking-wide
+                         hover:bg-white hover:text-black transition"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
+              ENQUIRE ON WHATSAPP
+            </a>
+
             <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="#categories"
+              className="text-white underline underline-offset-8 hover:text-yellow-300"
             >
-              Learning
-            </a>{" "}
-            center.
+              View Collections
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= TRUST BAR ================= */}
+      <section className="border-b">
+        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <p className="text-2xl font-serif">100%</p>
+            <p className="text-sm text-gray-500">Quality Assured</p>
+          </div>
+          <div>
+            <p className="text-2xl font-serif">10K+</p>
+            <p className="text-sm text-gray-500">Happy Customers</p>
+          </div>
+          <div>
+            <p className="text-2xl font-serif">50+</p>
+            <p className="text-sm text-gray-500">Unique Designs</p>
+          </div>
+          <div>
+            <p className="text-2xl font-serif">WhatsApp</p>
+            <p className="text-sm text-gray-500">Easy Ordering</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= CATEGORIES ================= */}
+      <section
+        id="categories"
+        className="max-w-7xl mx-auto px-6 py-24"
+      >
+        <div className="text-center mb-16">
+          <h2 className="font-serif text-4xl mb-4">
+            Shop by Category
+          </h2>
+          <p className="text-gray-500 max-w-xl mx-auto">
+            Click on a category to explore curated designs and place your order via WhatsApp.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12">
+          {categories.map((cat) => (
+            <Link
+              key={cat.title}
+              href={`/shop?category=${encodeURIComponent(cat.title.toLowerCase())}`}
+              className="group"
+            >
+              <div className="relative overflow-hidden">
+                <Image
+                  src={cat.image}
+                  alt={cat.title}
+                  width={500}
+                  height={600}
+                  className="h-[420px] w-full object-cover
+                             group-hover:scale-105 transition duration-700"
+                />
+                <div className="absolute inset-0 bg-black/20 opacity-0
+                                group-hover:opacity-100 transition" />
+              </div>
+
+              <div className="mt-5">
+                <h3 className="font-serif text-xl mb-1">
+                  {cat.title}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {cat.desc}
+                </p>
+                <p className="mt-2 text-sm tracking-wide">
+                  EXPLORE →
+                </p>
+              </div>
+            </Link>
+          ))}
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* ================= WHY CHOOSE US ================= */}
+      <section className="bg-[#f8f5f1] py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="font-serif text-4xl text-center mb-16">
+            Why Choose RasikaStyle Jewels
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-14 text-center">
+            <div>
+              <h3 className="font-serif text-xl mb-3">
+                Certified Quality
+              </h3>
+              <p className="text-gray-500">
+                Carefully selected materials with trusted craftsmanship.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-serif text-xl mb-3">
+                Custom Assistance
+              </h3>
+              <p className="text-gray-500">
+                Get personal help and recommendations on WhatsApp.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-serif text-xl mb-3">
+                Trusted by Customers
+              </h3>
+              <p className="text-gray-500">
+                Serving jewellery lovers with honesty and elegance.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FINAL CTA ================= */}
+      <section className="py-28 text-center">
+        <h2 className="font-serif text-4xl mb-6">
+          Ready to Find Your Perfect Jewellery?
+        </h2>
+        <p className="text-gray-500 mb-10">
+          Chat with us on WhatsApp and get instant assistance.
+        </p>
+        <a
+          href={`https://wa.me/${WHATSAPP_NUMBER}`}
+          target="_blank"
+          className="inline-block px-10 py-4 border border-black
+                     tracking-widest hover:bg-black hover:text-white transition"
+        >
+          CONNECT ON WHATSAPP
+        </a>
+      </section>
+
+    </main>
   );
 }
+
