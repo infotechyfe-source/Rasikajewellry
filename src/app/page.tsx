@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-
+import Footer from "@/components/Footer";
 const WHATSAPP_NUMBER = "919999999999";
 
 const categories = [
@@ -14,7 +14,7 @@ const categories = [
   { title: "Payal", image: "/images/payal.webp", desc: "Anklets for every style" },
   { title: "Toe Ring", image: "/images/toering.webp", desc: "Chutki / Bichhiya designs" },
   { title: "Bangles", image: "/images/bangle.jpg", desc: "Traditional & modern bangles" },
-  { title: "Pendant / Locket", image: "/images/pendant.jpeg", desc: "Elegant pendant chains" },
+  { title: "Pendant", image: "/images/pendant.jpeg", desc: "Elegant pendant chains" },
   { title: "Maang Tikka", image: "/images/tikka.webp", desc: "Bridal & festive tikka" },
 ];
 
@@ -23,9 +23,9 @@ export default function Home() {
     <main className="bg-[#f0eed0] text-gray-800">
 
       {/* ================= HERO ================= */}
-      <section className="relative h-[95vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[100vh] flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/hero.jpeg"
+          src="/images/hero1.png"
           alt="Rasika Style Jewels – Luxury Jewellery"
           fill
           priority
@@ -48,9 +48,6 @@ export default function Home() {
             <span className="text-[#e6c36a]">Crafted for Elegance</span>
           </h1>
 
-          {/* Gold divider */}
-          <div className="mx-auto mb-8 h-[2px] w-20 bg-[#e6c36a]" />
-
           <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-14 leading-relaxed">
             Discover premium gold, silver & designer jewellery
             curated for weddings, festivals and everyday grace.
@@ -60,10 +57,7 @@ export default function Home() {
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
               target="_blank"
-              className="px-12 py-4 bg-[#c8a24d] text-white tracking-widest
-                   hover:bg-black transition-all duration-300
-                   rounded-full shadow-lg hover:shadow-2xl"
-            >
+              className="px-12 py-4 bg-[#c8a24d] text-white tracking-widest hover:bg-black transition-all duration-300 rounded-full shadow-lg hover:shadow-2xl">
               WHATSAPP ENQUIRY
             </a>
 
@@ -108,7 +102,7 @@ export default function Home() {
       </div>
 
       {/* ================= CATEGORIES ================= */}
-      <section id="categories" className="max-w-7xl mx-auto px-6 py-28">
+      <section id="categories" className="max-w-7xl mx-auto px-6 py-16">
         <div className="text-center mb-20">
           <h2 className="font-serif text-4xl mb-4">
             Shop by Category
@@ -118,7 +112,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-14">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
           {categories.map((cat) => (
             <Link
               key={cat.title}
@@ -132,8 +126,7 @@ export default function Home() {
                     alt={cat.title}
                     width={500}
                     height={600}
-                    className="h-[420px] w-full object-cover
-                               group-hover:scale-105 transition duration-700"
+                    className="h-[420px] w-full object-cover group-hover:scale-105 transition duration-700"
                   />
                   <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition" />
                 </div>
@@ -188,64 +181,11 @@ export default function Home() {
         <a
           href={`https://wa.me/${WHATSAPP_NUMBER}`}
           target="_blank"
-          className="inline-block px-12 py-4 bg-black text-white
-                     tracking-widest hover:bg-[#c8a24d] transition rounded-sm"
-        >
+          className="inline-block px-12 py-4 bg-black text-white tracking-widest hover:bg-[#c8a24d] transition rounded-sm">
           CHAT ON WHATSAPP
         </a>
       </section>
-
-      {/* ================= FOOTER ================= */}
-      <footer className="bg-[#111] text-gray-300">
-        <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-12">
-
-          {/* Brand */}
-          <div>
-            <h3 className="font-serif text-2xl text-white mb-4">
-              Rasika Style Jewels
-            </h3>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              Curated collections of elegant jewellery designed for
-              timeless beauty, celebrations, and everyday grace.
-            </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="tracking-widest text-sm text-white mb-4">
-              QUICK LINKS
-            </h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link href="#categories" className="hover:text-[#c8a24d]">Collections</Link></li>
-              <li><Link href="/shop" className="hover:text-[#c8a24d]">Shop</Link></li>
-              
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="tracking-widest text-sm text-white mb-4">
-              CONTACT
-            </h4>
-            <p className="text-sm text-gray-400 mb-3">
-              📍 India
-            </p>
-            
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}`}
-              target="_blank"
-              className="inline-block mt-4 text-sm tracking-widest text-[#c8a24d] hover:text-white transition"
-            >
-              CHAT ON WHATSAPP →
-            </a>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-white/10 py-6 text-center text-xs text-gray-500">
-          © {new Date().getFullYear()} Rasika Style Jewels. All rights reserved.
-        </div>
-      </footer>
+    <Footer/>
 
     </main>
   );

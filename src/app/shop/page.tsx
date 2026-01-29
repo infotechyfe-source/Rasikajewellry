@@ -1,9 +1,8 @@
 "use client";
-
 import { products } from "@/data/products";
 import { ProductCard } from "@/components/ProductCard";
 import { useSearchParams } from "next/navigation";
-
+import Footer from "@/components/Footer";
 export default function ShopPage() {
   const searchParams = useSearchParams();
   const category = searchParams?.get("category")?.toLowerCase() || "";
@@ -19,29 +18,29 @@ export default function ShopPage() {
     : "All Jewellery";
 
   return (
-    <main className="bg-white">
+    <main className="bg-[#f0eed0]">
 
       {/* ================= HEADER ================= */}
-     <section className="border-b bg-gradient-to-b from-neutral-50 to-white">
-  <div className="max-w-7xl mx-auto px-6 py-8 text-center">
+      <section className="border-b bg-linear-to-b from-neutral-50 to-white">
+        <div className="max-w-7xl mx-auto px-6 py-8 text-center">
 
-    {/* Small accent line */}
-    <span className="uppercase tracking-[0.3em] text-xs text-gray-400">
-      Style Jewels Collection
-    </span>
+          {/* Small accent line */}
+          <span className="uppercase tracking-[0.3em] text-xs text-gray-400">
+            Style Jewels Collection
+          </span>
 
-    <h1 className="font-serif text-4xl md:text-6xl mt-4 mb-6 tracking-wide">
-      {displayCategory}
-    </h1>
+          <h1 className="font-serif text-4xl md:text-6xl mt-4 mb-6 tracking-wide">
+            {displayCategory}
+          </h1>
 
-    <div className="w-20 h-[1px] bg-gray-300 mx-auto mb-6" />
+          <div className="w-20 h-px bg-gray-300 mx-auto mb-6" />
 
-    <p className="text-gray-500 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
-      Thoughtfully crafted designs that celebrate elegance, detail,
-      and timeless beauty.
-    </p>
-  </div>
-</section>
+          <p className="text-gray-500 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
+            Thoughtfully crafted designs that celebrate elegance, detail,
+            and timeless beauty.
+          </p>
+        </div>
+      </section>
 
 
       {/* ================= PRODUCT LIST ================= */}
@@ -79,7 +78,7 @@ export default function ShopPage() {
       </section>
 
       {/* ================= FOOTER CTA ================= */}
-      <section className="border-t py-20">
+      <section className="border-t py-4">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-serif text-3xl mb-6">
             Looking for Something Special?
@@ -98,7 +97,7 @@ export default function ShopPage() {
           </a>
         </div>
       </section>
-
+   <Footer/>
     </main>
   );
 }

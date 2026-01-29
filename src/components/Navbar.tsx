@@ -19,7 +19,7 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between text-[11px] tracking-wide text-gray-700">
           <span>Festive Collection Live • Certified Jewellery</span>
           <span className="flex items-center gap-2">
-           <PhoneIcon size={13} /> Need help? WhatsApp us
+            <PhoneIcon size={13} /> Need help? WhatsApp us
           </span>
         </div>
       </div>
@@ -57,7 +57,7 @@ export function Navbar() {
             >
               ORDER ON WHATSAPP
             </a>
-            
+
           </div>
 
           {/* MOBILE MENU */}
@@ -73,11 +73,10 @@ export function Navbar() {
       {/* ================= CATEGORY / INTENT MENU ================= */}
       <div className="border-b border-black/5 bg-[#f9f3e7]">
         <div className="max-w-7xl mx-auto px-6 overflow-x-auto scrollbar-hide">
-          <ul className="flex justify-center gap-10 py-4 text-[11px]
-                         tracking-widest uppercase whitespace-nowrap">
-
+          <ul
+            className="flex gap-8 py-4 text-[11px] tracking-widest uppercase whitespace-nowrap justify-start md:justify-center">
             {uniqueCategories.map(cat => (
-              <li key={cat} className="relative group">
+              <li key={cat} className="relative group flex-shrink-0">
                 <Link
                   href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
                   className="text-gray-700 hover:text-[#9c7c3d] transition"
@@ -85,19 +84,20 @@ export function Navbar() {
                   {cat}
                 </Link>
                 <span
-                  className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#c8a24d]
-                             group-hover:w-full transition-all duration-300"
-                />
+                  className="absolute left-0 -bottom-1 h-px w-0 bg-[#c8a24d] group-hover:w-full transition-all duration-300" />
               </li>
             ))}
 
             {/* Intent-based shortcut */}
-            <li className="relative group">
-              <Link href="/shop" className="text-gray-700 hover:text-[#9c7c3d]">
+            <li className="relative group flex-shrink-0">
+              <Link
+                href="/shop"
+                className="text-gray-700 hover:text-[#9c7c3d]"
+              >
                 Wedding Collection
               </Link>
-              <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#c8a24d]
-                               group-hover:w-full transition-all duration-300" />
+              <span
+                className="absolute left-0 -bottom-1 h-px w-0 bg-[#c8a24d] group-hover:w-full transition-all duration-300"/>
             </li>
           </ul>
         </div>
@@ -117,14 +117,13 @@ export function Navbar() {
                 </Link>
               </li>
             ))}
-
-            <a
+            <li><a
               href="https://wa.me/919999999999"
-              className="mt-6 text-center rounded-full bg-[#c8a24d]
-                         text-white py-3 text-xs tracking-widest"
+              className="mt-6 p-2 text-center rounded bg-[#c8a24d] text-white py-3 text-xs tracking-widest"
             >
               CHAT & ORDER ON WHATSAPP
-            </a>
+            </a></li>
+
           </ul>
         </div>
       )}
