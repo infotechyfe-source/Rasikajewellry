@@ -1,30 +1,33 @@
 "use client";
+
 import { products } from "@/data/products";
 import { ProductCard } from "@/components/ProductCard";
 import { useSearchParams } from "next/navigation";
 import Footer from "@/components/Footer";
+
 export default function ShopPage() {
   const searchParams = useSearchParams();
   const category = searchParams?.get("category")?.toLowerCase() || "";
 
-  // Filter products if category is selected
+  // Filter products by category
   const filteredProducts = category
-    ? products.filter((p) => p.category.toLowerCase() === category)
+    ? products.filter(
+        (p) => p.category.toLowerCase() === category
+      )
     : products;
 
-  // Capitalize category for display
+  // Display category name
   const displayCategory = category
     ? category.charAt(0).toUpperCase() + category.slice(1)
     : "All Jewellery";
 
   return (
-    <main className="bg-[#f0eed0]">
+    <main className="bg-[#f2f1e6]">
 
       {/* ================= HEADER ================= */}
       <section className="border-b bg-linear-to-b from-neutral-50 to-white">
-        <div className="max-w-7xl mx-auto px-6 py-8 text-center">
+        <div className="max-w-7xl mx-auto px-6 py-10 text-center">
 
-          {/* Small accent line */}
           <span className="uppercase tracking-[0.3em] text-xs text-gray-400">
             Style Jewels Collection
           </span>
@@ -33,41 +36,40 @@ export default function ShopPage() {
             {displayCategory}
           </h1>
 
-          <div className="w-20 h-px bg-gray-300 mx-auto mb-6" />
+          <div className="mx-auto mb-6 flex items-center justify-center gap-2">
+            <span className="w-8 h-px bg-[#c8a24d]" />
+            <span className="w-1 h-1 bg-[#c8a24d] rounded-full animate-pulse" />
+            <span className="w-8 h-px bg-[#c8a24d]" />
+          </div>
 
-          <p className="text-gray-500 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
-            Thoughtfully crafted designs that celebrate elegance, detail,
-            and timeless beauty.
+          <p className="text-gray-500 max-w-xl mx-auto text-sm md:text-base leading-relaxed tracking-wide">
+            Exquisite jewellery crafted to celebrate life’s most precious moments.
           </p>
         </div>
       </section>
 
-
       {/* ================= PRODUCT LIST ================= */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
+      <section className="max-w-7xl mx-auto px-6 py-14">
 
-        {/* Optional: Result Count */}
         <div className="mb-12 flex justify-between items-center text-sm text-gray-500">
-          <span>
-            {filteredProducts.length} Designs Available
-          </span>
-
-          {/* Placeholder for future filters */}
-          <span className="tracking-wide">
-            SORT BY: FEATURED
-          </span>
+          <span>{filteredProducts.length} Designs Available</span>
+          <span className="tracking-wide">SORT BY: FEATURED</span>
         </div>
 
         {filteredProducts.length > 0 ? (
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-16">
-            {filteredProducts.map((p) => (
+            {filteredProducts.map((product) => (
               <ProductCard
-                key={p.id}
-                name={p.name}
-                price={p.price}
-                metal={p.metal}
-                image={p.image}
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                price={product.price}
+                metal={product.metal}
+                image={product.image}
+                category={product.category}
               />
+              // OR simply:
+              // <ProductCard key={product.id} {...product} />
             ))}
           </div>
         ) : (
@@ -78,26 +80,26 @@ export default function ShopPage() {
       </section>
 
       {/* ================= FOOTER CTA ================= */}
-      <section className="border-t py-4">
+      <section className="border-t py-10">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-serif text-3xl mb-6">
             Looking for Something Special?
           </h2>
           <p className="text-gray-500 mb-10">
-            Our jewellery experts are available to help you find the perfect
-            piece.
+            Our jewellery experts are available to help you find the perfect piece.
           </p>
           <a
-            href="https://wa.me/919999999999"
+            href="https://wa.me/919120797254"
             target="_blank"
-            className="inline-block px-10 py-4 border border-black
-                       tracking-widest hover:bg-black hover:text-white transition"
+            className="inline-block px-10 py-4 border border-black tracking-widest
+                       hover:bg-black hover:text-white transition"
           >
             CHAT ON WHATSAPP
           </a>
         </div>
       </section>
-   <Footer/>
+
+      <Footer />
     </main>
   );
 }

@@ -22,7 +22,6 @@ export const products = [
     price: "199",metal: "gold",image: "/images/ear7.jpeg",
   },
 
-
   // 1. Rings
   {
     id: 1,name: "Oxidised Ring",category: "rings",type: "oxidised ring",
@@ -59,7 +58,8 @@ export const products = [
   {
     id: 17,name: "Oxidised Necklace Set",
     category: "necklace set",type: "oxidised necklace set",
-    price: 899,metal: "oxidised",image: "/images/oxidised.jpg",},
+    price: 899,metal: "oxidised",image: "/images/oxidised.jpg",
+  },
   { 
     id: 11, name: "Traditional / Ethnic Set",
      category: "necklace set", type: "traditional / ethnic set", 

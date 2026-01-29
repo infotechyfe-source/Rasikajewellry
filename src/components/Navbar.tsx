@@ -50,7 +50,7 @@ export function Navbar() {
 
           {/* WHATSAPP CTA */}
           <div className="hidden md:flex flex-col items-end">
-            <a href="https://wa.me/919999999999"
+            <a href="https://wa.me/919120797254"
               target="_blank"
               className="px-7 py-2.5 rounded bg-[#c8a24d] text-xs tracking-widest text-white hover:bg-black transition-all duration-300 shadow-md">
               ORDER ON WHATSAPP
@@ -116,7 +116,7 @@ export function Navbar() {
               </li>
             ))}
             <li><a
-              href="https://wa.me/919999999999"
+              href="https://wa.me/919120797254"
               className="mt-6 p-2 text-center rounded bg-[#c8a24d] text-white py-3 text-xs tracking-widest"
             >
               CHAT & ORDER ON WHATSAPP

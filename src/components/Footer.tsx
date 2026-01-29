@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const WHATSAPP_NUMBER = "919999999999";
+const WHATSAPP_NUMBER = "9120797254";
 
 export default function Footer() {
   return (
@@ -43,7 +43,7 @@ export default function Footer() {
             CONTACT
           </h4>
           <p className="text-sm text-gray-400 mb-3">
-            📍 India
+            📍 Jaipur
           </p>
 
           <a
