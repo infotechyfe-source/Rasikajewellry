@@ -1,166 +1,154 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const WHATSAPP_NUMBER = "919999999999"; // replace with client number
+const WHATSAPP_NUMBER = "919999999999";
 
 const categories = [
-  {
-    title: "Gold Jewellery",
-    image: "/images/gold.jpeg",
-    desc: "Hallmarked & timeless designs",
-    msg: "Hello, I want to enquire about Gold Jewellery",
-  },
-  {
-    title: "Silver Jewellery",
-    image: "/images/silver.jpeg",
-    desc: "Elegant everyday wear",
-    msg: "Hello, I want to enquire about Silver Jewellery",
-  },
-  {
-    title: "Artificial Jewellery",
-    image: "/images/artificial.jpeg",
-    desc: "Trendy & affordable styles",
-    msg: "Hello, I want to enquire about Artificial Jewellery",
-  },
-  {
-    title: "Nose Wear",
-    image: "/images/nose.png",
-    desc: "Traditional & modern nose pins",
-    msg: "Hello, I want to enquire about Nose Jewellery",
-  },
-  {
-    title: "Ear",
-    image: "/images/ear.jpeg",
-    desc: "Earrings for every occasion",
-    msg: "Hello, I want to enquire about Ear Wear",
-  },
-  {
-    title: "Hand Wear",
-    image: "/images/hand.jpg",
-    desc: "Bangles, bracelets & rings",
-    msg: "Hello, I want to enquire about Hand Jewellery",
-  },
+  { title: "Artificial Jewellery", image: "/images/artificial.jpeg", desc: "Trendy & affordable styles", },
+  { title: "Nose Ring", image: "/images/nose.png", desc: "Traditional & modern nose pins", },
+  { title: "Ear Wear", image: "/images/ear1.jpeg", desc: "Earrings for every occasion", },
+  { title: "Hand Wear", image: "/images/hand.jpg", desc: "Bangles, bracelets & rings", },
   { title: "Ring", image: "/images/ring1.webp", desc: "All kinds of rings" },
-  { title: "Necklace Set", image: "/images/necklace.webp", desc: "Necklace sets for all occasions" },
+  { title: "Necklace Set", image: "/images/necklace.webp", desc: "Elegant necklace collections" },
   { title: "Mangalsutra", image: "/images/mangalsutra.webp", desc: "Daily wear & bridal mangalsutras" },
   { title: "Payal", image: "/images/payal.webp", desc: "Anklets for every style" },
-  { title: "Toe Ring", image: "/images/toering.jpeg", desc: "Chutki / Bichhiya designs" },
-  { title: "Bangles", image: "/images/bangle.jpeg", desc: "Kade & bangles collection" },
-  { title: "Pendant / Locket", image: "/images/pendant.jpeg", desc: "Lockets and pendant chains" },
-  { title: "Maang Tikka", image: "/images/tikka.jpeg", desc: "Traditional & bridal tikka" },
+  { title: "Toe Ring", image: "/images/toering.webp", desc: "Chutki / Bichhiya designs" },
+  { title: "Bangles", image: "/images/bangle.jpg", desc: "Traditional & modern bangles" },
+  { title: "Pendant / Locket", image: "/images/pendant.jpeg", desc: "Elegant pendant chains" },
+  { title: "Maang Tikka", image: "/images/tikka.webp", desc: "Bridal & festive tikka" },
 ];
 
 export default function Home() {
   return (
-    <main className="bg-white text-gray-800">
+    <main className="bg-[#f0eed0] text-gray-800">
 
       {/* ================= HERO ================= */}
-      <section className="relative h-[90vh] flex items-center justify-center">
+      <section className="relative h-[95vh] flex items-center justify-center overflow-hidden">
         <Image
           src="/images/hero.jpeg"
-          alt="Luxury Jewellery"
+          alt="Rasika Style Jewels – Luxury Jewellery"
           fill
           priority
-          className="object-cover"
+          className="object-cover scale-105"
         />
-        <div className="absolute inset-0 bg-black/35" />
 
-        <div className="relative z-10 text-center max-w-4xl px-6">
-          <h1 className="font-serif text-4xl md:text-6xl text-white leading-tight mb-6">
-            Jewellery That Speaks <br /> Elegance & Tradition
-          </h1>
+        {/* Layered luxury overlay */}
+        <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/40 to-black/20" />
+        <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" />
 
-          <p className="text-lg md:text-xl text-gray-200 mb-10">
-            Premium gold, silver & designer jewellery for weddings,
-            festivals and everyday elegance.
+        <div className="relative z-10 text-center max-w-5xl px-6">
+
+          {/* Brand Tag */}
+          <p className="tracking-[0.35em] text-sm text-[#e6c36a] mb-6">
+            RASIKA STYLE JEWELS
           </p>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-5">
+          <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-white leading-tight mb-8">
+            Timeless Jewellery <br />
+            <span className="text-[#e6c36a]">Crafted for Elegance</span>
+          </h1>
+
+          {/* Gold divider */}
+          <div className="mx-auto mb-8 h-[2px] w-20 bg-[#e6c36a]" />
+
+          <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-14 leading-relaxed">
+            Discover premium gold, silver & designer jewellery
+            curated for weddings, festivals and everyday grace.
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
               target="_blank"
-              className="px-8 py-3 border border-white text-white tracking-wide
-                         hover:bg-white hover:text-black transition"
+              className="px-12 py-4 bg-[#c8a24d] text-white tracking-widest
+                   hover:bg-black transition-all duration-300
+                   rounded-full shadow-lg hover:shadow-2xl"
             >
-              ENQUIRE ON WHATSAPP
+              WHATSAPP ENQUIRY
             </a>
 
             <a
               href="#categories"
-              className="text-white underline underline-offset-8 hover:text-yellow-300"
+              className="px-12 py-4 border border-white/80 text-white
+                   hover:bg-white hover:text-black transition-all duration-300
+                   rounded-full"
             >
-              View Collections
+              VIEW COLLECTIONS
             </a>
           </div>
         </div>
       </section>
 
+
       {/* ================= TRUST BAR ================= */}
-      <section className="border-b">
-        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div>
-            <p className="text-2xl font-serif">100%</p>
-            <p className="text-sm text-gray-500">Quality Assured</p>
-          </div>
-          <div>
-            <p className="text-2xl font-serif">10K+</p>
-            <p className="text-sm text-gray-500">Happy Customers</p>
-          </div>
-          <div>
-            <p className="text-2xl font-serif">50+</p>
-            <p className="text-sm text-gray-500">Unique Designs</p>
-          </div>
-          <div>
-            <p className="text-2xl font-serif">WhatsApp</p>
-            <p className="text-sm text-gray-500">Easy Ordering</p>
-          </div>
+      <section className="border-y">
+        <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
+          {[
+            ["100%", "Quality Assured"],
+            ["10K+", "Happy Customers"],
+            ["50+", "Exclusive Designs"],
+            ["WhatsApp", "Easy Ordering"],
+          ].map(([title, subtitle]) => (
+            <div key={title}>
+              <p className="text-3xl font-serif text-[#c8a24d]">{title}</p>
+              <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+            </div>
+          ))}
         </div>
       </section>
+      <div className="bg-transparent p-0 m-0">
+        <Image
+          src="/images/rasika4.jpeg"
+          alt="Rasika Style Jewels"
+          width={1920}
+          height={1080}
+          priority
+          className="w-full h-auto block"
+        />
+      </div>
 
       {/* ================= CATEGORIES ================= */}
-      <section
-        id="categories"
-        className="max-w-7xl mx-auto px-6 py-24"
-      >
-        <div className="text-center mb-16">
+      <section id="categories" className="max-w-7xl mx-auto px-6 py-28">
+        <div className="text-center mb-20">
           <h2 className="font-serif text-4xl mb-4">
             Shop by Category
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            Click on a category to explore curated designs and place your order via WhatsApp.
+            Explore our curated jewellery collections and order directly via WhatsApp.
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-14">
           {categories.map((cat) => (
             <Link
               key={cat.title}
               href={`/shop?category=${encodeURIComponent(cat.title.toLowerCase())}`}
               className="group"
             >
-              <div className="relative overflow-hidden">
-                <Image
-                  src={cat.image}
-                  alt={cat.title}
-                  width={500}
-                  height={600}
-                  className="h-[420px] w-full object-cover
-                             group-hover:scale-105 transition duration-700"
-                />
-                <div className="absolute inset-0 bg-black/20 opacity-0
-                                group-hover:opacity-100 transition" />
-              </div>
+              <div className="rounded overflow-hidden shadow-md hover:shadow-2xl transition duration-500 bg-white">
+                <div className="relative">
+                  <Image
+                    src={cat.image}
+                    alt={cat.title}
+                    width={500}
+                    height={600}
+                    className="h-[420px] w-full object-cover
+                               group-hover:scale-105 transition duration-700"
+                  />
+                  <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition" />
+                </div>
 
-              <div className="mt-5">
-                <h3 className="font-serif text-xl mb-1">
-                  {cat.title}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {cat.desc}
-                </p>
-                <p className="mt-2 text-sm tracking-wide">
-                  EXPLORE →
-                </p>
+                <div className="p-6 text-center">
+                  <h3 className="font-serif text-xl mb-2">
+                    {cat.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    {cat.desc}
+                  </p>
+                  <span className="text-sm tracking-widest text-[#c8a24d] group-hover:text-black transition">
+                    EXPLORE →
+                  </span>
+                </div>
               </div>
             </Link>
           ))}
@@ -168,62 +156,97 @@ export default function Home() {
       </section>
 
       {/* ================= WHY CHOOSE US ================= */}
-      <section className="bg-[#f8f5f1] py-24">
+      <section className="bg-[#f7f4ee] py-28">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="font-serif text-4xl text-center mb-16">
-            Why Choose RasikaStyle Jewels
+          <h2 className="font-serif text-4xl text-center mb-20">
+            Why Choose Rasika Style Jewels
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-14 text-center">
-            <div>
-              <h3 className="font-serif text-xl mb-3">
-                Certified Quality
-              </h3>
-              <p className="text-gray-500">
-                Carefully selected materials with trusted craftsmanship.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-serif text-xl mb-3">
-                Custom Assistance
-              </h3>
-              <p className="text-gray-500">
-                Get personal help and recommendations on WhatsApp.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-serif text-xl mb-3">
-                Trusted by Customers
-              </h3>
-              <p className="text-gray-500">
-                Serving jewellery lovers with honesty and elegance.
-              </p>
-            </div>
+          <div className="grid md:grid-cols-3 gap-16 text-center">
+            {[
+              ["Certified Quality", "Carefully selected materials with expert craftsmanship."],
+              ["Personal Assistance", "One-on-one WhatsApp support for every customer."],
+              ["Trusted Brand", "Loved by jewellery buyers across generations."],
+            ].map(([title, desc]) => (
+              <div key={title}>
+                <h3 className="font-serif text-xl mb-4">{title}</h3>
+                <p className="text-gray-500 leading-relaxed">{desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ================= FINAL CTA ================= */}
-      <section className="py-28 text-center">
+      <section className="py-8 text-center">
         <h2 className="font-serif text-4xl mb-6">
-          Ready to Find Your Perfect Jewellery?
+          Find Jewellery That Defines You
         </h2>
-        <p className="text-gray-500 mb-10">
-          Chat with us on WhatsApp and get instant assistance.
+        <p className="text-gray-500 mb-12">
+          Message us on WhatsApp for pricing, images & custom assistance.
         </p>
         <a
           href={`https://wa.me/${WHATSAPP_NUMBER}`}
           target="_blank"
-          className="inline-block px-10 py-4 border border-black
-                     tracking-widest hover:bg-black hover:text-white transition"
+          className="inline-block px-12 py-4 bg-black text-white
+                     tracking-widest hover:bg-[#c8a24d] transition rounded-sm"
         >
-          CONNECT ON WHATSAPP
+          CHAT ON WHATSAPP
         </a>
       </section>
+
+      {/* ================= FOOTER ================= */}
+      <footer className="bg-[#111] text-gray-300">
+        <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-12">
+
+          {/* Brand */}
+          <div>
+            <h3 className="font-serif text-2xl text-white mb-4">
+              Rasika Style Jewels
+            </h3>
+            <p className="text-sm text-gray-400 leading-relaxed">
+              Curated collections of elegant jewellery designed for
+              timeless beauty, celebrations, and everyday grace.
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="tracking-widest text-sm text-white mb-4">
+              QUICK LINKS
+            </h4>
+            <ul className="space-y-3 text-sm">
+              <li><Link href="#categories" className="hover:text-[#c8a24d]">Collections</Link></li>
+              <li><Link href="/shop" className="hover:text-[#c8a24d]">Shop</Link></li>
+              
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="tracking-widest text-sm text-white mb-4">
+              CONTACT
+            </h4>
+            <p className="text-sm text-gray-400 mb-3">
+              📍 India
+            </p>
+            
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              target="_blank"
+              className="inline-block mt-4 text-sm tracking-widest text-[#c8a24d] hover:text-white transition"
+            >
+              CHAT ON WHATSAPP →
+            </a>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-white/10 py-6 text-center text-xs text-gray-500">
+          © {new Date().getFullYear()} Rasika Style Jewels. All rights reserved.
+        </div>
+      </footer>
 
     </main>
   );
 }
-

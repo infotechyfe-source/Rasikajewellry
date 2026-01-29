@@ -2,149 +2,134 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, PhoneIcon, Search, X } from "lucide-react";
-
 import { SearchModal } from "@/components/SearchModel";
-// Extract unique categories from products
 import { products } from "@/data/products";
 
-const uniqueCategories = Array.from(
-  new Set(products.map((p) => p.category))
-);
+const uniqueCategories = Array.from(new Set(products.map(p => p.category)));
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-
-  const links = [
-    { title: "Home", href: "/" },
-    { title: "Shop", href: "/shop" },
-    { title: "Collections", href: "/collections" },
-    { title: "Contact", href: "/contact" },
-
-  ];
   const [searchOpen, setSearchOpen] = useState(false);
 
-
   return (
-    <nav className="sticky top-0 z-50 bg-white">
+    <nav className="sticky top-0 z-50 bg-[#f5ebd7] backdrop-blur-md">
 
-      {/* ================= TOP UTILITY BAR ================= */}
-      <div className="hidden md:block border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between text-xs text-gray-600">
-          <span>Certified Jewellery | BIS Hallmarked Gold</span>
-          <div className="flex gap-6">
-            <span>📍 Store Locator</span>
-            <span className="flex items-center gap-1">
-              <PhoneIcon size={14} className="text-gray-600" />
-              +91 99999 99999
-            </span>
-
-          </div>
+      {/* ================= PROMO / TRUST BAR ================= */}
+      <div className="hidden md:block bg-[#f6f1e8] border-b border-black/5">
+        <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between text-[11px] tracking-wide text-gray-700">
+          <span>Festive Collection Live • Certified Jewellery</span>
+          <span className="flex items-center gap-2">
+           <PhoneIcon size={13} /> Need help? WhatsApp us
+          </span>
         </div>
       </div>
 
+      {/* ================= MAIN NAV ================= */}
+      <div className="border-b border-black/10">
+        <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between gap-4">
 
-      {/* ================= MAIN NAVBAR ================= */}
-      <div className="border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-
-          {/* LEFT: Search */}
-          <div
+          {/* SEARCH */}
+          <button
             onClick={() => setSearchOpen(true)}
-            className="hidden md:flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg
-             text-sm text-gray-700 hover:text-black hover:border-black transition cursor-pointer
-             w-48"
-          >
+            className="hidden md:flex items-center gap-3 px-5 py-2.5 text-sm border border-black/15 rounded hover:border-black transition w-80">
             <Search size={16} className="text-gray-500" />
-            <span className="tracking-wide">Search Jewellery...</span>
-          </div>
+            <span className="text-gray-600 tracking-wide">
+              Search designs, collections…
+            </span>
+          </button>
 
-          {/* CENTER: Logo */}
-          <Link
-            href="/"
-            className="text-2xl font-serif tracking-widest text-black text-center"
-          >
-            RASIKA
-            <span className="block text-[10px] tracking-[0.35em] text-gray-500">
+          {/* LOGO */}
+          <Link href="/" className="text-center select-none">
+            <h1 className="font-serif text-3xl tracking-widest text-black">
+              RASIKA
+            </h1>
+            <span className="block text-[10px] tracking-[0.45em] text-[#9c7c3d]">
               STYLE JEWELS
             </span>
           </Link>
 
-          {/* RIGHT: WhatsApp CTA */}
-          <div className="hidden md:flex items-center">
+          {/* WHATSAPP CTA */}
+          <div className="hidden md:flex flex-col items-end">
             <a
               href="https://wa.me/919999999999"
               target="_blank"
-              className="px-5 py-2 border border-[#deaa12] text-xs font-semibold tracking-wider
-                   hover:bg-[#deaa10] hover:text-white transition"
+              className="px-7 py-2.5 rounded bg-[#c8a24d] text-xs tracking-widest text-white hover:bg-black transition-all duration-300 shadow-md"
             >
-              ORDER VIA WHATSAPP
+              ORDER ON WHATSAPP
             </a>
+            
           </div>
 
-          {/* MOBILE MENU BUTTON */}
+          {/* MOBILE MENU */}
           <button
-            className="md:hidden p-2"
             onClick={() => setOpen(!open)}
+            className="md:hidden p-2"
           >
-            {open ? <X size={22} /> : <Menu size={22} />}
+            {open ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
-      {/* ================= CATEGORY STRIP ================= */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-8xl mx-auto px-12 flex justify-center overflow-x-auto flex scrollbar-hide">
-          <ul className="flex gap-8 py-4 text-xs tracking-widest uppercase text-gray-700 whitespace-nowrap">
-            {uniqueCategories.map((cat) => (
-              <li key={cat}>
+      {/* ================= CATEGORY / INTENT MENU ================= */}
+      <div className="border-b border-black/5 bg-[#f9f3e7]">
+        <div className="max-w-7xl mx-auto px-6 overflow-x-auto scrollbar-hide">
+          <ul className="flex justify-center gap-10 py-4 text-[11px]
+                         tracking-widest uppercase whitespace-nowrap">
+
+            {uniqueCategories.map(cat => (
+              <li key={cat} className="relative group">
                 <Link
                   href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
-                  className="hover:text-[#9c7c3d] transition"
+                  className="text-gray-700 hover:text-[#9c7c3d] transition"
                 >
                   {cat}
                 </Link>
+                <span
+                  className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#c8a24d]
+                             group-hover:w-full transition-all duration-300"
+                />
               </li>
             ))}
-            <li>
-              <Link href="/shop" className="hover:text-[#9c7c3d] transition">
-                More Jewellery
+
+            {/* Intent-based shortcut */}
+            <li className="relative group">
+              <Link href="/shop" className="text-gray-700 hover:text-[#9c7c3d]">
+                Wedding Collection
               </Link>
+              <span className="absolute left-0 -bottom-1 h-[1px] w-0 bg-[#c8a24d]
+                               group-hover:w-full transition-all duration-300" />
             </li>
           </ul>
         </div>
       </div>
 
-      {/* ================= MOBILE MENU ================= */}
+      {/* ================= MOBILE DRAWER ================= */}
       {open && (
-        <div className="md:hidden bg-white border-t">
-          <ul className="flex flex-col px-6 py-6 gap-4 text-sm text-gray-700">
-            <li><Link href="/shop?category=earrings">Earrings</Link></li>
-            <li><Link href="/shop?category=rings">Rings</Link></li>
-            <li><Link href="/shop?category=bracelets">Bracelets</Link></li>
-            <li><Link href="/shop?category=necklace">Necklace</Link></li>
-            <li><Link href="/shop?category=mangalsutra">Mangalsutra</Link></li>
-            <li><Link href="/shop?category=gold">Gold</Link></li>
-            <li><Link href="/shop?category=silver">Silver</Link></li>
-            <li><Link href="/shop?category=diamond">Diamond</Link></li>
+        <div className="md:hidden bg-[#fffdf9] border-t border-black/10">
+          <ul className="flex flex-col px-6 py-6 gap-5 text-sm tracking-wide">
+            {uniqueCategories.map(cat => (
+              <li key={cat}>
+                <Link
+                  href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
+                  onClick={() => setOpen(false)}
+                >
+                  {cat}
+                </Link>
+              </li>
+            ))}
 
             <a
               href="https://wa.me/919999999999"
-              className="mt-6 text-center border border-black py-3 text-xs font-semibold"
+              className="mt-6 text-center rounded-full bg-[#c8a24d]
+                         text-white py-3 text-xs tracking-widest"
             >
-              ORDER VIA WHATSAPP
+              CHAT & ORDER ON WHATSAPP
             </a>
           </ul>
         </div>
       )}
 
-      <SearchModal
-        open={searchOpen}
-        onClose={() => setSearchOpen(false)}
-      />
-
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </nav>
-
-
   );
 }
-

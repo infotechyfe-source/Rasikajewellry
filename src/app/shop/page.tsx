@@ -22,20 +22,30 @@ export default function ShopPage() {
     <main className="bg-white">
 
       {/* ================= HEADER ================= */}
-      <section className="border-b">
-        <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-          <h1 className="font-serif text-4xl md:text-5xl mb-6">
-            {displayCategory}
-          </h1>
-          <p className="text-gray-500 max-w-2xl mx-auto">
-            Explore our curated selection of fine jewellery, designed to
-            celebrate elegance, craftsmanship and timeless beauty.
-          </p>
-        </div>
-      </section>
+     <section className="border-b bg-gradient-to-b from-neutral-50 to-white">
+  <div className="max-w-7xl mx-auto px-6 py-8 text-center">
+
+    {/* Small accent line */}
+    <span className="uppercase tracking-[0.3em] text-xs text-gray-400">
+      Style Jewels Collection
+    </span>
+
+    <h1 className="font-serif text-4xl md:text-6xl mt-4 mb-6 tracking-wide">
+      {displayCategory}
+    </h1>
+
+    <div className="w-20 h-[1px] bg-gray-300 mx-auto mb-6" />
+
+    <p className="text-gray-500 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
+      Thoughtfully crafted designs that celebrate elegance, detail,
+      and timeless beauty.
+    </p>
+  </div>
+</section>
+
 
       {/* ================= PRODUCT LIST ================= */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
+      <section className="max-w-7xl mx-auto px-6 py-12">
 
         {/* Optional: Result Count */}
         <div className="mb-12 flex justify-between items-center text-sm text-gray-500">
