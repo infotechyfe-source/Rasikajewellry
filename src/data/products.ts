@@ -25,34 +25,34 @@ export const products = [
 
   // 1. Rings
   {
-    id: 1,name: "Oxidised Ring",category: "ring",type: "oxidised ring",
+    id: 1,name: "Oxidised Ring",category: "rings",type: "oxidised ring",
     price: 30,metal: "oxidised",image: "/images/ring1.webp",},
   {
-    id: 2,name: "Silver Look Ring",category: "ring",type: "silver look ring",
+    id: 2,name: "Silver Look Ring",category: "rings",type: "silver look ring",
     price: 49,metal: "silver",image: "/images/ring2.webp",},
   {
-    id: 3,name: "Adjustable Ring",category: "ring",type: "adjustable ring",
+    id: 3,name: "Adjustable Ring",category: "rings",type: "adjustable ring",
     price: 59,metal: "oxidised",image: "/images/ring3.webp",},
   {
-    id: 4,name: "Stone Ring",category: "ring",type: "stone ring",
+    id: 4,name: "Stone Ring",category: "rings",type: "stone ring",
     price: 99,metal: "oxidised",image: "/images/ring4.jpg",},
   {
-    id: 5,name: "Flower Design Ring",category: "ring",type: " flower ring",
+    id: 5,name: "Flower Design Ring",category: "rings",type: " flower ring",
     price: "149",metal: " oxidised",image: "/images/ring5.webp",},
   { 
-    id: 6, name: "Heart Shape Ring", category: "ring", type: " heart ring", 
+    id: 6, name: "Heart Shape Ring", category: "rings", type: " heart ring", 
     price: "199", metal: "silver", image: "/images/ring6.webp",},
   {
-    id: 7,name: "Trendy Fashion Ring",category: "ring",type: "fashion ring",
+    id: 7,name: "Trendy Fashion Ring",category: "rings",type: "fashion ring",
     price: "119",image: "/images/ring7.jpg",},
   {
-    id: 8,name: "Couple Ring",category: "ring",type: "couple ring",
+    id: 8,name: "Couple Ring",category: "rings",type: "couple ring",
     price: "179",metal: "stone",image: "/images/ring8.webp"},
  {
-  id: 9,name: "Korean Style Ring",category: "ring",type: "korean ring",
+  id: 9,name: "Korean Style Ring",category: "rings",type: "korean ring",
   price: " 249",metal: "diamond",image: "/images/ring9.jpg",},
   {
-    id:10,name: "Fancy Party Ring",category: "ring",type: "Party ring",
+    id:10,name: "Fancy Party Ring",category: "rings",type: "Party ring",
     price:"169",metal: "silver look",image:"/images/ring10.webp"},
 
   // 2. Necklace Sets

@@ -50,11 +50,9 @@ export function Navbar() {
 
           {/* WHATSAPP CTA */}
           <div className="hidden md:flex flex-col items-end">
-            <a
-              href="https://wa.me/919999999999"
+            <a href="https://wa.me/919999999999"
               target="_blank"
-              className="px-7 py-2.5 rounded bg-[#c8a24d] text-xs tracking-widest text-white hover:bg-black transition-all duration-300 shadow-md"
-            >
+              className="px-7 py-2.5 rounded bg-[#c8a24d] text-xs tracking-widest text-white hover:bg-black transition-all duration-300 shadow-md">
               ORDER ON WHATSAPP
             </a>
 
@@ -79,7 +77,7 @@ export function Navbar() {
               <li key={cat} className="relative group flex-shrink-0">
                 <Link
                   href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
-                  className="text-gray-700 hover:text-[#9c7c3d] transition"
+                  className="text-gray-700 hover:text-[#9c7c3d] transition font-semibold"
                 >
                   {cat}
                 </Link>
@@ -92,7 +90,7 @@ export function Navbar() {
             <li className="relative group flex-shrink-0">
               <Link
                 href="/shop"
-                className="text-gray-700 hover:text-[#9c7c3d]"
+                className="text-gray-700 hover:text-[#9c7c3d] font-semibold"
               >
                 Wedding Collection
               </Link>

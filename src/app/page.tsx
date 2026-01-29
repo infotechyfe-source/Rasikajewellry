@@ -8,10 +8,10 @@ const categories = [
   { title: "Nose Ring", image: "/images/nose.png", desc: "Traditional & modern nose pins", },
   { title: "Ear Wear", image: "/images/ear1.jpeg", desc: "Earrings for every occasion", },
   { title: "Hand Wear", image: "/images/hand.jpg", desc: "Bangles, bracelets & rings", },
-  { title: "Ring", image: "/images/ring1.webp", desc: "All kinds of rings" },
-  { title: "Necklace Set", image: "/images/necklace.webp", desc: "Elegant necklace collections" },
+  { title: "Rings", image: "/images/ring1.webp", desc: "All kinds of rings" },
+  { title: "Necklace Set", image: "/images/necklace.jpeg", desc: "Elegant necklace collections" },
   { title: "Mangalsutra", image: "/images/mangalsutra.webp", desc: "Daily wear & bridal mangalsutras" },
-  { title: "Payal", image: "/images/payal.webp", desc: "Anklets for every style" },
+  { title: "Payal", image: "/images/payal.jpg", desc: "Anklets for every style" },
   { title: "Toe Ring", image: "/images/toering.webp", desc: "Chutki / Bichhiya designs" },
   { title: "Bangles", image: "/images/bangle.jpg", desc: "Traditional & modern bangles" },
   { title: "Pendant", image: "/images/pendant.jpeg", desc: "Elegant pendant chains" },
@@ -20,7 +20,7 @@ const categories = [
 
 export default function Home() {
   return (
-    <main className="bg-[#f0eed0] text-gray-800">
+    <main className="bg-[#f8f7e2] text-gray-800">
 
       {/* ================= HERO ================= */}
       <section className="relative h-[100vh] flex items-center justify-center overflow-hidden">

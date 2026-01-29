@@ -16,11 +16,20 @@ export function SearchModal({ open, onClose }: Props) {
 
   if (!open) return null;
 
-  const results = products.filter((p) =>
-    `${p.name} ${p.metal} ${p.category}`
-      .toLowerCase()
-      .includes(query.toLowerCase())
-  );
+  const normalizedQuery = query.trim().toLowerCase();
+
+  const results = normalizedQuery
+    ? products.filter((p) => {
+      const name = p.name?.toLowerCase() || "";
+      const category = p.category?.toLowerCase() || "";
+
+      return (
+        category.includes(normalizedQuery) ||
+        name.includes(normalizedQuery)
+      );
+    })
+    : [];
+
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm">
@@ -42,13 +51,12 @@ export function SearchModal({ open, onClose }: Props) {
           </button>
         </div>
 
-        {/* Results */}
         <div className="max-h-[400px] overflow-y-auto">
-          {results.length > 0 ? (
+          {query && results.length > 0 ? (
             results.map((p) => (
               <Link
                 key={p.id}
-                href={`/shop/${p.id}`}
+                href={`/shop?category=${encodeURIComponent(p.category)}`}
                 onClick={onClose}
                 className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition"
               >
@@ -62,17 +70,22 @@ export function SearchModal({ open, onClose }: Props) {
                 <div>
                   <p className="font-medium">{p.name}</p>
                   <p className="text-xs text-gray-500 capitalize">
-                    {p.metal} · ₹{p.price.toLocaleString()}
+                    {p.category} · ₹{p.price.toLocaleString()}
                   </p>
                 </div>
               </Link>
             ))
-          ) : (
+          ) : query ? (
             <p className="text-center text-sm text-gray-500 py-10">
               No jewellery found
             </p>
+          ) : (
+            <p className="text-center text-sm text-gray-400 py-10">
+              Search by category or product name
+            </p>
           )}
         </div>
+
       </div>
     </div>
   );
