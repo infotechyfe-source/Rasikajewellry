@@ -15,7 +15,7 @@ export const products = [
   },
   {
     id: 4, name: "Stone Ring", category: "rings", type: "stone ring",
-    price: 9, image: "/images/ring4.jpg",
+    price: 99, image: "/images/ring4.jpg",
   },
   {
     id: 5, name: "Flower Design Ring", category: "rings", type: " flower ring",

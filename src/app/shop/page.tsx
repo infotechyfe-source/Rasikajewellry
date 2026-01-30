@@ -4,30 +4,40 @@ import { products } from "@/data/products";
 import { ProductCard } from "@/components/ProductCard";
 import { useSearchParams } from "next/navigation";
 import Footer from "@/components/Footer";
+import { useState, useEffect } from "react";
 
 export default function ShopPage() {
   const searchParams = useSearchParams();
   const category = searchParams?.get("category")?.toLowerCase() || "";
 
+  const [orders, setOrders] = useState<any[]>([]);
+
+  // Fetch existing orders (optional, if you want to show live order count on shop page)
+  useEffect(() => {
+    fetch("/api/orders")
+      .then((res) => res.json())
+      .then((data) => setOrders(data))
+      .catch(console.error);
+  }, []);
+
+  const handleOrderPlaced = (newOrder: any) => {
+    setOrders((prev) => [...prev, newOrder]); // Add new order locally
+  };
+
   // Filter products by category
   const filteredProducts = category
-    ? products.filter(
-        (p) => p.category.toLowerCase() === category
-      )
+    ? products.filter((p) => p.category.toLowerCase() === category)
     : products;
 
-  // Display category name
   const displayCategory = category
     ? category.charAt(0).toUpperCase() + category.slice(1)
     : "All Jewellery";
 
   return (
     <main className="bg-[#f2f1e6]">
-
       {/* ================= HEADER ================= */}
       <section className="border-b bg-linear-to-b from-neutral-50 to-white">
         <div className="max-w-7xl mx-auto px-6 py-10 text-center">
-
           <span className="uppercase tracking-[0.3em] text-xs text-gray-400">
             Style Jewels Collection
           </span>
@@ -50,7 +60,6 @@ export default function ShopPage() {
 
       {/* ================= PRODUCT LIST ================= */}
       <section className="max-w-7xl mx-auto px-6 py-14">
-
         <div className="mb-12 flex justify-between items-center text-sm text-gray-500">
           <span>{filteredProducts.length} Designs Available</span>
           <span className="tracking-wide">SORT BY: FEATURED</span>
@@ -61,13 +70,9 @@ export default function ShopPage() {
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
-                id={product.id}
-                name={product.name}
-                price={product.price}         
-                image={product.image}
-                category={product.category}
+                {...product}
+                onOrderPlaced={handleOrderPlaced} // Pass callback
               />
-             
             ))}
           </div>
         ) : (
@@ -80,9 +85,7 @@ export default function ShopPage() {
       {/* ================= FOOTER CTA ================= */}
       <section className="border-t py-10">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="font-serif text-3xl mb-6">
-            Looking for Something Special?
-          </h2>
+          <h2 className="font-serif text-3xl mb-6">Looking for Something Special?</h2>
           <p className="text-gray-500 mb-10">
             Our jewellery experts are available to help you find the perfect piece.
           </p>
@@ -90,7 +93,8 @@ export default function ShopPage() {
             href="https://wa.me/919120797254"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block px-10 py-4 border border-black tracking-widest hover:bg-black hover:text-white transition">
+            className="inline-block px-10 py-4 border border-black tracking-widest hover:bg-black hover:text-white transition"
+          >
             CHAT ON WHATSAPP
           </a>
         </div>
