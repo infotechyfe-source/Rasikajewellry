@@ -1,6 +1,6 @@
 "use client";
 
-import { products } from "@/data/products";
+import { products as defaultProducts } from "@/data/products";
 import { ProductCard } from "@/components/ProductCard";
 import { useSearchParams } from "next/navigation";
 import Footer from "@/components/Footer";
@@ -20,14 +20,30 @@ export default function ShopPage() {
       .catch(console.error);
   }, []);
 
+  const [shopProducts, setShopProducts] = useState(defaultProducts);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("products");
+    if (stored) {
+      try {
+        setShopProducts(JSON.parse(stored));
+      } catch {
+        setShopProducts(defaultProducts);
+      }
+    }
+  }, []);
+
+
+
   const handleOrderPlaced = (newOrder: any) => {
     setOrders((prev) => [...prev, newOrder]); // Add new order locally
   };
 
   // Filter products by category
   const filteredProducts = category
-    ? products.filter((p) => p.category.toLowerCase() === category)
-    : products;
+    ? shopProducts.filter(p => p.category.toLowerCase() === category)
+    : shopProducts;
+
 
   const displayCategory = category
     ? category.charAt(0).toUpperCase() + category.slice(1)

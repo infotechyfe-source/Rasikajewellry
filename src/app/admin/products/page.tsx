@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { products as initialProducts } from '@/data/products';
 import { categories } from '@/data/categories';
 import { Trash2, Pencil, Plus, X, Check } from 'lucide-react';
+import Image from 'next/image';
 
 interface Product {
     id: number;
@@ -11,10 +12,13 @@ interface Product {
     category: string;
     price: string | number;
     image: string;
+    active: boolean;
 }
 
 export default function ProductsPage() {
-    const [products, setProducts] = useState<Product[]>(initialProducts);
+    const [products, setProducts] = useState<Product[]>(
+        initialProducts.map(p => ({ ...p, active: true }))
+    );
 
     const [modalOpen, setModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -54,17 +58,60 @@ export default function ProductsPage() {
         if (!name || !category || !price || !image) return alert('Please fill all fields');
         if (editingProduct) {
             // Edit
-            setProducts(products.map(p => p.id === editingProduct.id ? { ...p, name, category, price, image } : p));
+            setProducts(prev => {
+                const updated = prev.map(p =>
+                    p.id === editingProduct.id
+                        ? { ...p, name, category, price, image }
+                        : p
+                );
+
+                localStorage.setItem("products", JSON.stringify(updated));
+                return updated;
+            });
         } else {
+
             // Add
-            setProducts([{ id: products.length + 1, name, category, price, image }, ...products]);
+            setProducts(prev => {
+                const updated = [
+                    {
+                        id: Date.now(), // 🔴 IMPORTANT: avoid duplicate IDs
+                        name,
+                        category,
+                        price,
+                        image,
+                        active: true, // ✅ VERY IMPORTANT
+                    },
+                    ...prev,
+                ];
+
+                localStorage.setItem("products", JSON.stringify(updated));
+                return updated;
+            });
+
         }
         setModalOpen(false);
     };
 
+    const updateProducts = (updatedProducts: Product[]) => {
+        setProducts(updatedProducts);
+        localStorage.setItem("products", JSON.stringify(updatedProducts));
+    };
+
+
     const handleDelete = (id: number) => {
         if (!confirm('Delete this product?')) return;
         setProducts(products.filter(p => p.id !== id));
+    };
+
+    const toggleProduct = (id: number) => {
+        setProducts(prev => {
+            const updated = prev.map(p =>
+                p.id === id ? { ...p, active: !p.active } : p
+            );
+
+            localStorage.setItem("products", JSON.stringify(updated));
+            return updated;
+        });
     };
 
     return (
@@ -98,11 +145,9 @@ export default function ProductsPage() {
                             >
                                 <td className="p-3 text-gray-700">{p.id}</td>
                                 <td className="p-3">
-                                    <img
-                                        src={p.image}
-                                        alt={p.name}
-                                        className="h-16 w-16 object-cover rounded shadow-sm border"
-                                    />
+                                    <Image
+                                        src={p.image} alt={p.name} width={64} height={64}
+                                        className="object-cover rounded shadow-sm border" />
                                 </td>
                                 <td className="p-3 text-gray-700 font-medium">{p.name}</td>
                                 <td className="p-3 text-gray-500">{p.category}</td>
@@ -122,6 +167,13 @@ export default function ProductsPage() {
                                     >
                                         <Trash2 size={18} />
                                     </button>
+
+                                    {/* Active / Inactive */}
+                                    <button
+                                        onClick={() => toggleProduct(p.id)}
+                                        className={`px-3 py-1 rounded text-xs font-medium text-white cursor-pointer ${p.active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}`} >
+                                        {p.active ? "Active" : "Inactive"}
+                                    </button>
                                 </td>
                             </tr>
                         ))}
@@ -140,11 +192,11 @@ export default function ProductsPage() {
             {modalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
 
-                   <div className="bg-white rounded-2xl w-full max-w-md shadow-xl
+                    <div className="bg-white rounded-2xl w-full max-w-md shadow-xl
                 max-h-[90vh] overflow-y-auto relative p-6">
 
                         {/* Close button */}
-                        <button
+                        <button title='close'
                             onClick={() => setModalOpen(false)}
                             className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition cursor-pointer"
                         >
@@ -181,7 +233,7 @@ export default function ProductsPage() {
                                 <label className="block text-sm font-medium text-gray-600 mb-1">
                                     Category
                                 </label>
-                                <select
+                                <select title='category'
                                     value={category}
                                     onChange={e => setCategory(e.target.value)}
                                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
@@ -222,11 +274,15 @@ export default function ProductsPage() {
 
                                 {image && (
                                     <div className="mt-3 flex justify-center">
-                                        <img
+                                        <Image
                                             src={image}
                                             alt="Preview"
-                                            className="h-28 w-28 object-cover rounded-lg shadow"
+                                            width={112}
+                                            height={112}
+                                            className="rounded-lg shadow object-cover"
+                                            unoptimized
                                         />
+
                                     </div>
                                 )}
                             </div>

@@ -1,39 +1,55 @@
-import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { NextRequest, NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
 
-const ordersFile = path.join(process.cwd(), 'src', 'data', 'orders.json');
+const ordersFile = path.join(process.cwd(), "data", "orders.json");
+
+type Order = {
+  id: number;
+  product: string;
+  amount: number;
+  phone: string;
+  status: "NEW" | "CONTACTED" | "CONFIRMED" | "CANCELLED";
+  date: string;
+};
 
 export async function GET() {
   try {
-    const data = fs.readFileSync(ordersFile, 'utf-8');
-    const orders = data ? JSON.parse(data) : [];
-    return NextResponse.json(orders);
-  } catch (err) {
-    console.error("Failed to read orders:", err);
+    const data = fs.existsSync(ordersFile)
+      ? fs.readFileSync(ordersFile, "utf-8")
+      : "[]";
+
+    return NextResponse.json(JSON.parse(data));
+  } catch {
     return NextResponse.json([]);
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { product, amount } = await req.json();
-    const data = fs.readFileSync(ordersFile, 'utf-8');
-    const orders = data ? JSON.parse(data) : [];
+    const { product, amount, phone } = await req.json();
 
-    const newOrder = {
-      id: orders.length + 1,
+    const data = fs.existsSync(ordersFile)
+      ? fs.readFileSync(ordersFile, "utf-8")
+      : "[]";
+
+    const orders: Order[] = JSON.parse(data);
+
+    const newOrder: Order = {
+      id: Date.now(),
       product,
       amount,
+      phone,
+      status: "NEW",
       date: new Date().toISOString(),
     };
 
     orders.push(newOrder);
+
     fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2));
 
-    return NextResponse.json({ message: 'Order added', order: newOrder });
+    return NextResponse.json(newOrder);
   } catch (err) {
-    console.error("Failed to add order:", err);
-    return NextResponse.json({ message: 'Error adding order' }, { status: 500 });
+    return NextResponse.json({ error: "Order failed" }, { status: 500 });
   }
 }
