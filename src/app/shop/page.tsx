@@ -63,13 +63,11 @@ export default function ShopPage() {
                 key={product.id}
                 id={product.id}
                 name={product.name}
-                price={product.price}
-                metal={product.metal}
+                price={product.price}         
                 image={product.image}
                 category={product.category}
               />
-              // OR simply:
-              // <ProductCard key={product.id} {...product} />
+             
             ))}
           </div>
         ) : (
@@ -91,9 +89,8 @@ export default function ShopPage() {
           <a
             href="https://wa.me/919120797254"
             target="_blank"
-            className="inline-block px-10 py-4 border border-black tracking-widest
-                       hover:bg-black hover:text-white transition"
-          >
+            rel="noopener noreferrer"
+            className="inline-block px-10 py-4 border border-black tracking-widest hover:bg-black hover:text-white transition">
             CHAT ON WHATSAPP
           </a>
         </div>

@@ -52,6 +52,7 @@ export function Navbar() {
           <div className="hidden md:flex flex-col items-end">
             <a href="https://wa.me/919120797254"
               target="_blank"
+              rel="noopener noreferrer"
               className="px-7 py-2.5 rounded bg-[#c8a24d] text-xs tracking-widest text-white hover:bg-black transition-all duration-300 shadow-md">
               ORDER ON WHATSAPP
             </a>
@@ -74,7 +75,7 @@ export function Navbar() {
           <ul
             className="flex gap-8 py-4 text-[11px] tracking-widest uppercase whitespace-nowrap justify-start md:justify-center">
             {uniqueCategories.map(cat => (
-              <li key={cat} className="relative group flex-shrink-0">
+              <li key={cat} className="relative group shrink-0">
                 <Link
                   href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
                   className="text-gray-700 hover:text-[#9c7c3d] transition font-semibold"
@@ -87,7 +88,7 @@ export function Navbar() {
             ))}
 
             {/* Intent-based shortcut */}
-            <li className="relative group flex-shrink-0">
+            <li className="relative group shrink-0">
               <Link
                 href="/shop"
                 className="text-gray-700 hover:text-[#9c7c3d] font-semibold"

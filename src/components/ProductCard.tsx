@@ -6,14 +6,13 @@ type Product = {
   id: number;
   name: string;
   price: number | string;
-  metal: string;
   image: string;
   category: string;
 };
 
 const WHATSAPP_NUMBER = "919120797254";
 
-export function ProductCard({ id, name, price, metal, image, category }: Product) {
+export function ProductCard({ id, name, price, image, category }: Product) {
   const [quantity, setQuantity] = useState(1);
 
   const safeCategory = category || "general";
@@ -22,7 +21,7 @@ export function ProductCard({ id, name, price, metal, image, category }: Product
 
   const productLink = `https://yourdomain.com/shop?category=${encodeURIComponent(safeCategory)}#product-${safeId}`;
 
-  const whatsappMessage = `Hello, I am interested in this jewellery:%0A%0AName: ${name}%0AMetal: ${metal || 'Jewellery'}%0APrice: ₹${totalPrice}%0AQuantity: ${quantity}%0AProduct Link: ${productLink}`;
+  const whatsappMessage = `Hello, I am interested in this jewellery:%0A%0AName: ${name}|| 'Jewellery'}%0APrice: ₹${totalPrice}%0AQuantity: ${quantity}%0AProduct Link: ${productLink}`;
 
   return (
     <div className="group cursor-pointer rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-white" id={`product-${safeId}`}>
@@ -62,7 +61,7 @@ export function ProductCard({ id, name, price, metal, image, category }: Product
 
       <div className="mt-6 text-center px-4 pb-6">
         <h3 className="font-serif text-lg md:text-xl mb-1">{name}</h3>
-        <p className="text-[11px] tracking-widest uppercase text-gray-500 mb-2">{metal || 'Jewellery'} Jewellery</p>
+        
         <p className="text-[#9c7c3d] text-lg font-medium">₹{totalPrice.toLocaleString()}</p>
       </div>
     </div>
