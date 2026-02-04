@@ -103,16 +103,16 @@ export default function ProductsPage() {
         setProducts(products.filter(p => p.id !== id));
     };
 
-    const toggleProduct = (id: number) => {
-        setProducts(prev => {
-            const updated = prev.map(p =>
-                p.id === id ? { ...p, active: !p.active } : p
-            );
+const toggleProduct = (id: number) => {
+  setProducts(prev => {
+    const updated = prev.map(p =>
+      p.id === id ? { ...p, active: !p.active } : p
+    );
 
-            localStorage.setItem("products", JSON.stringify(updated));
-            return updated;
-        });
-    };
+    localStorage.setItem("products", JSON.stringify(updated));
+    return updated;
+  });
+};
 
     return (
         <div className="p-6">

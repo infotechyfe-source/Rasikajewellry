@@ -52,51 +52,96 @@ export default function ShopPage() {
   return (
     <main className="bg-[#f2f1e6]">
       {/* ================= HEADER ================= */}
-      <section className="border-b bg-linear-to-b from-neutral-50 to-white">
-        <div className="max-w-7xl mx-auto px-6 py-10 text-center">
-          <span className="uppercase tracking-[0.3em] text-xs text-gray-400">
-            Style Jewels Collection
-          </span>
+    
+      <section className="relative h-[380px] md:h-[580px] bg-[#f2f1e6] overflow-hidden">
+        <img
+          src="/images/shop-hero.jpg" // replace with your banner image
+          alt="Quiet Luxury"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
 
-          <h1 className="font-serif text-4xl md:text-6xl mt-4 mb-6 tracking-wide">
-            {displayCategory}
-          </h1>
+        
 
-          <div className="mx-auto mb-6 flex items-center justify-center gap-2">
-            <span className="w-8 h-px bg-[#c8a24d]" />
-            <span className="w-1 h-1 bg-[#c8a24d] rounded-full animate-pulse" />
-            <span className="w-8 h-px bg-[#c8a24d]" />
-          </div>
-
-          <p className="text-gray-500 max-w-xl mx-auto text-sm md:text-base leading-relaxed tracking-wide">
-            Exquisite jewellery crafted to celebrate life’s most precious moments.
-          </p>
+        <div className="relative max-w-7xl mx-auto px-6 h-full flex items-center">
+          
         </div>
       </section>
+
 
       {/* ================= PRODUCT LIST ================= */}
-      <section className="max-w-7xl mx-auto px-6 py-14">
-        <div className="mb-12 flex justify-between items-center text-sm text-gray-500">
-          <span>{filteredProducts.length} Designs Available</span>
-          <span className="tracking-wide">SORT BY: FEATURED</span>
-        </div>
+      <section className="max-w-8xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-12">
 
-        {filteredProducts.length > 0 ? (
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-16">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                {...product}
-                onOrderPlaced={handleOrderPlaced} // Pass callback
-              />
-            ))}
+          {/* ================= FILTER SIDEBAR ================= */}
+          <aside className="text-sm text-gray-700 sticky top-28 h-fit">
+
+            <div className="mb-6 flex justify-between">
+              <span className="font-medium">Filters</span>
+              <button className="text-xs underline text-gray-400">
+                Clear All
+              </button>
+            </div>
+
+            {/* PRICE */}
+            <div className="mb-8">
+              <h4 className="uppercase text-xs tracking-widest mb-3">
+                Price Range
+              </h4>
+              <input type="range" className="w-full accent-[#8b4a16]" />
+              <div className="flex justify-between text-xs mt-2">
+                <span>₹5,000</span>
+                <span>₹2,00,000</span>
+              </div>
+            </div>
+
+            {/* MATERIAL */}
+            <div className="mb-8">
+              <h4 className="uppercase text-xs tracking-widest mb-3">
+                Material
+              </h4>
+              {["18K Gold", "Diamond", "Platinum", "Rose Gold"].map(m => (
+                <label key={m} className="flex items-center gap-2 mb-2">
+                  <input type="checkbox" />
+                  {m}
+                </label>
+              ))}
+            </div>
+
+            {/* STYLE */}
+            <div className="mb-8">
+              <h4 className="uppercase text-xs tracking-widest mb-3">
+                Style
+              </h4>
+              {["Studs", "Hoops", "Drops", "Chandeliers"].map(s => (
+                <label key={s} className="flex items-center gap-2 mb-2">
+                  <input type="checkbox" />
+                  {s}
+                </label>
+              ))}
+            </div>
+          </aside>
+
+          {/* ================= PRODUCT GRID ================= */}
+          <div>
+            <div className="mb-10 flex justify-between text-sm text-gray-500">
+              <span>Showing 1–{filteredProducts.length} designs</span>
+              <span>Sort by: Recommended</span>
+            </div>
+
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-16">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  {...product}
+                  onOrderPlaced={handleOrderPlaced}
+                />
+              ))}
+            </div>
           </div>
-        ) : (
-          <p className="text-center text-gray-500 mt-24">
-            No designs found in this category.
-          </p>
-        )}
+
+        </div>
       </section>
+
 
       {/* ================= FOOTER CTA ================= */}
       <section className="border-t py-10">

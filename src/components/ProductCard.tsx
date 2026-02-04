@@ -32,7 +32,7 @@ export function ProductCard({
   price,
   image,
   category,
-  active,                
+  active,
   onOrderPlaced,
 }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1);
@@ -97,15 +97,17 @@ Product Link: ${productLink}`;
 
   return (
     <div
-      className={`group rounded-xl overflow-hidden shadow-lg transition bg-white
-        ${!active ? "opacity-90" : "hover:shadow-2xl"}
-      `}
       id={`product-${id}`}
+      className={`group transition
+      ${!active ? "opacity-80" : ""}
+    `}
     >
-      <div className="relative overflow-hidden">
-        {/* OUT OF STOCK BADGE */}
+      {/* IMAGE WRAPPER */}
+      <div className="relative bg-[#eae6df] p-6 overflow-hidden">
+
+        {/* OUT OF STOCK */}
         {!active && (
-          <div className="absolute top-4 left-4 z-10 bg-red-600 text-white text-xs px-3 py-1 rounded-full tracking-wide">
+          <div className="absolute top-4 left-4 z-10 bg-black text-white text-[10px] px-3 py-1 tracking-widest">
             OUT OF STOCK
           </div>
         )}
@@ -115,58 +117,60 @@ Product Link: ${productLink}`;
           alt={name}
           width={500}
           height={650}
-          className={`w-full h-[420px] object-cover transition-transform duration-700
-            ${active ? "group-hover:scale-105" : "grayscale"}
-          `}
+          className={`mx-auto h-[320px] object-contain transition-transform duration-700
+          ${active ? "group-hover:scale-105" : "grayscale"}
+        `}
         />
 
-        {/* HOVER OVERLAY */}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex flex-col justify-center items-center gap-4 px-4">
-          
-          {/* Quantity (only if active) */}
+        {/* HOVER ACTION */}
+        <div
+          className={`absolute inset-0 flex flex-col items-center justify-center gap-4
+        bg-white/70 opacity-0 group-hover:opacity-100 transition`}
+        >
           {active && (
-            <div className="flex items-center gap-3 bg-black/60 px-3 py-1 rounded text-white">
-              <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>-</button>
+            <div className="flex items-center gap-4 text-sm border px-4 py-1">
+              <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>−</button>
               <span>{quantity}</span>
               <button onClick={() => setQuantity(q => q + 1)}>+</button>
             </div>
           )}
 
-          {/* Order Button */}
           <button
             onClick={handleOrder}
             disabled={!active}
-            className={`px-8 py-3 border text-xs tracking-[0.25em] rounded transition
-              ${
-                active
-                  ? "border-white text-white hover:bg-white hover:text-black"
-                  : "border-gray-400 text-gray-400 cursor-not-allowed"
+            className={`px-8 py-3 text-[11px] tracking-[0.3em] uppercase border transition
+            ${active
+                ? "border-black hover:bg-black hover:text-white"
+                : "border-gray-400 text-gray-400 cursor-not-allowed"
               }
-            `}
+          `}
           >
-            {active ? "ORDER NOW" : "OUT OF STOCK"}
+            {active ? "Add to Cart" : "Unavailable"}
           </button>
         </div>
       </div>
 
       {/* PRODUCT INFO */}
-      <div className="mt-6 text-center px-4 pb-6">
-        <h3 className="font-serif text-lg md:text-xl mb-1">{name}</h3>
-        <p className="text-[#9c7c3d] text-lg font-medium">
-          ₹{totalPrice.toLocaleString()}
+      <div className="mt-4 text-center">
+        <h3 className="font-serif text-sm tracking-wide">{name}</h3>
+
+        <p className="mt-1 text-sm text-gray-600">
+          ₹ {totalPrice.toLocaleString()}
         </p>
-         {/* Phone input */}
-          <input
-            type="tel"
-            placeholder={active ? "Your phone number" : "Out of stock"}
-            value={phone}
-            disabled={!active}
-            onChange={(e) => setPhone(e.target.value)}
-            className={`w-full text-sm px-3 py-2 rounded outline-none
-              ${!active ? "bg-gray-200 cursor-not-allowed" : ""}
-            `}
-          />
+
+        {/* PHONE INPUT */}
+        <input
+          type="tel"
+          placeholder={active ? "Enter phone number" : "Out of stock"}
+          value={phone}
+          disabled={!active}
+          onChange={(e) => setPhone(e.target.value)}
+          className={`mt-3 w-full border px-3 py-2 text-xs outline-none
+          ${!active ? "bg-gray-100 cursor-not-allowed" : "focus:border-black"}
+        `}
+        />
       </div>
     </div>
   );
+
 }

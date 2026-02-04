@@ -1,55 +1,72 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const ordersFile = path.join(process.cwd(), "data", "orders.json");
+import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 type Order = {
-  id: number;
+  _id?: ObjectId;
   product: string;
   amount: number;
   phone: string;
   status: "NEW" | "CONTACTED" | "CONFIRMED" | "CANCELLED";
-  date: string;
+  date: Date;
 };
 
+// ================= GET ORDERS =================
 export async function GET() {
   try {
-    const data = fs.existsSync(ordersFile)
-      ? fs.readFileSync(ordersFile, "utf-8")
-      : "[]";
+    const client = await clientPromise;
+    const db = client.db();
 
-    return NextResponse.json(JSON.parse(data));
-  } catch {
-    return NextResponse.json([]);
+    const orders = await db
+      .collection<Order>("orders")
+      .find({})
+      .sort({ date: -1 })
+      .toArray();
+
+    return NextResponse.json(orders);
+  } catch (err) {
+    console.error("GET orders error:", err);
+    return NextResponse.json(
+      { error: "Failed to fetch orders" },
+      { status: 500 }
+    );
   }
 }
 
+// ================= CREATE ORDER =================
 export async function POST(req: NextRequest) {
   try {
     const { product, amount, phone } = await req.json();
 
-    const data = fs.existsSync(ordersFile)
-      ? fs.readFileSync(ordersFile, "utf-8")
-      : "[]";
+    if (!product || !amount || !phone) {
+      return NextResponse.json(
+        { error: "Missing fields" },
+        { status: 400 }
+      );
+    }
 
-    const orders: Order[] = JSON.parse(data);
+    const client = await clientPromise;
+    const db = client.db();
 
     const newOrder: Order = {
-      id: Date.now(),
       product,
       amount,
       phone,
       status: "NEW",
-      date: new Date().toISOString(),
+      date: new Date(),
     };
 
-    orders.push(newOrder);
+    const result = await db.collection<Order>("orders").insertOne(newOrder);
 
-    fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2));
-
-    return NextResponse.json(newOrder);
+    return NextResponse.json(
+      { ...newOrder, _id: result.insertedId },
+      { status: 200 }
+    );
   } catch (err) {
-    return NextResponse.json({ error: "Order failed" }, { status: 500 });
+    console.error("POST order error:", err);
+    return NextResponse.json(
+      { error: "Order save failed" },
+      { status: 500 }
+    );
   }
 }
