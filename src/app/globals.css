@@ -1,2 +1,9 @@
 @import "tailwindcss";
 
+.font-playfair {
+  font-family: var(--font-playfair);
+}
+
+.font-merriweather {
+  font-family: var(--font-merriweather);
+}

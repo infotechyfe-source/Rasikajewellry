@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Image from "next/image";
 import { useState } from "react";
@@ -36,34 +36,19 @@ export function ProductCard({
   onOrderPlaced,
 }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1);
-  const [phone, setPhone] = useState("");
+  const [open, setOpen] = useState(false);
 
   const totalPrice =
     typeof price === "string"
       ? parseInt(price) * quantity
       : price * quantity;
 
-  const productLink = `https://yourdomain.com/shop?category=${encodeURIComponent(
-    category
-  )}#product-${id}`;
-
-  const whatsappMessage = `Hello, I want to order jewellery:
-
-Name: ${name}
-Price: ₹${totalPrice}
-Quantity: ${quantity}
-Phone: ${phone}
-Product Link: ${productLink}`;
-
-  const handleOrder = async () => {
-    // ⛔ Block order if out of stock
-    if (!active) return;
-
-    if (!phone || phone.length < 10) {
-      alert("Please enter a valid phone number");
-      return;
-    }
-
+  /* ================= ORDER SUBMIT ================= */
+  const handleOrderSubmit = async (form: {
+    customerName: string;
+    phone: string;
+    address: string;
+  }) => {
     try {
       const res = await fetch("/api/orders", {
         method: "POST",
@@ -71,24 +56,33 @@ Product Link: ${productLink}`;
         body: JSON.stringify({
           product: name,
           amount: totalPrice,
-          phone,
+          phone: form.phone,
         }),
       });
 
-      if (!res.ok) throw new Error("Order save failed");
+      if (!res.ok) throw new Error("Order failed");
 
       const savedOrder = await res.json();
-
-      // Update parent immediately
       onOrderPlaced?.(savedOrder);
 
-      // Open WhatsApp AFTER saving
+      const message = `
+New Jewellery Order ✨
+
+Product: ${name}
+Quantity: ${quantity}
+Total Price: ₹${totalPrice}
+
+Customer Name: ${form.customerName}
+Phone: ${form.phone}
+Address: ${form.address}
+      `;
+
       window.open(
-        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-          whatsappMessage
-        )}`,
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
         "_blank"
       );
+
+      setOpen(false);
     } catch (err) {
       console.error(err);
       alert("Something went wrong. Please try again.");
@@ -96,81 +90,158 @@ Product Link: ${productLink}`;
   };
 
   return (
-    <div
-      id={`product-${id}`}
-      className={`group transition
-      ${!active ? "opacity-80" : ""}
-    `}
-    >
-      {/* IMAGE WRAPPER */}
-      <div className="relative bg-[#eae6df] p-6 overflow-hidden">
-
-        {/* OUT OF STOCK */}
-        {!active && (
-          <div className="absolute top-4 left-4 z-10 bg-black text-white text-[10px] px-3 py-1 tracking-widest">
-            OUT OF STOCK
-          </div>
-        )}
-
-        <Image
-          src={image}
-          alt={name}
-          width={500}
-          height={650}
-          className={`mx-auto h-[320px] object-contain transition-transform duration-700
-          ${active ? "group-hover:scale-105" : "grayscale"}
+    <>
+      {/* ================= PRODUCT CARD ================= */}
+      <div
+        id={`product-${id}`}
+        className={`group transition-all duration-300
+          ${!active ? "opacity-70" : "hover:-translate-y-1"}
         `}
-        />
-
-        {/* HOVER ACTION */}
-        <div
-          className={`absolute inset-0 flex flex-col items-center justify-center gap-4
-        bg-white/70 opacity-0 group-hover:opacity-100 transition`}
-        >
-          {active && (
-            <div className="flex items-center gap-4 text-sm border px-4 py-1">
-              <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>−</button>
-              <span>{quantity}</span>
-              <button onClick={() => setQuantity(q => q + 1)}>+</button>
+      >
+        {/* IMAGE */}
+        <div className="relative h-[420px] bg-[#efece6] overflow-hidden rounded-sm shadow-sm">
+          {!active && (
+            <div className="absolute top-4 left-4 z-10 bg-black text-white text-[10px] px-3 py-1 tracking-widest">
+              OUT OF STOCK
             </div>
           )}
 
+          <Image
+            src={image}
+            alt={name}
+            fill
+            className={`object-cover transition-transform duration-700
+              ${active ? "group-hover:scale-110" : "grayscale"}
+            `}
+            sizes="(max-width:768px) 100vw, 33vw"
+          />
+        </div>
+
+        {/* INFO */}
+        <div className="mt-5 text-center px-2">
+          <h3 className="font-serif text-[15px] tracking-wide">
+            {name}
+          </h3>
+
+          <p className="mt-1 text-sm text-gray-700">
+            ₹ {totalPrice.toLocaleString()}
+          </p>
+
+          {/* ORDER NOW */}
           <button
-            onClick={handleOrder}
+            onClick={() => setOpen(true)}
             disabled={!active}
-            className={`px-8 py-3 text-[11px] tracking-[0.3em] uppercase border transition
-            ${active
-                ? "border-black hover:bg-black hover:text-white"
-                : "border-gray-400 text-gray-400 cursor-not-allowed"
+            className={`mt-4 w-full py-3 text-[11px] tracking-[0.35em] uppercase border transition cursor-pointer
+              ${active
+                ? "border-[#8B4513] bg-[#8B4513] text-white hover:text-[#e6c36a]"
+                : "border-gray-300 text-gray-400 cursor-not-allowed"
               }
-          `}
+            `}
           >
-            {active ? "Add to Cart" : "Unavailable"}
+            Order Now
           </button>
+
+          {/* QUANTITY */}
+          {active && (
+            <div className="mt-4 flex items-center justify-center gap-6 text-sm border py-2 cursor-pointer">
+              <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>
+                −
+              </button>
+              <span>{quantity}</span>
+              <button onClick={() => setQuantity(q => q + 1)}>
+                +
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* PRODUCT INFO */}
-      <div className="mt-4 text-center">
-        <h3 className="font-serif text-sm tracking-wide">{name}</h3>
+      {/* ================= ORDER MODAL ================= */}
+      {open && (
+        <OrderModal
+          productName={name}
+          totalPrice={totalPrice}
+          onClose={() => setOpen(false)}
+          onSubmit={handleOrderSubmit}
+        />
+      )}
+    </>
+  );
+}
 
-        <p className="mt-1 text-sm text-gray-600">
-          ₹ {totalPrice.toLocaleString()}
+/* ================= MODAL COMPONENT ================= */
+
+function OrderModal({
+  productName,
+  totalPrice,
+  onClose,
+  onSubmit,
+}: {
+  productName: string;
+  totalPrice: number;
+  onClose: () => void;
+  onSubmit: (data: {
+    customerName: string;
+    phone: string;
+    address: string;
+  }) => void;
+}) {
+  const [form, setForm] = useState({
+    customerName: "",
+    phone: "",
+    address: "",
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
+      <div className="bg-white w-full max-w-md p-8 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-xl"
+        >
+          ×
+        </button>
+
+        <h3 className="font-serif text-2xl mb-2 text-center">
+          Complete Your Order
+        </h3>
+
+        <p className="text-center text-sm text-gray-500 mb-6">
+          {productName} · ₹{totalPrice.toLocaleString()}
         </p>
 
-        {/* PHONE INPUT */}
-        <input
-          type="tel"
-          placeholder={active ? "Enter phone number" : "Out of stock"}
-          value={phone}
-          disabled={!active}
-          onChange={(e) => setPhone(e.target.value)}
-          className={`mt-3 w-full border px-3 py-2 text-xs outline-none
-          ${!active ? "bg-gray-100 cursor-not-allowed" : "focus:border-black"}
-        `}
-        />
+        <div className="space-y-4">
+          <input
+            placeholder="Full Name"
+            className="w-full border px-4 py-3 text-sm"
+            onChange={(e) =>
+              setForm({ ...form, customerName: e.target.value })
+            }
+          />
+          <input
+            placeholder="Phone Number"
+            className="w-full border px-4 py-3 text-sm"
+            onChange={(e) =>
+              setForm({ ...form, phone: e.target.value })
+            }
+          />
+          <textarea
+            placeholder="Delivery Address"
+            rows={3}
+            className="w-full border px-4 py-3 text-sm"
+            onChange={(e) =>
+              setForm({ ...form, address: e.target.value })
+            }
+          />
+        </div>
+
+        <button
+          onClick={() => onSubmit(form)}
+          className="mt-6 w-full bg-black text-white py-3 tracking-widest text-sm"
+        >
+          CONTINUE TO WHATSAPP
+        </button>
       </div>
     </div>
   );
-
 }

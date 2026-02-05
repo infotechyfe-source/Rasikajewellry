@@ -31,17 +31,17 @@ export default function Home() {
     <main className="bg-[#f8f7e2] text-gray-800">
 
       {/* ================= HERO ================= */}
-      <section className="relative min-h-screen overflow-hidden flex items-center justify-center">
+      <section className="relative h-[100vh] max-h-[900px] overflow-hidden flex items-center justify-center">
 
-        {/* 🎥 VIDEO BACKGROUND */}
         <video
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-top"
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
         >
+
           <source src="/videos/hero-jewellery.mp4" type="video/mp4" />
         </video>
 
@@ -50,14 +50,14 @@ export default function Home() {
 
         {/* 📝 HERO CONTENT */}
         <div className="relative z-10 text-center max-w-5xl px-6">
-          <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-white leading-tight mb-6">
+          <h1 className="font-playfair text-4xl md:text-6xl lg:text-7xl text-white leading-tight mb-6">
             <span className="text-[#e6c36a] block mb-2">
-              Elegance Redefined
+              ELEGANCE REDEFINED
             </span>
-            Crafted to Shine Forever
+
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-12 leading-relaxed">
+          <p className="font-playfair text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-12 leading-relaxed">
             Discover the timeless beauty of handcrafted jewelry made to celebrate your moments.
           </p>
 
@@ -110,49 +110,66 @@ export default function Home() {
       </div>
 
       {/* ================= FEATURES STRIP ================= */}
-      <section className="bg-[#EEE2DA] border-t border-[#e6c36a]/40">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+      <section className="bg-[#EEE2DA] border-t border-[#e6c36a]/50">
+        <div className="max-w-7xl mx-auto px-8 py-20">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-14">
 
             {/* FREE SHIPPING */}
-            <div className="flex flex-col items-center gap-2">
-              <Truck size={26} className="text-[#5C2B06]" />
-              <p className="text-sm font-semibold tracking-widest text-[#5C2B06]">
-                FREE SHIPPING
-              </p>
-              <span className="text-xs text-[#7a4a2c]">
-                On orders above ₹1999
-              </span>
+            <div className="flex items-start gap-6">
+              <div className="flex items-center justify-center w-14 h-14 rounded-full
+                        bg-white shadow-sm">
+                <Truck size={32} className="text-[#5C2B06]" />
+              </div>
+              <div>
+                <p className="text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-2">
+                  FREE SHIPPING
+                </p>
+                <span className="text-sm text-[#7a4a2c] leading-relaxed">
+                  Complimentary delivery on orders above ₹49,999
+                </span>
+              </div>
             </div>
 
             {/* FREE RETURNS */}
-            <div className="flex flex-col items-center gap-2">
-              <RefreshCcw size={26} className="text-[#5C2B06]" />
-              <p className="text-sm font-semibold tracking-widest text-[#5C2B06]">
-                FREE IN-STORE RETURN
-              </p>
-              <span className="text-xs text-[#7a4a2c]">
-                Easy & hassle-free returns
-              </span>
+            <div className="flex items-start gap-6">
+              <div className="flex items-center justify-center w-14 h-14 rounded-full
+                        bg-white shadow-sm">
+                <RefreshCcw size={32} className="text-[#5C2B06]" />
+              </div>
+              <div>
+                <p className="text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-2">
+                  EASY RETURNS
+                </p>
+                <span className="text-sm text-[#7a4a2c] leading-relaxed">
+                  Hassle-free in-store & online returns
+                </span>
+              </div>
             </div>
 
             {/* SECURE CHECKOUT */}
-            <div className="flex flex-col items-center gap-2">
-              <ShieldCheck size={26} className="text-[#5C2B06]" />
-              <p className="text-sm font-semibold tracking-widest text-[#5C2B06]">
-                100% SECURE CHECKOUT
-              </p>
-              <span className="text-xs text-[#7a4a2c]">
-                Safe & encrypted payments
-              </span>
+            <div className="flex items-start gap-6">
+              <div className="flex items-center justify-center w-14 h-14 rounded-full
+                        bg-white shadow-sm">
+                <ShieldCheck size={32} className="text-[#5C2B06]" />
+              </div>
+              <div>
+                <p className="text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-2">
+                  SECURE PAYMENTS
+                </p>
+                <span className="text-sm text-[#7a4a2c] leading-relaxed">
+                  Encrypted & trusted checkout experience
+                </span>
+              </div>
             </div>
 
           </div>
         </div>
       </section>
 
+
       <section className="relative bg-[#1b0f08] py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto ">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
             {/* IMAGE SIDE */}
@@ -197,7 +214,7 @@ export default function Home() {
                      border border-[#8b4a16] text-[#8b4a16]
                      px-10 py-4 text-xs tracking-widest uppercase
                      hover:bg-[#8b4a16] hover:text-white
-                     transition duration-300"
+                     transition duration-300 cursor-pointer"
               >
                 Explore Collection
                 <span className="text-base">→</span>
@@ -212,16 +229,16 @@ export default function Home() {
       {/* ================= SHOP BY CATEGORY ================= */}
       <section
         id="categories"
-        className="bg-black py-20"
+        className="bg-[#EEE2DA]/90 py-20"
       >
         <div className="max-w-auto mx-auto px-16">
 
           {/* HEADING */}
           <div className="text-center mb-16">
-            <h2 className="font-serif text-4xl text-[#c8a24d] mb-2">
-              Shop by category
+            <h2 className="text-[80px] font-serif text-4xl text-[#c8a24d] mb-2">
+              Shop by Category
             </h2>
-            <p className="text-sm italic text-white/60">
+            <p className="text-l italic text-[#8b4a16]">
               Indulge in what we offer.
             </p>
           </div>
@@ -264,7 +281,7 @@ export default function Home() {
           <div className="mt-14 flex justify-center">
             <Link
               href="/shop"
-              className="bg-[#8b4a16] text-white px-10 py-3 text-xs tracking-widest uppercase hover:bg-[#c8a24d] hover:text-black transition"
+              className="border border-[#8b4a16] text-white px-10 py-3 text-xs tracking-widest uppercase hover:bg-[#8b4a16] hover:text-[#e6c36a] transition"
             >
               View All
             </Link>
@@ -274,11 +291,11 @@ export default function Home() {
       </section>
 
       {/* ================= TESTIMONIALS ================= */}
-      <section className="relative py-24 bg-gradient-to-r from-[#1b0f08] via-[#2a150b] to-[#1b0f08] overflow-hidden">
+      <section className="relative py-28 bg-gradient-to-r from-[#1b0f08] via-[#2a150b] to-[#1b0f08] overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
 
           {/* HEADER */}
-          <div className="mb-16">
+          <div className="mb-20">
             <span className="text-xs tracking-widest uppercase text-[#c8a24d]">
               Client Stories
             </span>
@@ -287,59 +304,66 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
 
             {/* IMAGE */}
-            <div className="relative max-w-md">
-              <div className="absolute -top-6 -left-6 w-24 h-24 border border-[#c8a24d]" />
+            <div className="relative max-w-md mx-auto lg:mx-0">
+              <div className="absolute -top-5 -left-5 w-20 h-20 border border-[#c8a24d]" />
+
               <img
-                src="/images/testinomial.png" // replace with your image
+                src="/images/testinomial.png"
                 alt="Client"
-                className="relative z-10 w-full object-cover"
+                className="relative z-10 w-full h-[420px] object-cover"
               />
-              <div className="absolute -bottom-6 -right-6 w-24 h-24 border border-[#c8a24d]" />
+
+              <div className="absolute -bottom-5 -right-5 w-20 h-20 border border-[#c8a24d]" />
             </div>
 
             {/* CONTENT */}
-            <div className="relative text-white max-w-xl">
+            <div className="relative text-white max-w-xl h-[420px] flex flex-col justify-between">
 
-              {/* QUOTE ICON */}
-              <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-6">
-                <span className="text-3xl text-[#c8a24d]">“</span>
+              {/* TOP CONTENT */}
+              <div>
+                {/* NAV ARROWS */}
+                <div className="absolute right-0  -translate-y-1/2 flex flex-col gap-4">
+                  <button className="w-10 h-10 border border-[#c8a24d] text-[#c8a24d]
+                             hover:bg-[#c8a24d] hover:text-black transition">
+                    ‹
+                  </button>
+                  <button className="w-10 h-10 border border-[#c8a24d] text-[#c8a24d]
+                             hover:bg-[#c8a24d] hover:text-black transition">
+                    ›
+                  </button>
+                </div>
+                {/* QUOTE ICON */}
+                <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-8">
+                  <span className="text-3xl text-[#c8a24d]">“</span>
+                </div>
+
+                {/* TESTIMONIAL TEXT */}
+                <p className="font-serif text-xl leading-relaxed text-white/90">
+                  The moment I wore my engagement ring, I felt the weight of a
+                  thousand love stories before mine. RASIKA doesn’t just create
+                  jewelry — they craft heirlooms that transcend time.
+                </p>
               </div>
 
-              {/* TESTIMONIAL TEXT */}
-              <p className="font-serif text-xl leading-relaxed text-white/90">
-                “The moment I wore my engagement ring, I felt the weight of a
-                thousand love stories before mine. RASIKA doesn’t just create
-                jewelry—they craft heirlooms that transcend time.”
-              </p>
-
               {/* CLIENT INFO */}
-              <div className="mt-8">
+              <div>
                 <p className="font-serif text-lg text-white">
                   Isabella Montgomery
                 </p>
-                <p className="text-sm text-[#c8a24d]">
+                <p className="text-sm text-[#c8a24d] tracking-wide">
                   London, United Kingdom
                 </p>
               </div>
 
-              {/* NAV ARROWS */}
-              <div className="flex gap-4 mt-10">
-                <button className="w-10 h-10 border border-[#c8a24d] text-[#c8a24d] hover:bg-[#c8a24d] hover:text-black transition">
-                  ‹
-                </button>
-                <button className="w-10 h-10 border border-[#c8a24d] text-[#c8a24d] hover:bg-[#c8a24d] hover:text-black transition">
-                  ›
-                </button>
-              </div>
+
 
             </div>
           </div>
         </div>
       </section>
-
 
       {/* ================= SPOTTED IN RASIKA ================= */}
       <section className="bg-[#efe5f0] py-28">

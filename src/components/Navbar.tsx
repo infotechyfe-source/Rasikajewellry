@@ -1,77 +1,91 @@
 "use client";
+
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, Search, X } from "lucide-react";
 import { SearchModal } from "@/components/SearchModel";
 import { products } from "@/data/products";
+import { useSearchParams } from "next/navigation";
 
-const uniqueCategories = Array.from(
-  new Set(products.map((p) => p.category))
-);
+const uniqueCategories = Array.from(new Set(products.map(p => p.category)));
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const params = useSearchParams();
+  const activeCategory = params.get("category");
 
   return (
     <>
-      {/* ================= FIXED HEADER ================= */}
+      {/* ================= HEADER ================= */}
       <header className="fixed top-0 w-full z-50">
 
-        {/* FREE DELIVERY BAR */}
-        <div className="bg-[#EEE2DA]/95 backdrop-blur py-1 px-6 flex justify-center
-                        text-[11px] tracking-wide text-[#5C2B06]">
-          Free Delivery on Order above 1999
+        {/* INFO BAR */}
+        <div className="bg-[#EEE2DA]/95 backdrop-blur
+                        text-center text-[11px]
+                        tracking-[0.25em] text-[#512403] py-1">
+          Complimentary Shipping on Orders Above ₹1,999
         </div>
 
         {/* MAIN NAV */}
-        <div className="bg-gradient-to-b from-black/90 to-black/70
-                        backdrop-blur-md border-b border-white/10">
-          <div className="max-w-7xl mx-auto px-6 py-3
-                          flex items-center justify-between gap-4">
+        <div className="bg-[#EEE2DA]/90 backdrop-blur-md
+                        shadow-[0_1px_6px_rgba(0,0,0,0.05)]">
+          <div className="max-w-8xl mx-auto px-16 py-5
+                          grid grid-cols-3 items-center">
 
-            {/* SEARCH */}
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="hidden md:flex items-center gap-3 px-5 py-2.5
-                         text-sm border border-white/20 rounded
-                         hover:border-[#c8a24d] transition w-80 text-white/90"
-            >
-              <Search size={16} className="text-white/60" />
-              <span className="tracking-wide text-white/70">
-                Search designs, collections…
-              </span>
-            </button>
-
-            {/* LOGO */}
-            <Link href="/" className="text-center select-none">
-              <h1 className="font-serif text-3xl tracking-widest text-white">
-                RASIKA
-              </h1>
-              <span className="block text-[10px] tracking-[0.45em] text-[#c8a24d]">
-                STYLE JEWELS
-              </span>
-            </Link>
-
-            {/* WHATSAPP CTA */}
+            {/* LEFT : SEARCH */}
             <div className="hidden md:flex">
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="flex items-center gap-3
+                           px-6 py-3 w-80
+                           text-[13px]
+                           border border-[#8B4513] rounded
+                           text-black/60
+                           hover:border-[#8B4513]
+                           hover:bg-white/40
+                           transition-all"
+              >
+                <Search size={16} />
+                <span className="tracking-wide">
+                  Search jewellery…
+                </span>
+              </button>
+            </div>
+
+            {/* CENTER : LOGO */}
+            <div className="flex justify-center">
+              <Link href="/" className="select-none">
+                <img
+                  src="/images/rasika-logo.png"
+                  alt="Rasika Jewels"
+                  className="h-14 w-auto object-contain
+                             transition-transform duration-300 hover:scale-105"
+                />
+              </Link>
+            </div>
+
+            {/* RIGHT : CTA */}
+            <div className="hidden md:flex justify-end">
               <a
                 href="https://wa.me/919120797254"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-7 py-2.5 rounded border border-[#c8a24d]
-                           text-xs tracking-widest text-[#c8a24d]
-                           hover:bg-[#c8a24d] hover:text-black
-                           transition-all duration-300"
+                className="px-8 py-3 rounded
+                           bg-[#8B4513]/90
+                           text-[11px] tracking-[0.3em]
+                           text-white
+                           hover:bg-[#8B4513]
+                           transition-all shadow-md"
               >
                 ORDER ON WHATSAPP
               </a>
             </div>
 
-            {/* MOBILE TOGGLE */}
+            {/* MOBILE MENU ICON */}
             <button
               onClick={() => setOpen(!open)}
-              className="md:hidden p-2 text-white"
+              className="md:hidden absolute right-6 text-[#512403]"
             >
               {open ? <X size={26} /> : <Menu size={26} />}
             </button>
@@ -79,76 +93,84 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* ================= CATEGORY MENU (GLASS EFFECT) ================= */}
-      <div className="mt-24 sticky top-24px z-40
-                      bg-black/60 backdrop-blur-md
-                      border-b transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-6 overflow-x-auto scrollbar-hide">
+      {/* ================= CATEGORY BAR ================= */}
+      <div
+        className="sticky z-40 mt-28 bg-[#FAF8F6]/95 backdrop-blur border-b border-black/10">
+        <div className="max-w-8xl mx-auto px-12">
           <ul
-            className="flex gap-12 py-3 text-[11px] tracking-widest uppercase
-                       whitespace-nowrap justify-start md:justify-center"
-          >
-            {uniqueCategories.map((cat) => (
-              <li key={cat} className="relative group shrink-0">
-                <Link
-                  href={`/shop?category=${encodeURIComponent(
-                    cat.toLowerCase()
-                  )}`}
-                  className="text-white/80 hover:text-[#c8a24d]
-                             transition font-semibold"
-                >
-                  {cat}
-                </Link>
-                <span
-                  className="absolute left-0 -bottom-1 h-px w-0
-                             bg-[#c8a24d] group-hover:w-full
-                             transition-all duration-300"
-                />
-              </li>
-            ))}
+            className="flex flex-nowrap justify-center items-center gap-6 py-5">
+            {uniqueCategories.map(cat => {
+              const isActive = activeCategory === cat.toLowerCase();
 
-            <li className="relative group shrink-0">
+              return (
+                <li key={cat}>
+                  <Link
+                    href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
+                    className={`px-4 py-2.5 rounded-full
+                text-[11px]
+                tracking-[0.22em]
+                uppercase
+                transition-all duration-300
+                ${isActive
+                        ? "bg-white text-black shadow-md scale-[1.04]"
+                        : "text-black/60 hover:text-black hover:bg-white/70"
+                      }
+              `}
+                  >
+                    {cat}
+                  </Link>
+                </li>
+              );
+            })}
+
+            {/* Highlighted Collection */}
+            <li>
               <Link
                 href="/shop"
-                className="text-white/80 hover:text-[#c8a24d]
-                           font-semibold"
+                className="
+            px-6 py-2.5 rounded-full
+            bg-[#8B4513]
+            text-white
+            text-[11px]
+            tracking-[0.22em]
+            uppercase
+            shadow-md
+            hover:bg-[#7a3b10]
+            transition"
               >
-                Wedding Collection
+                Explore More
               </Link>
-              <span
-                className="absolute left-0 -bottom-1 h-px w-0
-                           bg-[#c8a24d] group-hover:w-full
-                           transition-all duration-300"
-              />
             </li>
           </ul>
         </div>
       </div>
 
+
       {/* ================= MOBILE DRAWER ================= */}
       {open && (
-        <div className="md:hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-lg">
+        <div className="md:hidden fixed inset-0 z-50
+                        bg-[#2b1a12]/95 backdrop-blur-xl">
           <ul className="flex flex-col px-6 py-8 gap-6
                          text-sm tracking-wide text-white">
-            {uniqueCategories.map((cat) => (
+            {uniqueCategories.map(cat => (
               <li key={cat}>
                 <Link
-                  href={`/shop?category=${encodeURIComponent(
-                    cat.toLowerCase()
-                  )}`}
+                  href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
                   onClick={() => setOpen(false)}
-                  className="block py-2 border-b border-white/10"
+                  className="block py-3 border-b border-white/10"
                 >
                   {cat}
                 </Link>
               </li>
             ))}
 
-            <li className="mt-6">
+            <li className="mt-10">
               <a
                 href="https://wa.me/919120797254"
-                className="block text-center rounded bg-[#c8a24d]
-                           text-black py-3 text-xs tracking-widest"
+                className="block text-center rounded-full
+                           bg-[#c8a24d]
+                           text-black
+                           py-3 text-xs tracking-[0.3em]"
               >
                 CHAT & ORDER ON WHATSAPP
               </a>
@@ -161,3 +183,4 @@ export function Navbar() {
     </>
   );
 }
+
