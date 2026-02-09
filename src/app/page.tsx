@@ -54,17 +54,14 @@ export default function Home() {
             <span className="text-[#e6c36a] block mb-2">
               ELEGANCE REDEFINED
             </span>
-
+            <p className="font-playfair text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-13 leading-relaxed">
+              Discover the timeless beauty of handcrafted jewelry made to celebrate your moments.
+            </p>
           </h1>
-
-          <p className="font-playfair text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-12 leading-relaxed">
-            Discover the timeless beauty of handcrafted jewelry made to celebrate your moments.
-          </p>
-
           <a
             href="/shop"
-            className="inline-block px-10 py-4 border border-[#8B4513] text-white tracking-widest
-                 hover:bg-[#8B4513] hover:text-[#e6c36a] transition duration-300"
+            className="inline-block px-10 py-4 font-semibold bg-[#8B4513] text-white tracking-widest
+                 hover:bg-[#EEE2DA]/95 hover:text-[#8B4513] transition duration-300"
           >
             SHOP NOW
           </a>
@@ -281,7 +278,7 @@ export default function Home() {
           <div className="mt-14 flex justify-center">
             <Link
               href="/shop"
-              className="border border-[#8b4a16] text-white px-10 py-3 text-xs tracking-widest uppercase hover:bg-[#8b4a16] hover:text-[#e6c36a] transition"
+              className="border bg-[#8b4a16] text-white px-10 py-3 text-xs tracking-widest uppercase hover:bg-[#8b4a16] hover:text-[#e6c36a] transition"
             >
               View All
             </Link>

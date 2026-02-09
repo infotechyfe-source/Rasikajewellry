@@ -12,18 +12,6 @@ type Product = {
   active: boolean;
 };
 
-type Order = {
-  id: number;
-  product: string;
-  amount: number;
-  phone: string;
-  date: string;
-};
-
-type ProductCardProps = Product & {
-  onOrderPlaced?: (newOrder: Order) => void;
-};
-
 const WHATSAPP_NUMBER = "919120797254";
 
 export function ProductCard({
@@ -33,8 +21,7 @@ export function ProductCard({
   image,
   category,
   active,
-  onOrderPlaced,
-}: ProductCardProps) {
+}: Product) {
   const [quantity, setQuantity] = useState(1);
   const [open, setOpen] = useState(false);
 
@@ -43,29 +30,13 @@ export function ProductCard({
       ? parseInt(price) * quantity
       : price * quantity;
 
-  /* ================= ORDER SUBMIT ================= */
-  const handleOrderSubmit = async (form: {
+  /* ================= WHATSAPP ORDER ================= */
+  const handleOrderSubmit = (form: {
     customerName: string;
     phone: string;
     address: string;
   }) => {
-    try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          product: name,
-          amount: totalPrice,
-          phone: form.phone,
-        }),
-      });
-
-      if (!res.ok) throw new Error("Order failed");
-
-      const savedOrder = await res.json();
-      onOrderPlaced?.(savedOrder);
-
-      const message = `
+    const message = `
 New Jewellery Order ✨
 
 Product: ${name}
@@ -75,18 +46,14 @@ Total Price: ₹${totalPrice}
 Customer Name: ${form.customerName}
 Phone: ${form.phone}
 Address: ${form.address}
-      `;
+    `;
 
-      window.open(
-        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
-        "_blank"
-      );
+    window.open(
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
 
-      setOpen(false);
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Please try again.");
-    }
+    setOpen(false);
   };
 
   return (
@@ -131,7 +98,7 @@ Address: ${form.address}
           <button
             onClick={() => setOpen(true)}
             disabled={!active}
-            className={`mt-4 w-full py-3 text-[11px] tracking-[0.35em] uppercase border transition cursor-pointer
+            className={`mt-4 w-full py-3 text-[11px] tracking-[0.35em] uppercase border transition
               ${active
                 ? "border-[#8B4513] bg-[#8B4513] text-white hover:text-[#e6c36a]"
                 : "border-gray-300 text-gray-400 cursor-not-allowed"
@@ -143,7 +110,7 @@ Address: ${form.address}
 
           {/* QUANTITY */}
           {active && (
-            <div className="mt-4 flex items-center justify-center gap-6 text-sm border py-2 cursor-pointer">
+            <div className="mt-4 flex items-center justify-center gap-6 text-sm border py-2">
               <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>
                 −
               </button>
@@ -169,7 +136,7 @@ Address: ${form.address}
   );
 }
 
-/* ================= MODAL COMPONENT ================= */
+/* ================= MODAL ================= */
 
 function OrderModal({
   productName,

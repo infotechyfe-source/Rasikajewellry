@@ -11,20 +11,11 @@ export default function ShopPage() {
   const category = searchParams?.get("category")?.toLowerCase() || "";
 
   /* -------------------- STATE -------------------- */
-  const [orders, setOrders] = useState<any[]>([]);
   const [shopProducts, setShopProducts] = useState(defaultProducts);
 
   const [maxPrice, setMaxPrice] = useState(200000);
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
-
-  /* -------------------- LOAD ORDERS -------------------- */
-  useEffect(() => {
-    fetch("/api/orders")
-      .then((res) => res.json())
-      .then(setOrders)
-      .catch(console.error);
-  }, []);
 
   /* -------------------- LOAD PRODUCTS -------------------- */
   useEffect(() => {
@@ -37,10 +28,6 @@ export default function ShopPage() {
       }
     }
   }, []);
-
-  const handleOrderPlaced = (newOrder: any) => {
-    setOrders((prev) => [...prev, newOrder]);
-  };
 
   /* -------------------- FILTER HELPERS -------------------- */
   const toggleValue = (
@@ -147,9 +134,7 @@ export default function ShopPage() {
                   <input
                     type="checkbox"
                     checked={selectedMaterials.includes(m)}
-                    onChange={() =>
-                      toggleValue(m, setSelectedMaterials)
-                    }
+                    onChange={() => toggleValue(m, setSelectedMaterials)}
                   />
                   {m}
                 </label>
@@ -166,9 +151,7 @@ export default function ShopPage() {
                   <input
                     type="checkbox"
                     checked={selectedStyles.includes(s)}
-                    onChange={() =>
-                      toggleValue(s, setSelectedStyles)
-                    }
+                    onChange={() => toggleValue(s, setSelectedStyles)}
                   />
                   {s}
                 </label>
@@ -189,11 +172,7 @@ export default function ShopPage() {
             {filteredProducts.length > 0 ? (
               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-16">
                 {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    {...product}
-                    onOrderPlaced={handleOrderPlaced}
-                  />
+                  <ProductCard key={product.id} {...product} />
                 ))}
               </div>
             ) : (
