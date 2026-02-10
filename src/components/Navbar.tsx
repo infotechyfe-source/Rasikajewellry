@@ -43,7 +43,7 @@ export function Navbar() {
                            text-black/60
                            hover:border-[#8B4513]
                            hover:bg-white/40
-                           transition-all"
+                           transition-all cursor-pointer"
               >
                 <Search size={16} />
                 <span className="tracking-wide">
@@ -104,19 +104,10 @@ export function Navbar() {
                   <Link
                     href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
                     className={`
-                inline-flex items-center justify-center
-                px-3 py-2
-                rounded-full
-                text-[11px]
-                tracking-[0.22em]
-                uppercase
-                transition-all duration-300
-                ${isActive
+                inline-flex items-center justify-center px-3 py-2 rounded-full text-[11px] tracking-[0.22em] uppercase transition-all duration-300 ${isActive
                         ? "bg-[#EEE2DA]/90 text-[#512403] shadow-md scale-[1.04]"
                         : "text-black/60 hover:text-[#512403] hover:bg-white/70"
-                      }
-              `}
-                  >
+                      }`}>
                     {cat}
                   </Link>
                 </li>
@@ -198,7 +189,6 @@ export function Navbar() {
           </ul>
         </div>
       )}
-
 
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>

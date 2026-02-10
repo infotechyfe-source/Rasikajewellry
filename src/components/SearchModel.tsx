@@ -46,7 +46,7 @@ export function SearchModal({ open, onClose }: Props) {
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 outline-none text-sm"
           />
-          <button onClick={onClose}>
+          <button onClick={onClose} className="cursor-pointer">
             <X size={20} />
           </button>
         </div>
