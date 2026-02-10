@@ -108,7 +108,7 @@ export default function Home() {
 
       {/* ================= FEATURES STRIP ================= */}
       <section className="bg-[#EEE2DA] border-t border-[#e6c36a]/50">
-        <div className="max-w-7xl mx-auto px-8 py-20">
+        <div className="max-w-7xl mx-auto px-8 py-16">
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-14">
 
@@ -163,7 +163,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
 
       <section className="relative bg-[#1b0f08] py-20 md:py-28">
         <div className="max-w-7xl mx-auto ">
@@ -228,7 +227,7 @@ export default function Home() {
         id="categories"
         className="bg-[#EEE2DA]/90 py-20"
       >
-        <div className="max-w-auto mx-auto px-16">
+        <div className="max-w-auto mx-auto px-10">
 
           {/* HEADING */}
           <div className="text-center mb-16">
@@ -241,7 +240,7 @@ export default function Home() {
           </div>
 
           {/* CATEGORY GRID */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
             {categories.map((cat) => (
               <Link
                 key={cat.title}

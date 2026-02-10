@@ -19,28 +19,27 @@ export function ProductCard({
   name,
   price,
   image,
-  category,
   active,
 }: Product) {
-  const [quantity, setQuantity] = useState(1);
   const [open, setOpen] = useState(false);
 
-  const totalPrice =
-    typeof price === "string"
-      ? parseInt(price) * quantity
-      : price * quantity;
+  const basePrice =
+    typeof price === "string" ? parseInt(price) : price;
 
   /* ================= WHATSAPP ORDER ================= */
   const handleOrderSubmit = (form: {
     customerName: string;
     phone: string;
     address: string;
+    quantity: number;
   }) => {
+    const totalPrice = basePrice * form.quantity;
+
     const message = `
 New Jewellery Order ✨
 
 Product: ${name}
-Quantity: ${quantity}
+Quantity: ${form.quantity}
 Total Price: ₹${totalPrice}
 
 Customer Name: ${form.customerName}
@@ -61,14 +60,14 @@ Address: ${form.address}
       {/* ================= PRODUCT CARD ================= */}
       <div
         id={`product-${id}`}
-        className={`group transition-all duration-300
-          ${!active ? "opacity-70" : "hover:-translate-y-1"}
+        className={`bg-white rounded-lg overflow-hidden transition
+          ${active ? "hover:shadow-lg" : "opacity-70"}
         `}
       >
         {/* IMAGE */}
-        <div className="relative h-[420px] bg-[#efece6] overflow-hidden rounded-sm shadow-sm">
+        <div className="relative aspect-[3/4] bg-[#efece6]">
           {!active && (
-            <div className="absolute top-4 left-4 z-10 bg-black text-white text-[10px] px-3 py-1 tracking-widest">
+            <div className="absolute top-3 left-3 z-10 bg-black text-white text-[10px] px-3 py-1 tracking-widest">
               OUT OF STOCK
             </div>
           )}
@@ -77,49 +76,40 @@ Address: ${form.address}
             src={image}
             alt={name}
             fill
-            className={`object-cover transition-transform duration-700
-              ${active ? "group-hover:scale-110" : "grayscale"}
+            className={`object-cover transition-transform duration-500
+              ${active ? "hover:scale-105" : "grayscale"}
             `}
-            sizes="(max-width:768px) 100vw, 33vw"
+            sizes="(max-width:768px) 50vw, 25vw"
           />
         </div>
 
         {/* INFO */}
-        <div className="mt-5 text-center px-2">
-          <h3 className="font-serif text-[15px] tracking-wide">
-            {name}
-          </h3>
+        <div className="p-4 space-y-2">
+          {/* NAME + PRICE */}
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="font-serif text-sm tracking-wide truncate">
+              {name}
+            </h3>
 
-          <p className="mt-1 text-sm text-gray-700">
-            ₹ {totalPrice.toLocaleString()}
-          </p>
+            <p className="text-sm font-medium text-gray-800 whitespace-nowrap">
+              ₹ {basePrice.toLocaleString()}
+            </p>
+          </div>
 
-          {/* ORDER NOW */}
+          {/* ORDER BUTTON */}
           <button
-            onClick={() => setOpen(true)}
+            onClick={() => active && setOpen(true)}
             disabled={!active}
-            className={`mt-4 w-full py-3 text-[11px] tracking-[0.35em] uppercase border transition
+            className={`w-full py-2 text-[11px]
+              tracking-[0.3em] cursor-pointer uppercase transition-all duration-300
               ${active
-                ? "border-[#8B4513] bg-[#8B4513] text-white hover:text-[#e6c36a]"
-                : "border-gray-300 text-gray-400 cursor-not-allowed"
+                ? "bg-[#8B4513] text-white hover:bg-[white] hover:text-[#8B4513] border border-[#8B4513]"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }
             `}
           >
             Order Now
           </button>
-
-          {/* QUANTITY */}
-          {active && (
-            <div className="mt-4 flex items-center justify-center gap-6 text-sm border py-2">
-              <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>
-                −
-              </button>
-              <span>{quantity}</span>
-              <button onClick={() => setQuantity(q => q + 1)}>
-                +
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
@@ -127,7 +117,7 @@ Address: ${form.address}
       {open && (
         <OrderModal
           productName={name}
-          totalPrice={totalPrice}
+          basePrice={basePrice}
           onClose={() => setOpen(false)}
           onSubmit={handleOrderSubmit}
         />
@@ -140,28 +130,32 @@ Address: ${form.address}
 
 function OrderModal({
   productName,
-  totalPrice,
+  basePrice,
   onClose,
   onSubmit,
 }: {
   productName: string;
-  totalPrice: number;
+  basePrice: number;
   onClose: () => void;
   onSubmit: (data: {
     customerName: string;
     phone: string;
     address: string;
+    quantity: number;
   }) => void;
 }) {
   const [form, setForm] = useState({
     customerName: "",
     phone: "",
     address: "",
+    quantity: 1,
   });
+
+  const totalPrice = basePrice * form.quantity;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
-      <div className="bg-white w-full max-w-md p-8 relative">
+      <div className="bg-white w-full max-w-md p-8 relative rounded-lg">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-xl"
@@ -169,7 +163,7 @@ function OrderModal({
           ×
         </button>
 
-        <h3 className="font-serif text-2xl mb-2 text-center">
+        <h3 className="font-serif text-2xl mb-1 text-center">
           Complete Your Order
         </h3>
 
@@ -177,6 +171,40 @@ function OrderModal({
           {productName} · ₹{totalPrice.toLocaleString()}
         </p>
 
+        {/* QUANTITY */}
+        <div className="flex justify-center mb-6">
+          <div className="flex items-center rounded-full border border-black/20 overflow-hidden">
+            <button
+              onClick={() =>
+                setForm(f => ({
+                  ...f,
+                  quantity: Math.max(1, f.quantity - 1),
+                }))
+              }
+              className="w-10 h-10 flex items-center justify-center text-lg hover:bg-black/5"
+            >
+              −
+            </button>
+
+            <span className="w-10 text-center font-medium">
+              {form.quantity}
+            </span>
+
+            <button
+              onClick={() =>
+                setForm(f => ({
+                  ...f,
+                  quantity: f.quantity + 1,
+                }))
+              }
+              className="w-10 h-10 flex items-center justify-center text-lg hover:bg-black/5"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        {/* FORM */}
         <div className="space-y-4">
           <input
             placeholder="Full Name"

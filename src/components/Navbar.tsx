@@ -22,15 +22,15 @@ export function Navbar() {
 
         {/* INFO BAR */}
         <div className="bg-[#EEE2DA]/95 backdrop-blur
-                        text-center text-[11px]
-                        tracking-[0.25em] text-[#512403] py-1">
+                        text-center text-[10px]
+                        tracking-[0.22em] text-[#512403] py-0.5">
           Complimentary Shipping on Orders Above ₹1,999
         </div>
 
         {/* MAIN NAV */}
         <div className="bg-[#EEE2DA]/90 backdrop-blur-md
                         shadow-[0_1px_6px_rgba(0,0,0,0.05)]">
-          <div className="max-w-8xl mx-auto px-16 py-5
+          <div className="max-w-8xl mx-auto px-12 py-3
                           grid grid-cols-3 items-center">
 
             {/* LEFT : SEARCH */}
@@ -38,8 +38,7 @@ export function Navbar() {
               <button
                 onClick={() => setSearchOpen(true)}
                 className="flex items-center gap-3
-                           px-6 py-3 w-80
-                           text-[13px]
+                           px-4 py-2 w-72 text-[12px]
                            border border-[#8B4513] rounded
                            text-black/60
                            hover:border-[#8B4513]
@@ -59,8 +58,7 @@ export function Navbar() {
                 <img
                   src="/images/rasika-logo.png"
                   alt="Rasika Jewels"
-                  className="h-14 w-auto object-contain
-                             transition-transform duration-300 hover:scale-105"
+                  className="h-10 md:h-11 w-auto object-contain transition-transform duration-300 hover:scale-105"
                 />
               </Link>
             </div>
@@ -71,7 +69,7 @@ export function Navbar() {
                 href="https://wa.me/919120797254"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-3 rounded
+                className="px-6 py-2 rounded
                            bg-[#8B4513]/90
                            text-[11px] tracking-[0.3em]
                            text-white
@@ -94,26 +92,28 @@ export function Navbar() {
       </header>
 
       {/* ================= CATEGORY BAR ================= */}
-      <div
-        className="sticky z-40 mt-28 bg-[#FAF8F6]/95 backdrop-blur border-b border-black/10">
-        <div className="max-w-8xl mx-auto px-12">
+      <div className="sticky top-22 z-40  backdrop-blur border-b border-black/10">
+        <div className="max-w-8xl mx-auto px-3">
           <ul
-            className="flex flex-nowrap justify-center items-center gap-6 py-5">
-            {uniqueCategories.map(cat => {
+            className="flex items-center gap-4 py-1 overflow-x-auto whitespace-nowrap scrollbar-hide">
+            {uniqueCategories.map((cat) => {
               const isActive = activeCategory === cat.toLowerCase();
 
               return (
-                <li key={cat}>
+                <li key={cat} className="flex-shrink-0">
                   <Link
                     href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
-                    className={`px-4 py-2.5 rounded-full
-                text-[11px] 
+                    className={`
+                inline-flex items-center justify-center
+                px-3 py-2
+                rounded-full
+                text-[11px]
                 tracking-[0.22em]
                 uppercase
                 transition-all duration-300
                 ${isActive
                         ? "bg-[#EEE2DA]/90 text-[#512403] shadow-md scale-[1.04]"
-                        : "text-black/60 hover:text-black hover:bg-white/70"
+                        : "text-black/60 hover:text-[#512403] hover:bg-white/70"
                       }
               `}
                   >
@@ -124,21 +124,11 @@ export function Navbar() {
             })}
 
             {/* Highlighted Collection */}
-            <li>
+            <li className="flex-shrink-0">
               <Link
                 href="/shop"
-                className="
-            px-6 py-2.5 rounded
-            bg-[#EEE2DA]/90
-            text-[#512403]
-            text-[11px]
-            tracking-[0.22em]
-            uppercase
-            shadow-md
-            hover:bg-[#7a3b10]
-            hover:text-white
-            transition"
-              >
+                className="inline-flex items-center justify-center px-6 py-2.5 rounded bg-[#EEE2DA]/90 text-[#512403] text-[11px] tracking-[0.22em] uppercase shadow-md hover:bg-[#7a3b10]
+           hover:text-white transition">
                 Explore More
               </Link>
             </li>
@@ -146,32 +136,61 @@ export function Navbar() {
         </div>
       </div>
 
-
       {/* ================= MOBILE DRAWER ================= */}
       {open && (
         <div className="md:hidden fixed inset-0 z-50
-                        bg-[#2b1a12]/95 backdrop-blur-xl">
-          <ul className="flex flex-col px-6 py-8 gap-6
-                         text-sm tracking-wide text-white">
+                  bg-[#2b1a12]/95 backdrop-blur-xl">
+
+          {/* TOP BAR */}
+          <div className="sticky top-0 z-10
+                    flex items-center justify-between
+                    px-6 py-4
+                    border-b border-white/10">
+            <span className="text-[12px] tracking-[0.25em] text-white/80 uppercase">
+              Menu
+            </span>
+
+            <button
+              onClick={() => setOpen(false)}
+              className="p-2 rounded-full
+                   hover:bg-white/10
+                   transition"
+              aria-label="Close menu"
+            >
+              <X size={22} className="text-white" />
+            </button>
+          </div>
+
+          {/* MENU ITEMS */}
+          <ul className="flex flex-col px-6 py-6 gap-4
+                   text-sm tracking-wide text-white">
             {uniqueCategories.map(cat => (
               <li key={cat}>
                 <Link
                   href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
                   onClick={() => setOpen(false)}
-                  className="block py-3 border-b border-white/10"
+                  className="block py-3
+                       border-b border-white/10
+                       uppercase tracking-widest text-[12px]
+                       hover:text-[#c8a24d]
+                       transition"
                 >
                   {cat}
                 </Link>
               </li>
             ))}
 
-            <li className="mt-10">
+            {/* CTA */}
+            <li className="mt-8">
               <a
                 href="https://wa.me/919120797254"
                 className="block text-center rounded-full
-                           bg-[#c8a24d]
-                           text-black
-                           py-3 text-xs tracking-[0.3em]"
+                     bg-[#c8a24d]
+                     text-black
+                     py-3
+                     text-[11px]
+                     tracking-[0.3em]
+                     shadow-lg"
               >
                 CHAT & ORDER ON WHATSAPP
               </a>
@@ -179,6 +198,7 @@ export function Navbar() {
           </ul>
         </div>
       )}
+
 
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
