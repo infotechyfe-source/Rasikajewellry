@@ -1,8 +1,7 @@
 'use client';
 
 import {
-  Geist,
-  Geist_Mono,
+  Inter,
   Playfair_Display,
   Merriweather,
 } from "next/font/google";
@@ -11,15 +10,9 @@ import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 
 /* BODY FONT */
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
-});
-
-/* MONO FONT */
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 /* LUXURY DISPLAY FONT */
@@ -49,8 +42,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`
-    ${geistSans.variable}
-    ${geistMono.variable}
+    ${inter.variable}
     ${playfair.variable}
     ${merriweather.variable}
   `}
