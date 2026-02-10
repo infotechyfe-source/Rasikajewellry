@@ -42,8 +42,8 @@ export default function Footer() {
           <ul className="space-y-3 text-sm">
             <li><Link href="/about" className="hover:text-white">Our Story</Link></li>
             <li><Link href="/craftsmanship" className="hover:text-white">Craftsmanship</Link></li>
-            <li><Link href="/care-guide" className="hover:text-white">Care Guide</Link></li>
-            <li><Link href="/appointments" className="hover:text-white">Appointments</Link></li>
+            <li><Link href="/about" className="hover:text-white">Care Guide</Link></li>
+            <li><Link href="/about" className="hover:text-white">Appointments</Link></li>
             <li>
               <a
                 href={`https://wa.me/${WHATSAPP_NUMBER}`}
@@ -81,7 +81,7 @@ export default function Footer() {
 
             <p className="flex items-center gap-3">
               <Clock size={16} className="text-[#c8a24d]" />
-              By Appointment<br />Monday – Saturday
+              <br />Monday – Saturday
             </p>
           </div>
         </div>

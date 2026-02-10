@@ -84,7 +84,7 @@ Address: ${form.address}
         </div>
 
         {/* INFO */}
-        <div className="p-4 space-y-2">
+        <div className="p-2 space-y-2">
           {/* NAME + PRICE */}
           <div className="flex items-center justify-between gap-2">
             <h3 className="font-serif text-sm tracking-wide truncate">
@@ -103,7 +103,7 @@ Address: ${form.address}
             className={`w-full py-2 text-[11px]
               tracking-[0.3em] cursor-pointer uppercase transition-all duration-300
               ${active
-                ? "bg-[#8B4513] text-white hover:bg-[white] hover:text-[#8B4513] border border-[#8B4513]"
+                ? "text-[#8B4513] bg-white hover:bg-[#8B4513] hover:text-white border border-[#8B4513]"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }
             `}

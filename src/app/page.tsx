@@ -34,14 +34,13 @@ export default function Home() {
       <section className="relative h-[100vh] max-h-[900px] overflow-hidden flex items-center justify-center">
 
         <video
-          className="absolute inset-0 w-full h-full object-cover object-top"
+          className="absolute inset-0 w-full h-full object-cover object-top mt-20"
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
         >
-
           <source src="/videos/hero-jewellery.mp4" type="video/mp4" />
         </video>
 
@@ -288,7 +287,7 @@ export default function Home() {
 
       {/* ================= TESTIMONIALS ================= */}
       <section className="relative py-28 bg-gradient-to-r from-[#1b0f08] via-[#2a150b] to-[#1b0f08] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-10">
 
           {/* HEADER */}
           <div className="mb-20">
@@ -363,7 +362,7 @@ export default function Home() {
 
       {/* ================= SPOTTED IN RASIKA ================= */}
       <section className="bg-[#efe5f0] py-28">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-10">
 
           {/* HEADING */}
           <div className="text-center mb-20">
@@ -411,7 +410,7 @@ export default function Home() {
       </section>
 
       {/* ================= JOIN OUR INNER CIRCLE ================= */}
-      <section className="bg-black py-28">
+      <section className="bg-black py-16">
         <div className="max-w-7xl mx-auto px-6 text-center">
 
           {/* HEADING */}

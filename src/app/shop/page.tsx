@@ -119,22 +119,21 @@ export default function ShopPage() {
       {/* ================= SHOP ================= */}
       <section className="max-w-[1600px] mx-auto px-4 py-16">
 
-        <h1 className="text-black text-3xl md:text-5xl font-serif tracking-wide text-center">
+        <h1 className="text-[#8B4513] text-3xl md:text-5xl font-serif tracking-wide text-center">
           {selectedCategory
             ? selectedCategory.toUpperCase()
             : "OUR COLLECTION"}
         </h1>
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-10">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-[#8B4513]">
             Showing {filteredProducts.length} designs
           </p>
-
           <div className="flex gap-4 items-center">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="border px-4 py-2 text-sm bg-white"
+              className="border border-[#8B4513] px-4 py-2 text-sm bg-[#f2f1e6]"
             >
               <option value="recommended">Recommended</option>
               <option value="price-low">Price: Low to High</option>
@@ -150,7 +149,7 @@ export default function ShopPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-2">
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4">
           {/* ================= FILTERS ================= */}
           <aside
             className={`bg-white p-6 text-sm lg:sticky lg:top-28
@@ -251,7 +250,7 @@ export default function ShopPage() {
           {/* ================= PRODUCTS ================= */}
           <div>
             {filteredProducts.length ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-1">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} {...product} />
                 ))}
