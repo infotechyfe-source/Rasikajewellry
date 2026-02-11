@@ -27,88 +27,88 @@ export function Navbar() {
           Complimentary Shipping on Orders Above ₹1,999
         </div>
 
-       {/* MAIN NAV */}
-<div className="bg-[#EEE2DA]/90 backdrop-blur-md
+        {/* MAIN NAV */}
+        <div className="bg-[#EEE2DA]/90 backdrop-blur-md
                 shadow-[0_1px_6px_rgba(0,0,0,0.05)]">
-  <div className="max-w-8xl mx-auto px-6 md:px-12 py-3">
+          <div className="max-w-8xl mx-auto px-6 md:px-12 py-3">
 
-    {/* MOBILE + DESKTOP GRID */}
-    <div className="grid grid-cols-3 items-center">
+            {/* MOBILE + DESKTOP GRID */}
+            <div className="grid grid-cols-3 items-center">
 
-      {/* LEFT */}
-      <div className="flex items-center">
-        
-        {/* Desktop Search */}
-        <div className="hidden md:flex">
-          <button
-            onClick={() => setSearchOpen(true)}
-            className="flex items-center gap-3
+              {/* LEFT */}
+              <div className="flex items-center">
+
+                {/* Desktop Search */}
+                <div className="hidden md:flex">
+                  <button
+                    onClick={() => setSearchOpen(true)}
+                    className="flex items-center gap-3
                        px-4 py-2 w-72 text-[12px]
                        border border-[#8B4513] rounded
                        text-black/60
                        hover:border-[#8B4513]
                        hover:bg-white/40
                        transition-all"
-          >
-            <Search size={16} />
-            <span className="tracking-wide">
-              Search jewellery…
-            </span>
-          </button>
-        </div>
+                  >
+                    <Search size={16} />
+                    <span className="tracking-wide">
+                      Search jewellery…
+                    </span>
+                  </button>
+                </div>
 
-        {/* Mobile Search Icon */}
-        <button
-          onClick={() => setSearchOpen(true)}
-          className="md:hidden text-[#512403]"
-        >
-          <Search size={22} />
-        </button>
-      </div>
+                {/* Mobile Search Icon */}
+                <button
+                  onClick={() => setSearchOpen(true)}
+                  className="md:hidden text-[#512403]"
+                >
+                  <Search size={22} />
+                </button>
+              </div>
 
-      {/* CENTER LOGO */}
-      <div className="flex justify-center">
-        <Link href="/" className="select-none">
-          <img
-            src="/images/rasika-logo.png"
-            alt="Rasika Jewels"
-            className="h-9 md:h-11 w-auto object-contain transition-transform duration-300 hover:scale-105"
-          />
-        </Link>
-      </div>
+              {/* CENTER LOGO */}
+              <div className="flex justify-center">
+                <Link href="/" className="select-none">
+                  <img
+                    src="/images/rasika-logo.png"
+                    alt="Rasika Jewels"
+                    className="h-9 md:h-11 w-auto object-contain transition-transform duration-300 hover:scale-105"
+                  />
+                </Link>
+              </div>
 
-      {/* RIGHT */}
-      <div className="flex justify-end items-center gap-4">
+              {/* RIGHT */}
+              <div className="flex justify-end items-center gap-4">
 
-        {/* Desktop CTA */}
-        <div className="hidden md:flex">
-          <a
-            href="https://wa.me/919120797254"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-2 rounded
+                {/* Desktop CTA */}
+                <div className="hidden md:flex">
+                  <a
+                    href="https://wa.me/919120797254"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-2 rounded
                        bg-[#8B4513]/90
                        text-[11px] tracking-[0.3em]
                        text-white
                        hover:bg-[#8B4513]
                        transition-all shadow-md"
-          >
-            ORDER ON WHATSAPP
-          </a>
+                  >
+                    ORDER ON WHATSAPP
+                  </a>
+                </div>
+
+                {/* Mobile Menu */}
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="md:hidden text-[#512403]"
+                >
+                  {open ? <X size={26} /> : <Menu size={26} />}
+                </button>
+
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* Mobile Menu */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden text-[#512403]"
-        >
-          {open ? <X size={26} /> : <Menu size={26} />}
-        </button>
-
-      </div>
-    </div>
-  </div>
-</div>
 
       </header>
 
