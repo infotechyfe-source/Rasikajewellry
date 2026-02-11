@@ -91,8 +91,7 @@ export function Navbar() {
                        text-[11px] tracking-[0.3em]
                        text-white
                        hover:bg-[#8B4513]
-                       transition-all shadow-md"
-                  >
+                       transition-all shadow-md">
                     ORDER ON WHATSAPP
                   </a>
                 </div>

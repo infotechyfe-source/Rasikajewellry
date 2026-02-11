@@ -63,29 +63,29 @@ export default function Home() {
 
 
   return (
-  <main className="bg-[#f8f7e2] text-gray-800 w-full overflow-x-hidden">
+    <main className="bg-[#f8f7e2] text-gray-800 w-full overflow-x-hidden">
 
       {/* ================= HERO ================= */}
       <section className="relative min-h-screen overflow-hidden flex items-center justify-center">
 
-  <div
-    className={`absolute inset-0 flex ${isTransitioning ? "transition-transform duration-1000 ease-in-out" : ""}`}
-    style={{ transform: `translateX(-${current * 100}%)` }}
-  >
-    {extendedVideos.map((video, index) => (
-      <div key={index} className="w-full h-full flex-shrink-0">
-        <video
-          className="w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
+        <div
+          className={`absolute inset-0 flex ${isTransitioning ? "transition-transform duration-1000 ease-in-out" : ""}`}
+          style={{ transform: `translateX(-${current * 100}%)` }}
         >
-          <source src={video} type="video/mp4" />
-        </video>
-      </div>
-    ))}
-  </div>
+          {extendedVideos.map((video, index) => (
+            <div key={index} className="w-full h-full flex-shrink-0">
+              <video
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
+                <source src={video} type="video/mp4" />
+              </video>
+            </div>
+          ))}
+        </div>
 
 
         {/* 🖤 DARK GRADIENT OVERLAY */}
@@ -212,7 +212,7 @@ export default function Home() {
       </section>
 
       {/* ================= SIGNATURE COLLECTION ================= */}
-      {/* Added overflow-hidden to clip the absolute frames that cause white space */}
+
       <section className="relative bg-[#1b0f08] py-16 md:py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
@@ -340,37 +340,48 @@ export default function Home() {
 
           {/* HEADER */}
           <div className="mb-12 md:mb-20 text-center md:text-left">
+
+            <h2 className="font-serif text-3xl md:text-5xl text-[#c8a24d]">
+              What They Say
+            </h2>
             <span className="text-xs tracking-widest uppercase text-[#c8a24d]">
               Client Stories
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl mt-3 text-[#c8a24d]">
-              What They Say
-            </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 
+                gap-12 md:gap-16 lg:gap-32 
+                items-center">
 
             {/* IMAGE */}
-            <div className="relative max-w-sm mx-auto lg:mx-0 w-full">
-              <div className="absolute -top-4 -left-4 md:-top-5 md:-left-5 w-16 h-16 md:w-20 md:h-20 border border-[#c8a24d]" />
+            <div className="relative max-w-sm md:max-w-md mx-auto lg:mx-0 w-full">
+              <div className="absolute -top-5 -left-5 w-20 h-20 border border-[#c8a24d]" />
 
               <img
                 src="/images/testinomial.png"
                 alt="Client"
-                className="relative z-10 w-full h-auto md:h-[420px] object-cover aspect-[3/4] md:aspect-auto"
+                className="relative z-10 w-full 
+               aspect-[3/4] 
+               object-cover"
               />
 
-              <div className="absolute -bottom-4 -right-4 md:-bottom-5 md:-right-5 w-16 h-16 md:w-20 md:h-20 border border-[#c8a24d]" />
+              <div className="absolute -bottom-5 -right-5 w-20 h-20 border border-[#c8a24d]" />
             </div>
 
+
             {/* CONTENT */}
-            {/* Removed fixed height for mobile, added min-h for desktop */}
-            <div className="relative text-white max-w-xl h-auto md:h-[420px] flex flex-col justify-between pt-4 md:pt-0">
+            <div className="relative text-white 
+                max-w-xl mx-auto lg:mx-0 
+                flex flex-col 
+                gap-8 md:gap-10">
+
 
               {/* TOP CONTENT */}
               <div>
-                {/* NAV ARROWS - Repositioned for mobile */}
-                <div className="absolute top-0 right-0 md:top-1/2 md:-translate-y-1/2 flex flex-row md:flex-col gap-4">
+
+                {/* NAV ARROWS */}
+                <div className="flex gap-4 justify-end lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2">
+
                   <button className="w-8 h-8 md:w-10 md:h-10 border border-[#c8a24d] text-[#c8a24d]
                              hover:bg-[#c8a24d] hover:text-black transition flex items-center justify-center">
                     ‹
@@ -380,7 +391,7 @@ export default function Home() {
                     ›
                   </button>
                 </div>
-                
+
                 {/* QUOTE ICON */}
                 <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/10 flex items-center justify-center mb-6 md:mb-8">
                   <span className="text-xl md:text-3xl text-[#c8a24d]">“</span>
@@ -423,37 +434,67 @@ export default function Home() {
             </p>
           </div>
 
-          {/* IMAGE GRID - Adjusted for mobile grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8">
+          {/* IMAGE GRID */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
 
-            {/* IMAGE CARD */}
-            {[
-              "/images/spotted1.png",
-              "/images/spotted3.png",
-              "/images/spotted2.png",
-              "/images/spotted4.png",
-              "/images/spotted5.png",
-            ].map((img, i) => (
-              <div
-                key={i}
-                className={`relative overflow-hidden rounded-lg md:rounded-xl group
-                ${i === 1 ? "col-span-2 row-span-2" : ""}
-          `}
-              >
-                <img
-                  src={img}
-                  alt={`Rasika look ${i + 1}`}
-                  className="w-full h-full object-cover aspect-[3/4]
-                       group-hover:scale-105 transition-transform duration-700"
-                />
+            {/* TOP LEFT */}
+            <div className="relative overflow-hidden rounded-lg md:rounded-xl group">
+              <img
+                src="/images/spotted1.png"
+                alt="Spotted 1"
+                className="w-full h-full object-cover aspect-[3/4]
+                 group-hover:scale-105 transition duration-700"
+              />
+              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition" />
+            </div>
 
-                {/* GOLD OVERLAY */}
-                <div className="absolute inset-0 bg-black/10 
-                          group-hover:bg-black/30 transition" />
+            {/* BIG CENTER IMAGE */}
+            <div className="relative overflow-hidden rounded-lg md:rounded-xl group
+                  row-span-2">
+              <img
+                src="/images/spotted2.png"
+                alt="Spotted 2"
+                className="w-full h-full object-cover aspect-[3/4]
+                 group-hover:scale-105 transition duration-700"
+              />
+              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition" />
+            </div>
 
-              </div>
-            ))}
+            {/* TOP RIGHT */}
+            <div className="relative overflow-hidden rounded-lg md:rounded-xl group">
+              <img
+                src="/images/spotted3.png"
+                alt="Spotted 3"
+                className="w-full h-full object-cover aspect-[3/4]
+                 group-hover:scale-105 transition duration-700"
+              />
+              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition" />
+            </div>
+
+            {/* BOTTOM LEFT */}
+            <div className="relative overflow-hidden rounded-lg md:rounded-xl group">
+              <img
+                src="/images/spotted4.png"
+                alt="Spotted 4"
+                className="w-full h-full object-cover aspect-[3/4]
+                 group-hover:scale-105 transition duration-700"
+              />
+              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition" />
+            </div>
+
+            {/* BOTTOM RIGHT */}
+            <div className="relative overflow-hidden rounded-lg md:rounded-xl group">
+              <img
+                src="/images/spotted5.png"
+                alt="Spotted 5"
+                className="w-full h-full object-cover aspect-[3/4]
+                 group-hover:scale-105 transition duration-700"
+              />
+              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition" />
+            </div>
+
           </div>
+
 
         </div>
       </section>

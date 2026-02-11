@@ -23,11 +23,11 @@ export default function ShopPage() {
   const heroImages: Record<string, string> = {
     rings: "/images/hero-rings.jpeg",
     necklace: "/images/hero-necklace.jpg",
-    mangalsutra: "/images/hero-mangalsutra.jpg",
+    mangalsutra: "/images/hero-mangalsutra.jpeg",
     payal: "/images/hero-payal.jpeg",
-    "toe ring": "/images/hero-toering.jpg",
+    "toe ring": "/images/hero-toering.jpeg",
     bangles: "/images/hero-bangles.jpeg",
-    pendant: "/images/hero-pendant.jpg",
+    pendant: "/images/hero-pendant.jpeg",
     "nose ring": "/images/hero-nose.jpeg",
     "maang tikka": "/images/hero-tikka.jpeg",
     earring: "/images/hero-earring.jpeg",
@@ -157,9 +157,12 @@ export default function ShopPage() {
 
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-10">
-          <p className="text-sm text-[#8B4513]">
-            Showing {filteredProducts.length} designs
+          <p className="text-sm tracking-wide text-[#8B4513]/90">
+            Showing <span className="font-semibold text-[#5C2B06]">
+              {filteredProducts.length}
+            </span> Designs
           </p>
+
 
           <select
             value={sortBy}
@@ -179,7 +182,7 @@ export default function ShopPage() {
               <span className="font-medium">Filters</span>
               <button
                 onClick={clearFilters}
-                className="text-xs underline text-gray-400 cursor-pointer"
+                className="text-xs underline text-gray-400"
               >
                 Clear
               </button>
@@ -198,9 +201,9 @@ export default function ShopPage() {
                     setSelectedCategory(cat);
                     setSelectedType(null);
                   }}
-                  className={`block w-full text-left px-2 py-1 rounded mb-1 cursor-pointer
+                  className={`block w-full text-left px-2 py-1 rounded mb-1
                   ${selectedCategory === cat
-                      ? "bg-[#8B4513] text-white"
+                      ? "bg-black text-white"
                       : "hover:bg-gray-100"
                     }`}
                 >
