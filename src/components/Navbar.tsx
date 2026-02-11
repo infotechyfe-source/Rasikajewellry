@@ -27,75 +27,96 @@ export function Navbar() {
           Complimentary Shipping on Orders Above ₹1,999
         </div>
 
-        {/* MAIN NAV */}
-        <div className="bg-[#EEE2DA]/90 backdrop-blur-md
-                        shadow-[0_1px_6px_rgba(0,0,0,0.05)]">
-          <div className="max-w-8xl mx-auto px-12 py-3
-                          grid grid-cols-3 items-center">
+       {/* MAIN NAV */}
+<div className="bg-[#EEE2DA]/90 backdrop-blur-md
+                shadow-[0_1px_6px_rgba(0,0,0,0.05)]">
+  <div className="max-w-8xl mx-auto px-6 md:px-12 py-3">
 
-            {/* LEFT : SEARCH */}
-            <div className="hidden md:flex">
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="flex items-center gap-3
-                           px-4 py-2 w-72 text-[12px]
-                           border border-[#8B4513] rounded
-                           text-black/60
-                           hover:border-[#8B4513]
-                           hover:bg-white/40
-                           transition-all cursor-pointer"
-              >
-                <Search size={16} />
-                <span className="tracking-wide">
-                  Search jewellery…
-                </span>
-              </button>
-            </div>
+    {/* MOBILE + DESKTOP GRID */}
+    <div className="grid grid-cols-3 items-center">
 
-            {/* CENTER : LOGO */}
-            <div className="flex justify-center">
-              <Link href="/" className="select-none">
-                <img
-                  src="/images/rasika-logo.png"
-                  alt="Rasika Jewels"
-                  className="h-10 md:h-11 w-auto object-contain transition-transform duration-300 hover:scale-105"
-                />
-              </Link>
-            </div>
-
-            {/* RIGHT : CTA */}
-            <div className="hidden md:flex justify-end">
-              <a
-                href="https://wa.me/919120797254"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-2 rounded
-                           bg-[#8B4513]/90
-                           text-[11px] tracking-[0.3em]
-                           text-white
-                           hover:bg-[#8B4513]
-                           transition-all shadow-md"
-              >
-                ORDER ON WHATSAPP
-              </a>
-            </div>
-
-            {/* MOBILE MENU ICON */}
-            <button
-              onClick={() => setOpen(!open)}
-              className="md:hidden absolute right-6 text-[#512403]"
-            >
-              {open ? <X size={26} /> : <Menu size={26} />}
-            </button>
-          </div>
+      {/* LEFT */}
+      <div className="flex items-center">
+        
+        {/* Desktop Search */}
+        <div className="hidden md:flex">
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="flex items-center gap-3
+                       px-4 py-2 w-72 text-[12px]
+                       border border-[#8B4513] rounded
+                       text-black/60
+                       hover:border-[#8B4513]
+                       hover:bg-white/40
+                       transition-all"
+          >
+            <Search size={16} />
+            <span className="tracking-wide">
+              Search jewellery…
+            </span>
+          </button>
         </div>
+
+        {/* Mobile Search Icon */}
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="md:hidden text-[#512403]"
+        >
+          <Search size={22} />
+        </button>
+      </div>
+
+      {/* CENTER LOGO */}
+      <div className="flex justify-center">
+        <Link href="/" className="select-none">
+          <img
+            src="/images/rasika-logo.png"
+            alt="Rasika Jewels"
+            className="h-9 md:h-11 w-auto object-contain transition-transform duration-300 hover:scale-105"
+          />
+        </Link>
+      </div>
+
+      {/* RIGHT */}
+      <div className="flex justify-end items-center gap-4">
+
+        {/* Desktop CTA */}
+        <div className="hidden md:flex">
+          <a
+            href="https://wa.me/919120797254"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 py-2 rounded
+                       bg-[#8B4513]/90
+                       text-[11px] tracking-[0.3em]
+                       text-white
+                       hover:bg-[#8B4513]
+                       transition-all shadow-md"
+          >
+            ORDER ON WHATSAPP
+          </a>
+        </div>
+
+        {/* Mobile Menu */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="md:hidden text-[#512403]"
+        >
+          {open ? <X size={26} /> : <Menu size={26} />}
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
       </header>
 
       {/* ================= CATEGORY BAR ================= */}
-      <div className="sticky top-22 z-40  backdrop-blur border-b border-black/10">
-        <div className="max-w-8xl mx-auto px-3">
+      <div className="hidden lg:block sticky top-22 z-40 bg-[#EEE2DA]/90 backdrop-blur border-b border-black/10">
+        <div className="max-w-8xl mx-auto px-8">
           <ul
-            className="flex items-center gap-4 py-1 overflow-x-auto whitespace-nowrap scrollbar-hide">
+            className="flex items-center gap-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
             {uniqueCategories.map((cat) => {
               const isActive = activeCategory === cat.toLowerCase();
 
@@ -105,7 +126,7 @@ export function Navbar() {
                     href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
                     className={`
                 inline-flex items-center justify-center px-3 py-2 rounded-full text-[11px] tracking-[0.22em] uppercase transition-all duration-300 ${isActive
-                        ? "bg-[#EEE2DA]/90 text-[#512403] shadow-md scale-[1.04]"
+                        ? "bg-[#EEE2DA]/90 text-[#512403] shadow-md scale-[1.05]"
                         : "text-black/60 hover:text-[#512403] hover:bg-white/70"
                       }`}>
                     {cat}

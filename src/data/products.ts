@@ -45,37 +45,37 @@ export const products = [
   // 2. Necklace Sets
   {
     id: 17, name: "Oxidised Necklace Set",
-    category: "necklace set", type: "oxidised necklace set",
+    category: "necklace", type: "oxidised necklace set",
     price: 899, image: "/images/oxidised.jpg", active: true,
   },
   {
     id: 11, name: "Traditional / Ethnic Set",
-    category: "necklace set", type: "traditional / ethnic set",
+    category: "necklace", type: "traditional / ethnic set",
     price: 799, image: "/images/traditional.jpeg", active: true,
   },
   {
     id: 12, name: "Bridal Necklace Set",
-    category: "necklace set", type: "bridal necklace set",
+    category: "necklace", type: "bridal necklace set",
     price: 1199, image: "/images/necklace3.jpg", active: true,
   },
   {
     id: 13, name: "Trendy & Party Wear Set",
-    category: "necklace set", type: " party wear",
+    category: "necklace", type: " party wear",
     price: " 249", image: "/images/trendy.jpeg", active: true,
   },
   {
     id: 14, name: "Choker Set",
-    category: "necklace set", type: "choker set",
+    category: "necklace", type: "choker set",
     price: "999", image: "/images/choker.jpg", active: true,
   },
   {
     id: 15, name: " Long Haar",
-    category: "necklace set", type: "long haar",
+    category: "necklace", type: "long haar",
     price: "449", image: "/images/longhaar.jpeg", active: true,
   },
   {
     id: 16, name: "Korean & Chinese Style",
-    category: "necklace set", type: "korean & chinese style",
+    category: "necklace", type: "korean & chinese style",
     price: " 559", image: "/images/korean.jpeg", active: true,
   },
 
@@ -394,31 +394,31 @@ export const products = [
 
    // Ear 
   {
-    id: 90, name: "Oxidised Earing", category: "Ear Wear",
+    id: 90, name: "Oxidised Earing", category: "earring",
     price: "299", image: "/images/ear1.jpeg", active: true,
   },
   {
-    id: 91, name: "Ethnic", category: "Ear Wear",
+    id: 91, name: "Ethnic", category: "earring",
     price: "79", image: "/images/ear2.jpeg", active: true,
   },
   {
-    id: 92, name: "Punjabi Style", category: "Ear Wear",
+    id: 92, name: "Punjabi Style", category: "earring",
     price: "99", image: "/images/punjabi.jpeg", active: true,
   },
   {
-    id: 93, name: "Trendy", category: "Ear Wear",
+    id: 93, name: "Trendy", category: "earring",
     price: "199", image: "/images/ear4.jpeg", active: true,
   },
   {
-    id: 94, name: "Fancy", category: "Ear Wear",
+    id: 94, name: "Fancy", category: "earring",
     price: "299", image: "/images/ear5.jpeg", active: true,
   },
   {
-    id: 95, name: "Korean Style", category: "Ear Wear",
+    id: 95, name: "Korean Style", category: "earring",
     price: "149", image: "/images/ear6.jpeg", active: true,
   },
   {
-    id: 96, name: "Gold Style", category: "Ear Wear",
+    id: 96, name: "Gold Style", category: "earring",
     price: "199", image: "/images/ear7.jpeg", active: true,
   },
 ];

@@ -1,13 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import { useEffect, useState } from "react";
 import { ShieldCheck, MessageCircle, HeartHandshake, Truck, RefreshCcw, } from "lucide-react";
 const WHATSAPP_NUMBER = "919120797254";
 
 const categories = [
   { title: "Artificial Jewellery", image: "/images/artificial.jpeg", desc: "Trendy & affordable styles", },
   { title: "Nose Ring", image: "/images/nose.png", desc: "Traditional & modern nose pins", },
-  { title: "Ear Wear", image: "/images/ear1.jpeg", desc: "Earrings for every occasion", },
+  { title: "Ear Ring", image: "/images/ear1.jpeg", desc: "Earrings for every occasion", },
   { title: "Hand Wear", image: "/images/hand.jpg", desc: "Bangles, bracelets & rings", },
   { title: "Rings", image: "/images/ring1.webp", desc: "All kinds of rings" },
   { title: "Necklace Set", image: "/images/necklace.jpeg", desc: "Elegant necklace collections" },
@@ -25,49 +28,93 @@ const features = [
   { icon: HeartHandshake, title: "Trusted Brand", desc: "Loved across generations." },
 ];
 
+const videos = [
+  "/videos/hero-jewels.mp4",
+  "/videos/hero-jewels2.mp4", // second video
+];
+
 
 export default function Home() {
+
+  const [current, setCurrent] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+
+  const extendedVideos = [...videos, videos[0]]; // duplicate first
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => prev + 1);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (current === videos.length) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrent(0);
+      }, 1000); // must match transition duration
+    } else {
+      setIsTransitioning(true);
+    }
+  }, [current]);
+
+
   return (
-    <main className="bg-[#f8f7e2] text-gray-800">
+  <main className="bg-[#f8f7e2] text-gray-800 w-full overflow-x-hidden">
 
       {/* ================= HERO ================= */}
-      <section className="relative h-[100vh] max-h-[900px] overflow-hidden flex items-center justify-center">
+      <section className="relative min-h-screen overflow-hidden flex items-center justify-center">
 
+  <div
+    className={`absolute inset-0 flex ${isTransitioning ? "transition-transform duration-1000 ease-in-out" : ""}`}
+    style={{ transform: `translateX(-${current * 100}%)` }}
+  >
+    {extendedVideos.map((video, index) => (
+      <div key={index} className="w-full h-full flex-shrink-0">
         <video
-          className="absolute inset-0 w-full h-full object-cover object-top mt-20"
+          className="w-full h-full object-cover"
           autoPlay
-          loop
           muted
+          loop
           playsInline
-          preload="auto"
         >
-          <source src="/videos/hero-jewellery.mp4" type="video/mp4" />
+          <source src={video} type="video/mp4" />
         </video>
+      </div>
+    ))}
+  </div>
+
 
         {/* 🖤 DARK GRADIENT OVERLAY */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
 
-        {/* 📝 HERO CONTENT */}
-        <div className="relative z-10 text-center max-w-5xl px-6">
-          <h1 className="font-playfair text-4xl md:text-6xl lg:text-7xl text-white leading-tight mb-6">
-            <span className="text-[#e6c36a] block mb-2">
+        <div className="relative z-10 text-center max-w-3xl px-6">
+
+          <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
+            <span className="text-[#e6c36a] block">
               ELEGANCE REDEFINED
             </span>
-            <p className="font-playfair text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-13 leading-relaxed">
-              Discover the timeless beauty of handcrafted jewelry made to celebrate your moments.
-            </p>
           </h1>
+
+          <p className="mt-4 mb-6 text-sm sm:text-base md:text-lg text-white max-w-lg mx-auto">
+            Discover the timeless beauty of handcrafted jewelry made to celebrate your moments.
+          </p>
+
           <a
             href="/shop"
-            className="inline-block px-10 py-4 font-semibold bg-[#8B4513] text-white tracking-widest
-                 hover:bg-[#EEE2DA]/95 hover:text-[#8B4513] transition duration-300"
+            className="inline-block mt-2 px-8 py-3 text-xs sm:text-sm font-semibold bg-[#8B4513] text-white tracking-widest
+            hover:bg-[#EEE2DA]/95 hover:text-[#8B4513] transition duration-300"
           >
             SHOP NOW
           </a>
+
         </div>
 
-        {/* 📱 SOCIAL ICONS (RIGHT SIDE) */}
-        <div className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-5">
+        {/* 📱 SOCIAL ICONS (RIGHT SIDE) - Hidden on mobile, visible on md+ */}
+        <div className="hidden md:flex absolute right-6 md:right-10 top-1/2 -translate-y-1/2 z-20 flex-col gap-5">
 
           {/* WhatsApp */}
           <a href="#" className="group">
@@ -107,53 +154,54 @@ export default function Home() {
 
       {/* ================= FEATURES STRIP ================= */}
       <section className="bg-[#EEE2DA] border-t border-[#e6c36a]/50">
-        <div className="max-w-7xl mx-auto px-8 py-16">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-10 md:py-20">
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-14">
+          {/* Reduced gap from 14 to 8 for mobile, centered items on mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-14">
 
             {/* FREE SHIPPING */}
-            <div className="flex items-start gap-6">
-              <div className="flex items-center justify-center w-14 h-14 rounded-full
+            <div className="flex items-center md:items-start gap-4 md:gap-6">
+              <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full
                         bg-white shadow-sm">
-                <Truck size={32} className="text-[#5C2B06]" />
+                <Truck className="text-[#5C2B06] w-6 h-6 md:w-8 md:h-8" />
               </div>
-              <div>
-                <p className="text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-2">
+              <div className="text-left">
+                <p className="text-[11px] md:text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-1 md:mb-2">
                   FREE SHIPPING
                 </p>
-                <span className="text-sm text-[#7a4a2c] leading-relaxed">
+                <span className="text-xs md:text-sm text-[#7a4a2c] leading-relaxed">
                   Complimentary delivery on orders above ₹49,999
                 </span>
               </div>
             </div>
 
             {/* FREE RETURNS */}
-            <div className="flex items-start gap-6">
-              <div className="flex items-center justify-center w-14 h-14 rounded-full
+            <div className="flex items-center md:items-start gap-4 md:gap-6">
+              <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full
                         bg-white shadow-sm">
-                <RefreshCcw size={32} className="text-[#5C2B06]" />
+                <RefreshCcw className="text-[#5C2B06] w-6 h-6 md:w-8 md:h-8" />
               </div>
-              <div>
-                <p className="text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-2">
+              <div className="text-left">
+                <p className="text-[11px] md:text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-1 md:mb-2">
                   EASY RETURNS
                 </p>
-                <span className="text-sm text-[#7a4a2c] leading-relaxed">
+                <span className="text-xs md:text-sm text-[#7a4a2c] leading-relaxed">
                   Hassle-free in-store & online returns
                 </span>
               </div>
             </div>
 
             {/* SECURE CHECKOUT */}
-            <div className="flex items-start gap-6">
-              <div className="flex items-center justify-center w-14 h-14 rounded-full
+            <div className="flex items-center md:items-start gap-4 md:gap-6">
+              <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full
                         bg-white shadow-sm">
-                <ShieldCheck size={32} className="text-[#5C2B06]" />
+                <ShieldCheck className="text-[#5C2B06] w-6 h-6 md:w-8 md:h-8" />
               </div>
-              <div>
-                <p className="text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-2">
+              <div className="text-left">
+                <p className="text-[11px] md:text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-1 md:mb-2">
                   SECURE PAYMENTS
                 </p>
-                <span className="text-sm text-[#7a4a2c] leading-relaxed">
+                <span className="text-xs md:text-sm text-[#7a4a2c] leading-relaxed">
                   Encrypted & trusted checkout experience
                 </span>
               </div>
@@ -163,26 +211,27 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative bg-[#1b0f08] py-20 md:py-28">
-        <div className="max-w-7xl mx-auto ">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      {/* ================= SIGNATURE COLLECTION ================= */}
+      {/* Added overflow-hidden to clip the absolute frames that cause white space */}
+      <section className="relative bg-[#1b0f08] py-16 md:py-20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
             {/* IMAGE SIDE */}
-            <div className="relative flex justify-center">
+            <div className="relative flex justify-center order-1 lg:order-none">
               {/* Decorative frames */}
-              <div className="absolute -top-8 -left-8 w-28 h-28 border border-[#c8a24d]/70" />
-              <div className="absolute -bottom-8 -right-8 w-28 h-28 border border-[#c8a24d]/70" />
+              <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-20 h-20 md:w-28 md:h-28 border border-[#c8a24d]/70" />
+              <div className="absolute -bottom-6 -right-6 md:-bottom-8 md:-right-8 w-20 h-20 md:w-28 md:h-28 border border-[#c8a24d]/70" />
 
               <img
                 src="/images/signature-model.png"
                 alt="Signature Collection"
-                className="relative z-10 w-full max-w-md object-cover
-                     shadow-xl"
+                className="relative z-10 w-full max-w-sm md:max-w-md object-cover shadow-xl"
               />
             </div>
 
             {/* CONTENT CARD */}
-            <div className="relative bg-[#f7e9dd] p-12 md:p-14">
+            <div className="relative bg-[#f7e9dd] p-8 md:p-14 order-2 lg:order-none">
 
               {/* subtle accent */}
               <div className="absolute top-0 left-0 w-full h-[2px] bg-[#c8a24d]" />
@@ -191,13 +240,13 @@ export default function Home() {
                 New Arrivals
               </span>
 
-              <h2 className="mt-6 font-serif text-4xl md:text-5xl text-black leading-[1.15]">
+              <h2 className="mt-4 md:mt-6 font-serif text-3xl md:text-5xl text-black leading-[1.15]">
                 Signature <br /> Collection
               </h2>
 
-              <div className="w-20 h-px bg-black my-8" />
+              <div className="w-20 h-px bg-black my-6 md:my-8" />
 
-              <p className="text-base leading-relaxed text-black/80 max-w-md">
+              <p className="text-sm md:text-base leading-relaxed text-black/80 max-w-md">
                 Exquisite pieces meticulously handcrafted by master artisans.
                 Each creation embodies timeless elegance, refined artistry,
                 and the pursuit of perfection — an investment in heritage
@@ -205,9 +254,9 @@ export default function Home() {
               </p>
 
               <button
-                className="mt-10 inline-flex items-center gap-3
+                className="mt-8 md:mt-10 inline-flex items-center gap-3
                      border border-[#8b4a16] text-[#8b4a16]
-                     px-10 py-4 text-xs tracking-widest uppercase
+                     px-8 md:px-10 py-3 md:py-4 text-xs tracking-widest uppercase
                      hover:bg-[#8b4a16] hover:text-white
                      transition duration-300 cursor-pointer"
               >
@@ -224,22 +273,22 @@ export default function Home() {
       {/* ================= SHOP BY CATEGORY ================= */}
       <section
         id="categories"
-        className="bg-[#EEE2DA]/90 py-20"
+        className="bg-[#EEE2DA]/90 py-16 md:py-20"
       >
-        <div className="max-w-auto mx-auto px-10">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
 
           {/* HEADING */}
-          <div className="text-center mb-16">
-            <h2 className="text-[80px] font-serif text-4xl text-[#c8a24d] mb-2">
+          <div className="text-center mb-10 md:mb-16">
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#c8a24d]">
               Shop by Category
             </h2>
-            <p className="text-l italic text-[#8b4a16]">
+            <p className="text-base md:text-lg italic text-[#8b4a16] mt-2">
               Indulge in what we offer.
             </p>
           </div>
 
           {/* CATEGORY GRID */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {categories.map((cat) => (
               <Link
                 key={cat.title}
@@ -249,21 +298,21 @@ export default function Home() {
                 <div className="relative overflow-hidden bg-[#111]">
 
                   {/* IMAGE */}
-                  <Image
-                    src={cat.image}
-                    alt={cat.title}
-                    width={500}
-                    height={700}
-                    className="h-[350px] md:h-[420px] lg:h-[450px] w-full object-cover 
-                     group-hover:scale-105 transition duration-700 ease-out"
-                  />
+                  <div className="relative w-full aspect-[3/4] overflow-hidden">
+                    <Image
+                      src={cat.image}
+                      alt={cat.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition duration-700 ease-out"
+                    />
+                  </div>
 
                   {/* DARK OVERLAY */}
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
 
                   {/* CATEGORY NAME */}
-                  <div className="absolute bottom-0 left-0 w-full bg-black/80 py-3 text-center">
-                    <span className="font-serif text-sm text-white tracking-wide">
+                  <div className="absolute bottom-0 left-0 w-full bg-black/80 py-2 md:py-3 text-center">
+                    <span className="font-serif text-xs md:text-sm text-white tracking-wide">
                       {cat.title}
                     </span>
                   </div>
@@ -273,7 +322,7 @@ export default function Home() {
           </div>
 
           {/* VIEW ALL BUTTON */}
-          <div className="mt-14 flex justify-center">
+          <div className="mt-10 md:mt-14 flex justify-center">
             <Link
               href="/shop"
               className="border bg-[#8b4a16] text-white px-10 py-3 text-xs tracking-widest uppercase hover:bg-[#8b4a16] hover:text-[#e6c36a] transition"
@@ -286,57 +335,59 @@ export default function Home() {
       </section>
 
       {/* ================= TESTIMONIALS ================= */}
-      <section className="relative py-28 bg-gradient-to-r from-[#1b0f08] via-[#2a150b] to-[#1b0f08] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-10">
+      <section className="relative py-16 md:py-28 bg-gradient-to-r from-[#1b0f08] via-[#2a150b] to-[#1b0f08] overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
 
           {/* HEADER */}
-          <div className="mb-20">
+          <div className="mb-12 md:mb-20 text-center md:text-left">
             <span className="text-xs tracking-widest uppercase text-[#c8a24d]">
               Client Stories
             </span>
-            <h2 className="font-serif text-5xl mt-3 text-[#c8a24d]">
+            <h2 className="font-serif text-3xl md:text-5xl mt-3 text-[#c8a24d]">
               What They Say
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-24 items-center">
 
             {/* IMAGE */}
-            <div className="relative max-w-md mx-auto lg:mx-0">
-              <div className="absolute -top-5 -left-5 w-20 h-20 border border-[#c8a24d]" />
+            <div className="relative max-w-sm mx-auto lg:mx-0 w-full">
+              <div className="absolute -top-4 -left-4 md:-top-5 md:-left-5 w-16 h-16 md:w-20 md:h-20 border border-[#c8a24d]" />
 
               <img
                 src="/images/testinomial.png"
                 alt="Client"
-                className="relative z-10 w-full h-[420px] object-cover"
+                className="relative z-10 w-full h-auto md:h-[420px] object-cover aspect-[3/4] md:aspect-auto"
               />
 
-              <div className="absolute -bottom-5 -right-5 w-20 h-20 border border-[#c8a24d]" />
+              <div className="absolute -bottom-4 -right-4 md:-bottom-5 md:-right-5 w-16 h-16 md:w-20 md:h-20 border border-[#c8a24d]" />
             </div>
 
             {/* CONTENT */}
-            <div className="relative text-white max-w-xl h-[420px] flex flex-col justify-between">
+            {/* Removed fixed height for mobile, added min-h for desktop */}
+            <div className="relative text-white max-w-xl h-auto md:h-[420px] flex flex-col justify-between pt-4 md:pt-0">
 
               {/* TOP CONTENT */}
               <div>
-                {/* NAV ARROWS */}
-                <div className="absolute right-0  -translate-y-1/2 flex flex-col gap-4">
-                  <button className="w-10 h-10 border border-[#c8a24d] text-[#c8a24d]
-                             hover:bg-[#c8a24d] hover:text-black transition">
+                {/* NAV ARROWS - Repositioned for mobile */}
+                <div className="absolute top-0 right-0 md:top-1/2 md:-translate-y-1/2 flex flex-row md:flex-col gap-4">
+                  <button className="w-8 h-8 md:w-10 md:h-10 border border-[#c8a24d] text-[#c8a24d]
+                             hover:bg-[#c8a24d] hover:text-black transition flex items-center justify-center">
                     ‹
                   </button>
-                  <button className="w-10 h-10 border border-[#c8a24d] text-[#c8a24d]
-                             hover:bg-[#c8a24d] hover:text-black transition">
+                  <button className="w-8 h-8 md:w-10 md:h-10 border border-[#c8a24d] text-[#c8a24d]
+                             hover:bg-[#c8a24d] hover:text-black transition flex items-center justify-center">
                     ›
                   </button>
                 </div>
+                
                 {/* QUOTE ICON */}
-                <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-8">
-                  <span className="text-3xl text-[#c8a24d]">“</span>
+                <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/10 flex items-center justify-center mb-6 md:mb-8">
+                  <span className="text-xl md:text-3xl text-[#c8a24d]">“</span>
                 </div>
 
                 {/* TESTIMONIAL TEXT */}
-                <p className="font-serif text-xl leading-relaxed text-white/90">
+                <p className="font-serif text-lg md:text-xl leading-relaxed text-white/90 pr-12 md:pr-0">
                   The moment I wore my engagement ring, I felt the weight of a
                   thousand love stories before mine. RASIKA doesn’t just create
                   jewelry — they craft heirlooms that transcend time.
@@ -344,7 +395,7 @@ export default function Home() {
               </div>
 
               {/* CLIENT INFO */}
-              <div>
+              <div className="mt-6 md:mt-0">
                 <p className="font-serif text-lg text-white">
                   Isabella Montgomery
                 </p>
@@ -353,29 +404,27 @@ export default function Home() {
                 </p>
               </div>
 
-
-
             </div>
           </div>
         </div>
       </section>
 
       {/* ================= SPOTTED IN RASIKA ================= */}
-      <section className="bg-[#efe5f0] py-28">
-        <div className="max-w-7xl mx-auto px-10">
+      <section className="bg-[#efe5f0] py-16 md:py-28">
+        <div className="max-w-7xl mx-auto px-6 md:px-10">
 
           {/* HEADING */}
-          <div className="text-center mb-20">
-            <h2 className="font-serif text-4xl md:text-5xl text-[#c8a24d] tracking-wide">
+          <div className="text-center mb-12 md:mb-20">
+            <h2 className="font-serif text-3xl md:text-5xl text-[#c8a24d] tracking-wide">
               Spotted in Rasika
             </h2>
-            <p className="text-black/70 mt-4 text-sm tracking-widest uppercase">
+            <p className="text-black/70 mt-3 md:mt-4 text-xs md:text-sm tracking-widest uppercase">
               Styled by you
             </p>
           </div>
 
-          {/* IMAGE GRID */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          {/* IMAGE GRID - Adjusted for mobile grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8">
 
             {/* IMAGE CARD */}
             {[
@@ -387,8 +436,8 @@ export default function Home() {
             ].map((img, i) => (
               <div
                 key={i}
-                className={`relative overflow-hidden rounded-xl group
-            ${i === 1 ? "md:col-span-2 md:row-span-2" : ""}
+                className={`relative overflow-hidden rounded-lg md:rounded-xl group
+                ${i === 1 ? "col-span-2 row-span-2" : ""}
           `}
               >
                 <img
@@ -414,7 +463,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 text-center">
 
           {/* HEADING */}
-          <h2 className="font-serif text-4xl md:text-5xl text-[#c8a24d] mb-4">
+          <h2 className="font-serif text-3xl md:text-5xl text-[#c8a24d] mb-4">
             Join Our Inner Circle
           </h2>
 
@@ -434,7 +483,7 @@ export default function Home() {
               href="https://wa.me/919120797254"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#8b4a16] text-white px-12 py-4 text-xs tracking-widest uppercase
+              className="bg-[#8b4a16] text-white px-10 md:px-12 py-3 md:py-4 text-xs tracking-widest uppercase
                    hover:bg-[#c8a24d] hover:text-black transition duration-300"
             >
               Join via WhatsApp
