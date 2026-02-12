@@ -38,7 +38,6 @@ export async function PATCH(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 🔒 Check Admin Authentication
     const isAdmin = await verifyAdmin();
 
     if (!isAdmin) {
@@ -48,7 +47,6 @@ export async function PATCH(
       );
     }
 
-    // ✅ Next.js 15 params fix
     const { id } = await context.params;
 
     if (!ObjectId.isValid(id)) {
@@ -100,6 +98,62 @@ export async function PATCH(
 
     return NextResponse.json(
       { success: false, error: "Failed to update status" },
+      { status: 500 }
+    );
+  }
+}
+
+/* =========================
+   DELETE ORDER (ADMIN ONLY)
+========================= */
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    // 🔒 Admin verification
+    const isAdmin = await verifyAdmin();
+
+    if (!isAdmin) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await context.params;
+
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid order ID" },
+        { status: 400 }
+      );
+    }
+
+    const client = await clientPromise;
+    const db = client.db("jewellery-store");
+
+    const result = await db.collection("orders").deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json(
+        { success: false, error: "Order not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Order deleted successfully",
+    });
+
+  } catch (error) {
+    console.error("DELETE Order Error:", error);
+
+    return NextResponse.json(
+      { success: false, error: "Failed to delete order" },
       { status: 500 }
     );
   }

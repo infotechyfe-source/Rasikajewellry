@@ -36,7 +36,7 @@ export default function AdminLogin() {
 
       if (data.success) {
         localStorage.setItem('adminToken', data.token);
-        router.push('/admin/products');
+        router.push('/admin');
       } else {
         setError(data.error);
       }
