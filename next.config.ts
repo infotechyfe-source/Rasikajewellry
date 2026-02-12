@@ -4,7 +4,6 @@ import { NextConfig } from "next";
 const nextConfig: NextConfig = {
   devIndicators: false,
   reactStrictMode: true,
-  swcMinify: true,
 };
 
 export default nextConfig;
