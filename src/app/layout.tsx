@@ -1,57 +1,27 @@
-'use client';
+// app/layout.tsx
+import { Inter, Playfair_Display, Merriweather } from "next/font/google";
+import './globals.css';
+import NavbarWrapper from '@/components/NavbarWrapper'; // a wrapper for client-only Navbar
 
-import {
-  Inter,
-  Playfair_Display,
-  Merriweather,
-} from "next/font/google";
-import "./globals.css";
-import { usePathname } from "next/navigation";
-import { Navbar } from "@/components/Navbar";
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400','500','600','700'], variable: '--font-playfair' });
+const merriweather = Merriweather({ subsets: ['latin'], weight: ['300','400','700','900'], variable: '--font-merriweather' });
 
-/* BODY FONT */
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
+export const metadata = {
+  title: "Rasika Style Jewels",
+  description: "Luxury Jewelry",
+  icons: {
+    icon: "/rasika-favicon.png", // favicon path
+  },
+};
 
-/* LUXURY DISPLAY FONT */
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-playfair",
-});
-
-/* ELEGANT SERIF – BODY / SUBHEAD */
-const merriweather = Merriweather({
-  subsets: ["latin"],
-  weight: ["300", "400", "700", "900"],
-  variable: "--font-merriweather",
-});
-
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const pathname = usePathname();
-  const showNavbar = !pathname.startsWith("/admin");
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`
-    ${inter.variable}
-    ${playfair.variable}
-    ${merriweather.variable}
-  `}
-    >
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${merriweather.variable}`}>
       <body className="antialiased font-[var(--font-geist-sans)]">
-        {showNavbar && <Navbar />}
+        <NavbarWrapper /> {/* only renders Navbar on non-admin pages */}
         {children}
       </body>
     </html>
-
   );
 }
