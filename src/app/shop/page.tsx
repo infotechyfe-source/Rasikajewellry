@@ -37,7 +37,7 @@ export default function ShopPage() {
 
   const currentHeroImage =
     (normalizedCategory && heroImages[normalizedCategory]) ||
-    "/images/shop-hero.jpg";
+    "/images/shop-hero.png";
 
   /* -------------------- FETCH PRODUCTS -------------------- */
   useEffect(() => {
@@ -95,11 +95,14 @@ export default function ShopPage() {
       const price =
         typeof p.price === "string" ? parseInt(p.price) : p.price;
 
+      const productCategory = p.category?.toLowerCase().trim();
+
       if (
         selectedCategory &&
-        p.category?.toLowerCase().trim() !== normalizedCategory
+        !productCategory?.includes(normalizedCategory!)
       )
         return false;
+
 
       if (selectedType && p.type !== selectedType) return false;
       if (price > maxPrice) return false;

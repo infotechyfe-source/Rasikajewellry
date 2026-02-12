@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { products as initialProducts } from '@/data/products';
+import { useState, useEffect } from 'react';
 import { categories } from '@/data/categories';
 import { Trash2, Pencil, Plus, X, Check } from 'lucide-react';
 import Image from 'next/image';
-
+import AdminAuth from '@/components/Admin/AdminAuth';
 interface Product {
-    id: number;
+    _id: string;
     name: string;
     category: string;
     price: string | number;
@@ -16,9 +15,8 @@ interface Product {
 }
 
 export default function ProductsPage() {
-    const [products, setProducts] = useState<Product[]>(
-        initialProducts.map(p => ({ ...p, active: true }))
-    );
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -29,14 +27,33 @@ export default function ProductsPage() {
     const [price, setPrice] = useState('');
     const [image, setImage] = useState<string | null>(null);
 
-    // Open Add Product modal
+    // Fetch products from database
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                if (data.success) setProducts(data.products);
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProducts();
+    }, []);
+
+    // Open modal for adding
     const openAddModal = () => {
         setEditingProduct(null);
-        setName(''); setCategory(''); setPrice(''); setImage(null);
+        setName('');
+        setCategory('');
+        setPrice('');
+        setImage(null);
         setModalOpen(true);
     };
 
-    // Open Edit Product modal
+    // Open modal for editing
     const openEditModal = (product: Product) => {
         setEditingProduct(product);
         setName(product.name);
@@ -46,80 +63,109 @@ export default function ProductsPage() {
         setModalOpen(true);
     };
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onloadend = () => setImage(reader.result as string);
-        reader.readAsDataURL(file);
-    };
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    const handleSave = () => {
-        if (!name || !category || !price || !image) return alert('Please fill all fields');
-        if (editingProduct) {
-            // Edit
-            setProducts(prev => {
-                const updated = prev.map(p =>
-                    p.id === editingProduct.id
-                        ? { ...p, name, category, price, image }
-                        : p
-                );
+  const formData = new FormData();
+  formData.append("file", file);
 
-                localStorage.setItem("products", JSON.stringify(updated));
-                return updated;
-            });
-        } else {
-
-            // Add
-            setProducts(prev => {
-                const updated = [
-                    {
-                        id: Date.now(), // 🔴 IMPORTANT: avoid duplicate IDs
-                        name,
-                        category,
-                        price,
-                        image,
-                        active: true, // ✅ VERY IMPORTANT
-                    },
-                    ...prev,
-                ];
-
-                localStorage.setItem("products", JSON.stringify(updated));
-                return updated;
-            });
-
-        }
-        setModalOpen(false);
-    };
-
-    const updateProducts = (updatedProducts: Product[]) => {
-        setProducts(updatedProducts);
-        localStorage.setItem("products", JSON.stringify(updatedProducts));
-    };
-
-
-    const handleDelete = (id: number) => {
-        if (!confirm('Delete this product?')) return;
-        setProducts(products.filter(p => p.id !== id));
-    };
-
-const toggleProduct = (id: number) => {
-  setProducts(prev => {
-    const updated = prev.map(p =>
-      p.id === id ? { ...p, active: !p.active } : p
-    );
-
-    localStorage.setItem("products", JSON.stringify(updated));
-    return updated;
+  const res = await fetch("/api/upload", {
+    method: "POST",
+    body: formData,
   });
+
+  const data = await res.json();
+  if (data.success) setImage(data.path); // save the path, not Base64
 };
 
+
+    const handleSave = async () => {
+        if (!name || !category || !price || !image) return alert("Please fill all fields");
+
+        try {
+            if (editingProduct) {
+                // Edit product
+                const res = await fetch(`/api/products/${editingProduct._id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, category, price, image, active: editingProduct.active }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    setProducts(prev =>
+                        prev.map(p => (p._id === editingProduct._id ? { ...p, name, category, price, image } : p))
+                    );
+                }
+            } else {
+                // Add product
+                const res = await fetch("/api/products", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, category, price, image, active: true }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    setProducts(prev => [
+                        { _id: data.insertedId, name, category, price, image, active: true },
+                        ...prev,
+                    ]);
+                }
+            }
+
+            setModalOpen(false);
+        } catch (error) {
+            console.error("Failed to save product:", error);
+        }
+    };
+
+
+    // Delete product
+    const handleDelete = async (id: string) => {
+        if (!confirm('Delete this product?')) return;
+        try {
+            const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) setProducts(prev => prev.filter(p => p._id !== id));
+        } catch (error) {
+            console.error('Failed to delete product:', error);
+        }
+    };
+
+    // Toggle active/inactive
+    const toggleProduct = async (id: string) => {
+        const product = products.find(p => p._id === id);
+        if (!product) return;
+
+        try {
+            const res = await fetch(`/api/products/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...product, active: !product.active }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setProducts(prev =>
+                    prev.map(p => (p._id === id ? { ...p, active: !p.active } : p))
+                );
+            }
+        } catch (error) {
+            console.error('Failed to toggle product:', error);
+        }
+    };
+
+    if (loading) return <p className="p-6 text-gray-500">Loading products...</p>;
+
     return (
-        <div className="p-6">
+    <AdminAuth>
+ <div className="p-6">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Products</h1>
-                <button onClick={openAddModal} className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg cursor-pointer">
+                <button
+                    onClick={openAddModal}
+                    className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg cursor-pointer"
+                >
                     <Plus size={16} /> Add Product
                 </button>
             </div>
@@ -140,14 +186,19 @@ const toggleProduct = (id: number) => {
                     <tbody className="bg-white">
                         {products.map((p, i) => (
                             <tr
-                                key={p.id}
+                                key={p._id}
                                 className={`transition hover:bg-gray-50 ${i % 2 === 0 ? 'bg-gray-50' : ''}`}
                             >
-                                <td className="p-3 text-gray-700">{p.id}</td>
+                                <td className="p-3 text-gray-700">{p._id}</td>
                                 <td className="p-3">
                                     <Image
-                                        src={p.image} alt={p.name} width={64} height={64}
-                                        className="object-cover rounded shadow-sm border" />
+                                        src={p.image}
+                                        alt={p.name}
+                                        width={64}
+                                        height={64}
+                                        className="object-cover rounded shadow-sm border"
+                                        unoptimized
+                                    />
                                 </td>
                                 <td className="p-3 text-gray-700 font-medium">{p.name}</td>
                                 <td className="p-3 text-gray-500">{p.category}</td>
@@ -161,18 +212,18 @@ const toggleProduct = (id: number) => {
                                         <Pencil size={18} />
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(p.id)}
+                                        onClick={() => handleDelete(p._id)}
                                         className="p-1 rounded hover:bg-red-100 text-red-600 transition cursor-pointer"
                                         title="Delete"
                                     >
                                         <Trash2 size={18} />
                                     </button>
-
-                                    {/* Active / Inactive */}
                                     <button
-                                        onClick={() => toggleProduct(p.id)}
-                                        className={`px-3 py-1 rounded text-xs font-medium text-white cursor-pointer ${p.active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}`} >
-                                        {p.active ? "Active" : "Inactive"}
+                                        onClick={() => toggleProduct(p._id)}
+                                        className={`px-3 py-1 rounded text-xs font-medium text-white cursor-pointer ${p.active ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
+                                            }`}
+                                    >
+                                        {p.active ? 'Active' : 'Inactive'}
                                     </button>
                                 </td>
                             </tr>
@@ -191,12 +242,10 @@ const toggleProduct = (id: number) => {
             {/* Modal */}
             {modalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-
-                    <div className="bg-white rounded-2xl w-full max-w-md shadow-xl
-                max-h-[90vh] overflow-y-auto relative p-6">
-
+                    <div className="bg-white rounded-2xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto relative p-6">
                         {/* Close button */}
-                        <button title='close'
+                        <button
+                            title="close"
                             onClick={() => setModalOpen(false)}
                             className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition cursor-pointer"
                         >
@@ -207,18 +256,12 @@ const toggleProduct = (id: number) => {
                         <h2 className="text-2xl font-semibold mb-1">
                             {editingProduct ? 'Edit Product' : 'Add New Product'}
                         </h2>
-                        <p className="text-sm text-gray-500 mb-6">
-                            Manage your jewellery inventory
-                        </p>
+                        <p className="text-sm text-gray-500 mb-6">Manage your jewellery inventory</p>
 
                         {/* Form */}
                         <div className="space-y-4">
-
-                            {/* Product Name */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-600 mb-1">
-                                    Product Name
-                                </label>
+                                <label className="block text-sm font-medium text-gray-600 mb-1">Product Name</label>
                                 <input
                                     type="text"
                                     value={name}
@@ -228,28 +271,24 @@ const toggleProduct = (id: number) => {
                                 />
                             </div>
 
-                            {/* Category */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-600 mb-1">
-                                    Category
-                                </label>
-                                <select title='category'
+                                <label className="block text-sm font-medium text-gray-600 mb-1">Category</label>
+                                <select
                                     value={category}
                                     onChange={e => setCategory(e.target.value)}
                                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                                 >
                                     <option value="">Select Category</option>
                                     {categories.map(cat => (
-                                        <option key={cat} value={cat}>{cat}</option>
+                                        <option key={cat} value={cat}>
+                                            {cat}
+                                        </option>
                                     ))}
                                 </select>
                             </div>
 
-                            {/* Price */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-600 mb-1">
-                                    Price (₹)
-                                </label>
+                                <label className="block text-sm font-medium text-gray-600 mb-1">Price (₹)</label>
                                 <input
                                     type="number"
                                     value={price}
@@ -259,19 +298,12 @@ const toggleProduct = (id: number) => {
                                 />
                             </div>
 
-                            {/* Image Upload */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-600 mb-2">
-                                    Product Image
-                                </label>
-
+                                <label className="block text-sm font-medium text-gray-600 mb-2">Product Image</label>
                                 <label className="flex items-center justify-center border-2 border-dashed rounded-xl p-4 cursor-pointer hover:border-black transition">
                                     <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                                    <span className="text-sm text-gray-500">
-                                        Click to upload image
-                                    </span>
+                                    <span className="text-sm text-gray-500">Click to upload image</span>
                                 </label>
-
                                 {image && (
                                     <div className="mt-3 flex justify-center">
                                         <Image
@@ -282,7 +314,6 @@ const toggleProduct = (id: number) => {
                                             className="rounded-lg shadow object-cover"
                                             unoptimized
                                         />
-
                                     </div>
                                 )}
                             </div>
@@ -295,7 +326,6 @@ const toggleProduct = (id: number) => {
                                 >
                                     Cancel
                                 </button>
-
                                 <button
                                     onClick={handleSave}
                                     className="flex items-center gap-2 px-5 py-2 rounded-lg bg-black text-white hover:bg-gray-900 transition cursor-pointer"
@@ -304,12 +334,15 @@ const toggleProduct = (id: number) => {
                                     {editingProduct ? 'Save Changes' : 'Add Product'}
                                 </button>
                             </div>
-
                         </div>
                     </div>
-
                 </div>
             )}
         </div>
+    </AdminAuth>
+       
+
     );
 }
+
+
