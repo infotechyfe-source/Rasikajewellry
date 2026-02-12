@@ -4,67 +4,107 @@ import Image from "next/image";
 import { useState } from "react";
 
 type Product = {
-  id: number;
+  _id: string; // ✅ MongoDB ID
   name: string;
-  price: number | string;
+  price: number;
   image: string;
   category: string;
+  type: string;
   active: boolean;
 };
 
 const WHATSAPP_NUMBER = "919120797254";
 
 export function ProductCard({
-  id,
+  _id,
   name,
   price,
   image,
+  category,
+  type,
   active,
 }: Product) {
   const [open, setOpen] = useState(false);
 
-  const basePrice =
-    typeof price === "string" ? parseInt(price) : price;
-
-  /* ================= WHATSAPP ORDER ================= */
-  const handleOrderSubmit = (form: {
+  const handleOrderSubmit = async (form: {
     customerName: string;
     phone: string;
     address: string;
     quantity: number;
   }) => {
-    const totalPrice = basePrice * form.quantity;
+    try {
+      const totalPrice = price * form.quantity;
 
-    const message = `
+      // ✅ Save Order in MongoDB
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          product: {
+            _id,
+            name,
+            category,
+            type,
+            price,
+            image,
+          },
+          quantity: form.quantity,
+          totalPrice,
+          customer: {
+            name: form.customerName,
+            phone: form.phone,
+            address: form.address,
+          },
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Failed to save order");
+        return;
+      }
+
+      // ✅ Open WhatsApp After Saving
+      const message = `
 New Jewellery Order ✨
 
 Product: ${name}
+Category: ${category}
+Type: ${type}
+Price: ₹${price}
 Quantity: ${form.quantity}
-Total Price: ₹${totalPrice}
+Total: ₹${totalPrice}
 
 Customer Name: ${form.customerName}
 Phone: ${form.phone}
 Address: ${form.address}
-    `;
 
-    window.open(
-      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
+Order ID: ${data.orderId}
+      `;
 
-    setOpen(false);
+      window.open(
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
+        "_blank"
+      );
+
+      setOpen(false);
+    } catch (error) {
+      console.error("Order error:", error);
+      alert("Something went wrong");
+    }
   };
 
   return (
     <>
-      {/* ================= PRODUCT CARD ================= */}
+      {/* PRODUCT CARD */}
       <div
-        id={`product-${id}`}
         className={`bg-white rounded-lg overflow-hidden transition
           ${active ? "hover:shadow-lg" : "opacity-70"}
         `}
       >
-        {/* IMAGE */}
         <div className="relative aspect-[3/4] bg-[#efece6]">
           {!active && (
             <div className="absolute top-3 left-3 z-10 bg-black text-white text-[10px] px-3 py-1 tracking-widest">
@@ -83,25 +123,22 @@ Address: ${form.address}
           />
         </div>
 
-        {/* INFO */}
         <div className="p-2 space-y-2">
-          {/* NAME + PRICE */}
           <div className="flex items-center justify-between gap-2">
             <h3 className="font-serif text-sm tracking-wide truncate">
               {name}
             </h3>
 
             <p className="text-sm font-medium text-gray-800 whitespace-nowrap">
-              ₹ {basePrice.toLocaleString()}
+              ₹ {price.toLocaleString()}
             </p>
           </div>
 
-          {/* ORDER BUTTON */}
           <button
             onClick={() => active && setOpen(true)}
             disabled={!active}
             className={`w-full py-2 text-[11px]
-              tracking-[0.3em] cursor-pointer uppercase transition-all duration-300
+              tracking-[0.3em] uppercase transition-all duration-300
               ${active
                 ? "text-[#8B4513] bg-white hover:bg-[#8B4513] hover:text-white border border-[#8B4513]"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
@@ -113,11 +150,10 @@ Address: ${form.address}
         </div>
       </div>
 
-      {/* ================= ORDER MODAL ================= */}
       {open && (
         <OrderModal
           productName={name}
-          basePrice={basePrice}
+          basePrice={price}
           onClose={() => setOpen(false)}
           onSubmit={handleOrderSubmit}
         />
@@ -144,6 +180,8 @@ function OrderModal({
     quantity: number;
   }) => void;
 }) {
+  const [loading, setLoading] = useState(false);
+
   const [form, setForm] = useState({
     customerName: "",
     phone: "",
@@ -152,6 +190,17 @@ function OrderModal({
   });
 
   const totalPrice = basePrice * form.quantity;
+
+  const handleSubmit = async () => {
+    if (!form.customerName || !form.phone || !form.address) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    setLoading(true);
+    await onSubmit(form);
+    setLoading(false);
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
@@ -171,7 +220,6 @@ function OrderModal({
           {productName} · ₹{totalPrice.toLocaleString()}
         </p>
 
-        {/* QUANTITY */}
         <div className="flex justify-center mb-6">
           <div className="flex items-center rounded-full border border-black/20 overflow-hidden">
             <button
@@ -181,7 +229,7 @@ function OrderModal({
                   quantity: Math.max(1, f.quantity - 1),
                 }))
               }
-              className="w-10 h-10 flex items-center justify-center text-lg hover:bg-black/5"
+              className="w-10 h-10 flex items-center justify-center"
             >
               −
             </button>
@@ -197,14 +245,13 @@ function OrderModal({
                   quantity: f.quantity + 1,
                 }))
               }
-              className="w-10 h-10 flex items-center justify-center text-lg hover:bg-black/5"
+              className="w-10 h-10 flex items-center justify-center"
             >
               +
             </button>
           </div>
         </div>
 
-        {/* FORM */}
         <div className="space-y-4">
           <input
             placeholder="Full Name"
@@ -231,10 +278,11 @@ function OrderModal({
         </div>
 
         <button
-          onClick={() => onSubmit(form)}
-          className="mt-6 w-full bg-black text-white py-3 tracking-widest text-sm"
+          onClick={handleSubmit}
+          disabled={loading}
+          className="mt-6 w-full bg-black text-white py-3 tracking-widest text-sm disabled:opacity-50"
         >
-          CONTINUE TO WHATSAPP
+          {loading ? "SAVING ORDER..." : "CONTINUE TO WHATSAPP"}
         </button>
       </div>
     </div>

@@ -2,40 +2,79 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-// PUT = update product
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+// Helper to convert string to ObjectId
+function toObjectId(id: string) {
+  if (!ObjectId.isValid(id)) throw new Error("Invalid ID");
+  return new ObjectId(id);
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } | Promise<{ id: string }> }
+) {
   try {
+    //  unwrap params (same as DELETE)
+    const { id } = await params;
+
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json({
+        success: false,
+        error: "Invalid ID",
+      });
+    }
+
     const client = await clientPromise;
     const db = client.db("jewellery-store");
 
-    const { id } = params;
     const data = await req.json();
 
-    // Update product
-    const result = await db.collection("products").findOneAndUpdate(
+    // ❌ Never allow updating _id
+    delete data._id;
+
+    const updatedProduct = await db.collection("products").findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: data },
-      { returnDocument: "after" } // return updated document
+      { returnDocument: "after" }
     );
 
-    if (!result.value) {
-      return NextResponse.json({ success: false, error: "Product not found" });
+    if (!updatedProduct) {
+      return NextResponse.json({
+        success: false,
+        error: "Product not found",
+      });
     }
 
-    return NextResponse.json({ success: true, product: result.value });
+    return NextResponse.json({
+      success: true,
+      product: {
+        ...updatedProduct,
+        _id: updatedProduct._id.toString(),
+      },
+    });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ success: false, error: (error as Error).message });
+    console.error("PUT product error:", error);
+    return NextResponse.json({
+      success: false,
+      error: (error as Error).message,
+    });
   }
 }
 
 // DELETE = delete product
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } | Promise<{ id: string }> }
+) {
   try {
+    // Unwrap params if it's a Promise
+    const { id } = await params;
+
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json({ success: false, error: "Invalid product ID" });
+    }
+
     const client = await clientPromise;
     const db = client.db("jewellery-store");
-
-    const { id } = params;
 
     const result = await db.collection("products").deleteOne({ _id: new ObjectId(id) });
 
@@ -45,7 +84,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error(error);
+    console.error("DELETE product error:", error);
     return NextResponse.json({ success: false, error: (error as Error).message });
   }
 }
