@@ -17,8 +17,8 @@ const allowedStatuses = [
 /* =========================
    VERIFY ADMIN HELPER
 ========================= */
-async function verifyAdmin() {
-  const cookieStore = cookies(); // ✅ no await here
+function verifyAdmin() {
+  const cookieStore = cookies(); // ✅ synchronous
   const token = cookieStore.get("admin_token")?.value;
 
   if (!token) return false;
@@ -36,18 +36,17 @@ async function verifyAdmin() {
 ========================= */
 export async function PATCH(
   req: Request,
-  context: { params: { id: string } } // ✅ fixed type
+  context: { params: { id: string } }
 ) {
   try {
-    const isAdmin = await verifyAdmin();
-    if (!isAdmin) {
+    if (!verifyAdmin()) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const { id } = context.params; // ✅ no await
+    const { id } = context.params;
 
     if (!id) {
       return NextResponse.json(
@@ -56,7 +55,8 @@ export async function PATCH(
       );
     }
 
-    const { status } = await req.json();
+    const body = await req.json() as { status?: string };
+    const { status } = body;
 
     if (!status || !allowedStatuses.includes(status)) {
       return NextResponse.json(
@@ -107,18 +107,17 @@ export async function PATCH(
 ========================= */
 export async function DELETE(
   req: Request,
-  context: { params: { id: string } } // ✅ fixed type
+  context: { params: { id: string } }
 ) {
   try {
-    const isAdmin = await verifyAdmin();
-    if (!isAdmin) {
+    if (!verifyAdmin()) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const { id } = context.params; // ✅ no await
+    const { id } = context.params;
 
     if (!id) {
       return NextResponse.json(
@@ -127,10 +126,7 @@ export async function DELETE(
       );
     }
 
-    const { error } = await supabase
-      .from("orders")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("orders").delete().eq("id", id);
 
     if (error) {
       return NextResponse.json(
@@ -151,3 +147,4 @@ export async function DELETE(
     );
   }
 }
+
