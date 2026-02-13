@@ -8,7 +8,7 @@ import AdminAuth from '@/components/Admin/AdminAuth';
 import toast, { Toaster } from 'react-hot-toast';
 
 interface Product {
-    _id: string;
+    id: string;
     name: string;
     category: string;
     price: string | number;
@@ -108,7 +108,7 @@ export default function ProductsPage() {
 
         try {
             if (editingProduct) {
-                const res = await fetch(`/api/products/${editingProduct._id}`, {
+                const res = await fetch(`/api/products/${editingProduct.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -168,21 +168,22 @@ export default function ProductsPage() {
             const data = await res.json();
 
             if (data.success) {
-                setProducts(prev => prev.filter(p => p._id !== productId));
+                setProducts(prev => prev.filter(p => p.id !== productId));
                 toast.success('Product deleted successfully!');
-            } else toast.error(`Failed to delete product: ${data.error}`);
-        } catch (err) {
-            console.error('Failed to delete product:', err);
+            } else {
+                toast.error(data.error);
+            }
+        } catch {
             toast.error('An error occurred while deleting the product.');
         }
     };
 
     // Toggle active/inactive
     const toggleProduct = async (product: Product) => {
-        setActionLoadingId(product._id);
+        setActionLoadingId(product.id);
 
         try {
-            const res = await fetch(`/api/products/${product._id}`, {
+            const res = await fetch(`/api/products/${product.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ active: !product.active }),
@@ -235,8 +236,8 @@ export default function ProductsPage() {
                         </thead>
                         <tbody className="bg-white">
                             {products.map((p, i) => (
-                                <tr key={p._id} className={`transition hover:bg-gray-50 ${i % 2 === 0 ? 'bg-gray-50' : ''}`}>
-                                    <td className="p-3 text-gray-700">{p._id}</td>
+                                <tr key={p.id} className={`transition hover:bg-gray-50 ${i % 2 === 0 ? 'bg-gray-50' : ''}`}>
+                                    <td className="p-3 text-gray-700">{p.id}</td>
                                     <td className="p-3">
                                         <Image
                                             src={p.image}
@@ -259,21 +260,21 @@ export default function ProductsPage() {
                                             <Pencil size={18} />
                                         </button>
                                         <button
-                                            disabled={actionLoadingId === p._id}
-                                            onClick={() => handleDelete(p._id)}
+                                            disabled={actionLoadingId === p.id}
+                                            onClick={() => handleDelete(p.id)}
                                             className="p-1 rounded hover:bg-red-100 text-red-600 transition disabled:opacity-50"
                                         >
-                                            {actionLoadingId === p._id ? '...' : <Trash2 size={18} />}
+                                            {actionLoadingId === p.id ? '...' : <Trash2 size={18} />}
                                         </button>
 
                                         <button
-                                            disabled={actionLoadingId === p._id}
+                                            disabled={actionLoadingId === p.id}
                                             onClick={() => toggleProduct(p)}
                                             className={`px-3 py-1 rounded text-xs font-medium text-white transition 
     ${p.active ? 'bg-green-500' : 'bg-red-500'}
     disabled:opacity-50`}
                                         >
-                                            {actionLoadingId === p._id ? 'Updating...' : p.active ? 'Active' : 'Inactive'}
+                                            {actionLoadingId === p.id ? 'Updating...' : p.active ? 'Active' : 'Inactive'}
                                         </button>
 
                                     </td>

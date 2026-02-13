@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 type Product = {
-  _id: string; // ✅ MongoDB ID
+  id: string; //  Supabase ID
   name: string;
   price: number;
   image: string;
@@ -16,7 +16,7 @@ type Product = {
 const WHATSAPP_NUMBER = "919120797254";
 
 export function ProductCard({
-  _id,
+  id,
   name,
   price,
   image,
@@ -35,29 +35,22 @@ export function ProductCard({
     try {
       const totalPrice = price * form.quantity;
 
-      // ✅ Save Order in MongoDB
+      //  Save Order in MongoDB
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          product: {
-            _id,
-            name,
-            category,
-            type,
-            price,
-            image,
-          },
+          productId: id,
           quantity: form.quantity,
-          totalPrice,
           customer: {
             name: form.customerName,
             phone: form.phone,
             address: form.address,
           },
         }),
+
       });
 
       const data = await res.json();
@@ -67,7 +60,7 @@ export function ProductCard({
         return;
       }
 
-      // ✅ Open WhatsApp After Saving
+      //  Open WhatsApp After Saving
       const message = `
 New Jewellery Order ✨
 
@@ -138,7 +131,7 @@ Order ID: ${data.orderId}
             onClick={() => active && setOpen(true)}
             disabled={!active}
             className={`w-full py-2 text-[11px]
-              tracking-[0.3em] uppercase transition-all duration-300
+              tracking-[0.3em] uppercase transition-all duration-300 cursor-pointer
               ${active
                 ? "text-[#8B4513] bg-white hover:bg-[#8B4513] hover:text-white border border-[#8B4513]"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"

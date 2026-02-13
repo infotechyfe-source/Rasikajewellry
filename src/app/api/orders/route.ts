@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import { supabase } from "@/lib/supabase";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
@@ -10,9 +10,7 @@ async function verifyAdmin() {
   const cookieStore = await cookies();
   const token = cookieStore.get("admin_token")?.value;
 
-  if (!token) {
-    return false;
-  }
+  if (!token) return false;
 
   try {
     jwt.verify(token, process.env.JWT_SECRET as string);
@@ -23,99 +21,115 @@ async function verifyAdmin() {
 }
 
 /* =========================
-   GET ALL ORDERS (ADMIN ONLY)
+   GET ALL ORDERS WITH PRODUCT INFO
 ========================= */
 export async function GET() {
   try {
-    const isAdmin = await verifyAdmin();
+    // Fetch orders
+    const { data: orders, error } = await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-    if (!isAdmin) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
+    if (error) {
+      return NextResponse.json({ success: false, error: error.message });
     }
 
-    const client = await clientPromise;
-    const db = client.db("jewellery-store");
+    // For each order, fetch the product details
+    const ordersWithProduct = await Promise.all(
+      orders.map(async (order: any) => {
+        let product = null;
+        if (order.product_id) {
+          const { data: prodData } = await supabase
+            .from("products")
+            .select("*")
+            .eq("id", order.product_id)
+            .single();
 
-    const orders = await db
-      .collection("orders")
-      .find({})
-      .sort({ createdAt: -1 })
-      .toArray();
+          product = prodData || null;
+        }
 
-    const formattedOrders = orders.map((order) => ({
-      _id: order._id.toString(),
-      product: order.product,
-      quantity: order.quantity,
-      totalPrice: order.totalPrice,
-      customer: order.customer,
-      status: order.status,
-      createdAt: order.createdAt,
-    }));
+        return {
+          ...order,
+          product, // add product object directly
+        };
+      })
+    );
 
     return NextResponse.json({
       success: true,
-      orders: formattedOrders,
+      orders: ordersWithProduct,
     });
-
-  } catch (error) {
-    console.error("GET Orders Error:", error);
-
-    return NextResponse.json(
-      { success: false, error: "Failed to fetch orders" },
-      { status: 500 }
-    );
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({
+      success: false,
+      error: (err as Error).message,
+    });
   }
 }
 
 /* =========================
-   CREATE ORDER (PUBLIC)
+   CREATE ORDER
 ========================= */
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const { productId, quantity, customer } = body;
 
-    const { product, quantity, totalPrice, customer } = body;
-
-    if (
-      !product?._id ||
-      !quantity ||
-      !customer?.name ||
-      !customer?.phone ||
-      !customer?.address
-    ) {
+    if (!productId || !quantity || !customer) {
       return NextResponse.json(
-        { success: false, error: "Missing required fields" },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    const client = await clientPromise;
-    const db = client.db("jewellery-store");
+    // Fetch product info
+    const { data: product, error: productError } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", productId)
+      .single();
 
-    const result = await db.collection("orders").insertOne({
-      product,
-      quantity: Number(quantity),
-      totalPrice: Number(totalPrice),
-      customer,
-      status: "pending",
-      createdAt: new Date(),
-    });
+    if (productError || !product) {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    // Calculate total price
+    const totalPrice = Number(product.price) * quantity;
+
+    // Insert order
+    const { data, error } = await supabase
+      .from("orders")
+      .insert([
+        {
+          product_id: product.id,
+          quantity,
+          total_price: totalPrice,
+          customer_name: customer.name,
+          customer_phone: customer.phone,
+          customer_address: customer.address,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 
     return NextResponse.json({
       success: true,
-      orderId: result.insertedId.toString(),
+      orderId: data.id,
     });
-
-  } catch (error) {
-    console.error("POST Order Error:", error);
-
+  } catch (err) {
+    console.error(err);
     return NextResponse.json(
-      { success: false, error: "Failed to save order" },
+      { error: "Server error" },
       { status: 500 }
     );
   }
 }
-

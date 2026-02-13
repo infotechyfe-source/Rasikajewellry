@@ -3,26 +3,38 @@
 import { useEffect, useState } from "react";
 import { ShoppingCart, DollarSign, Package } from "lucide-react";
 
+interface Order {
+  id: string;
+  total_price: number;
+}
+
 export default function AdminDashboard() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [productCount, setProductCount] = useState(0);
 
   useEffect(() => {
+    // Fetch Orders
     fetch("/api/orders")
       .then(res => res.json())
       .then(data => {
-        if (data.success) setOrders(data.orders || []);
+        if (data.success) {
+          setOrders(data.orders || []);
+        }
       });
 
+    // Fetch Products
     fetch("/api/products?page=1")
       .then(res => res.json())
       .then(data => {
-        if (data.success) setProductCount(data.totalProducts || 0);
+        if (data.success) {
+          setProductCount(data.total || 0); // FIXED
+        }
       });
   }, []);
 
+  // Calculate revenue using new column name
   const totalRevenue = orders.reduce(
-    (sum, order) => sum + (order.totalPrice || 0),
+    (sum, order) => sum + Number(order.total_price || 0),
     0
   );
 

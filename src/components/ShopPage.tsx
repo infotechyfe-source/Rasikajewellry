@@ -1,16 +1,27 @@
 "use client";
-
 import { ProductCard } from "@/components/ProductCard";
 import { useSearchParams } from "next/navigation";
 import Footer from "@/components/Footer";
 import { useState, useEffect, useMemo } from "react";
+import { categories as allCategories } from "@/data/categories";
+
+type Product = {
+  id: string;
+  name: string;
+  category?: string;
+  type?: string;
+  price: number;
+  image: string;
+  active: boolean;
+  created_at?: string;
+};
 
 export default function ShopPage() {
   const searchParams = useSearchParams();
   const urlCategory = searchParams.get("category")?.toLowerCase() || null;
 
   /* -------------------- STATE -------------------- */
-  const [shopProducts, setShopProducts] = useState<any[]>([]);
+  const [shopProducts, setShopProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [maxPrice, setMaxPrice] = useState(2000);
@@ -45,7 +56,14 @@ export default function ShopPage() {
       try {
         const res = await fetch("/api/products");
         const data = await res.json();
-        if (data.success) setShopProducts(data.products);
+
+        if (data.success) {
+          // Only show active products in shop
+          const activeProducts = (data.products || []).filter(
+            (p: Product) => p.active
+          );
+          setShopProducts(activeProducts);
+        }
       } catch (error) {
         console.error("Failed to fetch products", error);
       }
@@ -61,15 +79,7 @@ export default function ShopPage() {
   }, [urlCategory]);
 
   /* -------------------- CATEGORY LIST -------------------- */
-  const categories = useMemo(() => {
-    return [
-      ...new Set(
-        shopProducts
-          .map((p) => p.category?.toLowerCase().trim())
-          .filter(Boolean)
-      ),
-    ];
-  }, [shopProducts]);
+  const categories = allCategories;
 
   /* -------------------- TYPE LIST -------------------- */
   const types = useMemo(() => {
@@ -92,17 +102,14 @@ export default function ShopPage() {
   /* -------------------- FILTER + SORT -------------------- */
   const filteredProducts = useMemo(() => {
     let list = shopProducts.filter((p) => {
-      const price =
-        typeof p.price === "string" ? parseInt(p.price) : p.price;
-
+      const price = Number(p.price);
       const productCategory = p.category?.toLowerCase().trim();
 
       if (
         selectedCategory &&
-        !productCategory?.includes(normalizedCategory!)
+        productCategory !== normalizedCategory
       )
         return false;
-
 
       if (selectedType && p.type !== selectedType) return false;
       if (price > maxPrice) return false;
@@ -161,11 +168,12 @@ export default function ShopPage() {
         {/* Top Bar */}
         <div className="flex justify-between items-center mb-10">
           <p className="text-sm tracking-wide text-[#8B4513]/90">
-            Showing <span className="font-semibold text-[#5C2B06]">
+            Showing{" "}
+            <span className="font-semibold text-[#5C2B06]">
               {filteredProducts.length}
-            </span> Designs
+            </span>{" "}
+            Designs
           </p>
-
 
           <select
             value={sortBy}
@@ -204,11 +212,12 @@ export default function ShopPage() {
                     setSelectedCategory(cat);
                     setSelectedType(null);
                   }}
-                  className={`block w-full text-left px-2 py-1 rounded mb-1
-                  ${selectedCategory === cat
+                  className={`block w-full text-left px-2 py-1 rounded mb-1 cursor-pointer
+                  ${
+                    selectedCategory === cat
                       ? "bg-black text-white"
                       : "hover:bg-gray-100"
-                    }`}
+                  }`}
                 >
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </button>
@@ -226,11 +235,12 @@ export default function ShopPage() {
                   <button
                     key={type}
                     onClick={() => setSelectedType(type)}
-                    className={`block w-full text-left px-2 py-1 rounded mb-1
-                    ${selectedType === type
+                    className={`block w-full text-left px-2 py-1 rounded mb-1 cursor-pointer
+                    ${
+                      selectedType === type
                         ? "bg-black text-white"
                         : "hover:bg-gray-100"
-                      }`}
+                    }`}
                   >
                     {type}
                   </button>
@@ -277,7 +287,7 @@ export default function ShopPage() {
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4">
                 {filteredProducts.map((product) => (
                   <ProductCard
-                    key={product._id || product.id}
+                    key={product.id}
                     {...product}
                   />
                 ))}
@@ -294,5 +304,4 @@ export default function ShopPage() {
       <Footer />
     </main>
   );
-  
 }

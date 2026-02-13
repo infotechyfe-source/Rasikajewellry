@@ -1,6 +1,7 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { supabase } from "@/lib/supabase";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
@@ -23,7 +24,7 @@ async function verifyAdmin() {
   if (!token) return false;
 
   try {
-    jwt.verify(token, process.env.JWT_SECRET as string);
+    jwt.verify(token, process.env.JWT_SECRET!);
     return true;
   } catch {
     return false;
@@ -35,11 +36,10 @@ async function verifyAdmin() {
 ========================= */
 export async function PATCH(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> } // ✅ FIXED TYPE
 ) {
   try {
     const isAdmin = await verifyAdmin();
-
     if (!isAdmin) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
@@ -47,41 +47,42 @@ export async function PATCH(
       );
     }
 
-    const { id } = await context.params;
+    const { id } = await context.params; // ✅ AWAIT PARAMS
 
-    if (!ObjectId.isValid(id)) {
+    if (!id) {
       return NextResponse.json(
-        { success: false, error: "Invalid order ID" },
+        { success: false, error: "Order ID is required" },
         { status: 400 }
       );
     }
 
-    const body = await req.json();
-    const { status } = body;
+    const { status } = await req.json();
 
-    if (!status) {
+    if (!status || !allowedStatuses.includes(status)) {
       return NextResponse.json(
-        { success: false, error: "Status is required" },
+        { success: false, error: "Invalid status" },
         { status: 400 }
       );
     }
 
-    if (!allowedStatuses.includes(status)) {
+    const { data, error } = await supabase
+      .from("orders")
+      .update({
+        status,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
       return NextResponse.json(
-        { success: false, error: "Invalid status value" },
-        { status: 400 }
+        { success: false, error: error.message },
+        { status: 500 }
       );
     }
 
-    const client = await clientPromise;
-    const db = client.db("jewellery-store");
-
-    const result = await db.collection("orders").updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { status, updatedAt: new Date() } }
-    );
-
-    if (result.matchedCount === 0) {
+    if (!data) {
       return NextResponse.json(
         { success: false, error: "Order not found" },
         { status: 404 }
@@ -108,12 +109,10 @@ export async function PATCH(
 ========================= */
 export async function DELETE(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> } // ✅ FIXED TYPE
 ) {
   try {
-    // 🔒 Admin verification
     const isAdmin = await verifyAdmin();
-
     if (!isAdmin) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
@@ -121,26 +120,24 @@ export async function DELETE(
       );
     }
 
-    const { id } = await context.params;
+    const { id } = await context.params; // ✅ AWAIT PARAMS
 
-    if (!ObjectId.isValid(id)) {
+    if (!id) {
       return NextResponse.json(
-        { success: false, error: "Invalid order ID" },
+        { success: false, error: "Order ID is required" },
         { status: 400 }
       );
     }
 
-    const client = await clientPromise;
-    const db = client.db("jewellery-store");
+    const { error } = await supabase
+      .from("orders")
+      .delete()
+      .eq("id", id);
 
-    const result = await db.collection("orders").deleteOne({
-      _id: new ObjectId(id),
-    });
-
-    if (result.deletedCount === 0) {
+    if (error) {
       return NextResponse.json(
-        { success: false, error: "Order not found" },
-        { status: 404 }
+        { success: false, error: error.message },
+        { status: 500 }
       );
     }
 

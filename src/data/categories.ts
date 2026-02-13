@@ -4,9 +4,9 @@ export const categories = [
   "necklace",
   "mangalsutra",
   "payal",
-  "toering",
+  "toe ring",
   "bangles",
-  "P\pendant",
+  "pendant",
   "nose ring",
   "maang tikka",
 ];
