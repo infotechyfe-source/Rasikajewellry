@@ -15,10 +15,10 @@ const allowedStatuses = [
 ];
 
 /* =========================
-   VERIFY ADMIN HELPER
+   VERIFY ADMIN
 ========================= */
-function verifyAdmin() {
-  const cookieStore = cookies(); // ✅ synchronous
+async function verifyAdmin() {
+  const cookieStore = await cookies(); // ✅ await cookies
   const token = cookieStore.get("admin_token")?.value;
 
   if (!token) return false;
@@ -32,119 +32,70 @@ function verifyAdmin() {
 }
 
 /* =========================
-   UPDATE ORDER STATUS (ADMIN ONLY)
+   PATCH ORDER STATUS
 ========================= */
 export async function PATCH(
   req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // ✅ Must be a Promise
 ) {
   try {
     if (!verifyAdmin()) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = context.params;
+    const { id } = await context.params; // ✅ await the Promise
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: "Order ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: "Order ID is required" }, { status: 400 });
     }
 
     const body = await req.json() as { status?: string };
     const { status } = body;
 
     if (!status || !allowedStatuses.includes(status)) {
-      return NextResponse.json(
-        { success: false, error: "Invalid status" },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: "Invalid status" }, { status: 400 });
     }
 
     const { data, error } = await supabase
       .from("orders")
-      .update({
-        status,
-        updated_at: new Date().toISOString(),
-      })
+      .update({ status, updated_at: new Date().toISOString() })
       .eq("id", id)
       .select()
       .single();
 
-    if (error) {
-      return NextResponse.json(
-        { success: false, error: error.message },
-        { status: 500 }
-      );
-    }
+    if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    if (!data) return NextResponse.json({ success: false, error: "Order not found" }, { status: 404 });
 
-    if (!data) {
-      return NextResponse.json(
-        { success: false, error: "Order not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Order status updated successfully",
-    });
-  } catch (error) {
-    console.error("PATCH Order Error:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to update status" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: true, message: "Order status updated successfully" });
+  } catch (err) {
+    console.error("PATCH Order Error:", err);
+    return NextResponse.json({ success: false, error: "Failed to update status" }, { status: 500 });
   }
 }
 
 /* =========================
-   DELETE ORDER (ADMIN ONLY)
+   DELETE ORDER
 ========================= */
 export async function DELETE(
   req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // ✅ Must be a Promise
 ) {
   try {
     if (!verifyAdmin()) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = context.params;
+    const { id } = await context.params; // ✅ await the Promise
 
-    if (!id) {
-      return NextResponse.json(
-        { success: false, error: "Order ID is required" },
-        { status: 400 }
-      );
-    }
+    if (!id) return NextResponse.json({ success: false, error: "Order ID is required" }, { status: 400 });
 
     const { error } = await supabase.from("orders").delete().eq("id", id);
 
-    if (error) {
-      return NextResponse.json(
-        { success: false, error: error.message },
-        { status: 500 }
-      );
-    }
+    if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
 
-    return NextResponse.json({
-      success: true,
-      message: "Order deleted successfully",
-    });
-  } catch (error) {
-    console.error("DELETE Order Error:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to delete order" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: true, message: "Order deleted successfully" });
+  } catch (err) {
+    console.error("DELETE Order Error:", err);
+    return NextResponse.json({ success: false, error: "Failed to delete order" }, { status: 500 });
   }
 }
-

@@ -8,13 +8,14 @@ import { categories as allCategories } from "@/data/categories";
 type Product = {
   id: string;
   name: string;
-  category?: string;
-  type?: string;
+  category: string; // required now
+  type: string;     // required now
   price: number;
   image: string;
   active: boolean;
   created_at?: string;
 };
+
 
 export default function ShopPage() {
   const searchParams = useSearchParams();
@@ -23,7 +24,7 @@ export default function ShopPage() {
   /* -------------------- STATE -------------------- */
   const [shopProducts, setShopProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null | undefined>(null);
   const [maxPrice, setMaxPrice] = useState(2000);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState<
@@ -49,28 +50,35 @@ export default function ShopPage() {
   const currentHeroImage =
     (normalizedCategory && heroImages[normalizedCategory]) ||
     "/images/shop-hero.png";
+/* -------------------- FETCH PRODUCTS -------------------- */
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/products");
+      const data = await res.json();
 
-  /* -------------------- FETCH PRODUCTS -------------------- */
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
+      if (data.success) {
+        // Only show active products in shop and normalize fields
+        const activeProducts: Product[] = (data.products || [])
+          .filter((p: Product) => p.active)
+          .map((p: Product) => ({
+            ...p,
+            category: p.category || "unknown", // default if undefined
+            type: p.type || "unknown",         // default if undefined
+            price: Number(p.price),
+            active: Boolean(p.active),
+          }));
 
-        if (data.success) {
-          // Only show active products in shop
-          const activeProducts = (data.products || []).filter(
-            (p: Product) => p.active
-          );
-          setShopProducts(activeProducts);
-        }
-      } catch (error) {
-        console.error("Failed to fetch products", error);
+        setShopProducts(activeProducts);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch products", error);
+    }
+  };
 
-    fetchProducts();
-  }, []);
+  fetchProducts();
+}, []);
+
 
   /* -------------------- URL CATEGORY SYNC -------------------- */
   useEffect(() => {
