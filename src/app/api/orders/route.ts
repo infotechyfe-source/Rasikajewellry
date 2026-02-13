@@ -1,31 +1,12 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-
-/* =========================
-   HELPER: VERIFY ADMIN
-========================= */
-async function verifyAdmin() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin_token")?.value;
-
-  if (!token) return false;
-
-  try {
-    jwt.verify(token, process.env.JWT_SECRET as string);
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 /* =========================
    GET ALL ORDERS WITH PRODUCT INFO
 ========================= */
 export async function GET() {
   try {
-    // Fetch orders
+    // Fetch all orders
     const { data: orders, error } = await supabase
       .from("orders")
       .select("*")
@@ -35,33 +16,24 @@ export async function GET() {
       return NextResponse.json({ success: false, error: error.message });
     }
 
-    // For each order, fetch the product details
+    // Fetch products for all orders in parallel
     const ordersWithProduct = await Promise.all(
-      orders.map(async (order: any) => {
-        let product = null;
-        if (order.product_id) {
-          const { data: prodData } = await supabase
-            .from("products")
-            .select("*")
-            .eq("id", order.product_id)
-            .single();
+      orders.map(async (order) => {
+        if (!order.product_id) return { ...order, product: null };
 
-          product = prodData || null;
-        }
+        const { data: product } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", order.product_id)
+          .single();
 
-        return {
-          ...order,
-          product, // add product object directly
-        };
+        return { ...order, product: product || null };
       })
     );
 
-    return NextResponse.json({
-      success: true,
-      orders: ordersWithProduct,
-    });
+    return NextResponse.json({ success: true, orders: ordersWithProduct });
   } catch (err) {
-    console.error(err);
+    console.error("GET orders error:", err);
     return NextResponse.json({
       success: false,
       error: (err as Error).message,
@@ -84,7 +56,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Fetch product info
+    // Fetch product
     const { data: product, error: productError } = await supabase
       .from("products")
       .select("*")
@@ -98,11 +70,10 @@ export async function POST(req: Request) {
       );
     }
 
-    // Calculate total price
     const totalPrice = Number(product.price) * quantity;
 
     // Insert order
-    const { data, error } = await supabase
+    const { data: orderData, error } = await supabase
       .from("orders")
       .insert([
         {
@@ -121,12 +92,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({
-      success: true,
-      orderId: data.id,
-    });
+    return NextResponse.json({ success: true, orderId: orderData.id });
   } catch (err) {
-    console.error(err);
+    console.error("POST order error:", err);
     return NextResponse.json(
       { error: "Server error" },
       { status: 500 }

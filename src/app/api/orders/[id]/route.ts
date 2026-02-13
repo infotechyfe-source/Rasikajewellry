@@ -18,7 +18,7 @@ const allowedStatuses = [
    VERIFY ADMIN HELPER
 ========================= */
 async function verifyAdmin() {
-  const cookieStore = await cookies();
+  const cookieStore = cookies(); // ✅ no await here
   const token = cookieStore.get("admin_token")?.value;
 
   if (!token) return false;
@@ -36,7 +36,7 @@ async function verifyAdmin() {
 ========================= */
 export async function PATCH(
   req: Request,
-  context: { params: Promise<{ id: string }> } // ✅ FIXED TYPE
+  context: { params: { id: string } } // ✅ fixed type
 ) {
   try {
     const isAdmin = await verifyAdmin();
@@ -47,7 +47,7 @@ export async function PATCH(
       );
     }
 
-    const { id } = await context.params; // ✅ AWAIT PARAMS
+    const { id } = context.params; // ✅ no await
 
     if (!id) {
       return NextResponse.json(
@@ -93,10 +93,8 @@ export async function PATCH(
       success: true,
       message: "Order status updated successfully",
     });
-
   } catch (error) {
     console.error("PATCH Order Error:", error);
-
     return NextResponse.json(
       { success: false, error: "Failed to update status" },
       { status: 500 }
@@ -109,7 +107,7 @@ export async function PATCH(
 ========================= */
 export async function DELETE(
   req: Request,
-  context: { params: Promise<{ id: string }> } // ✅ FIXED TYPE
+  context: { params: { id: string } } // ✅ fixed type
 ) {
   try {
     const isAdmin = await verifyAdmin();
@@ -120,7 +118,7 @@ export async function DELETE(
       );
     }
 
-    const { id } = await context.params; // ✅ AWAIT PARAMS
+    const { id } = context.params; // ✅ no await
 
     if (!id) {
       return NextResponse.json(
@@ -145,10 +143,8 @@ export async function DELETE(
       success: true,
       message: "Order deleted successfully",
     });
-
   } catch (error) {
     console.error("DELETE Order Error:", error);
-
     return NextResponse.json(
       { success: false, error: "Failed to delete order" },
       { status: 500 }
