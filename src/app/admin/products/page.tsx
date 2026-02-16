@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { categories } from '@/data/categories';
 import { Trash2, Pencil, Plus, X, Check } from 'lucide-react';
 import Image from 'next/image';
-import AdminAuth from '@/components/Admin/AdminAuth';
 import toast, { Toaster } from 'react-hot-toast';
 
 interface Product {
@@ -207,8 +206,8 @@ export default function ProductsPage() {
     if (loading) return <p className="p-6 text-gray-500">Loading products...</p>;
 
     return (
-        <AdminAuth>
-            <Toaster position="top-right" />
+    <>
+     <Toaster position="top-right" />
             <div className="p-6">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
@@ -416,7 +415,9 @@ export default function ProductsPage() {
                     </div>
                 )}
             </div>
-        </AdminAuth>
+    </>
+           
+
     );
 }
 

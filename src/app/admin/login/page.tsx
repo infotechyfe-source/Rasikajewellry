@@ -28,7 +28,8 @@ export default function AdminLogin() {
       const data = await res.json();
 
       if (data.success) {
-        // HTTP-only cookie is set by the API, just redirect
+        // ✅ Save flag to localStorage so admin page knows user is logged in
+        localStorage.setItem('adminToken', 'loggedIn');
         router.push('/admin');
       } else {
         setError(data.error);
@@ -54,9 +55,7 @@ export default function AdminLogin() {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
         )}
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
@@ -99,6 +98,7 @@ export default function AdminLogin() {
     </div>
   );
 }
+
 
    {/* --- Global Styles --- */}
       <style jsx global>{`

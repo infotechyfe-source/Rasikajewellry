@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 import { ShieldCheck, MessageCircle, HeartHandshake, Truck, RefreshCcw, } from "lucide-react";
 const WHATSAPP_NUMBER = "919120797254";
 
@@ -40,7 +41,20 @@ export default function Home() {
   const [isTransitioning, setIsTransitioning] = useState(true);
 
   const extendedVideos = [...videos, videos[0]]; // duplicate first
+  const [testimonials, setTestimonials] = useState([]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await supabase
+        .from("testimonials")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      setTestimonials(data || []);
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -60,6 +74,20 @@ export default function Home() {
       setIsTransitioning(true);
     }
   }, [current]);
+
+  const defaultTestimonial = {
+    name: "Isabella Montgomery",
+    location: "London, United Kingdom",
+    message:
+      "The moment I wore my engagement ring, I felt the weight of a thousand love stories before mine. RASIKA doesn’t just create jewelry — they craft heirlooms that transcend time.",
+    image_url: "/images/testinomial.png",
+  };
+
+  const activeTestimonial =
+    testimonials.length > 0
+      ? testimonials[current]
+      : defaultTestimonial;
+
 
 
   return (
@@ -213,40 +241,56 @@ export default function Home() {
 
       {/* ================= SIGNATURE COLLECTION ================= */}
 
-      <section className="relative bg-[#1b0f08] py-16 md:py-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <section className="relative bg-[#1b0f08] py-12 md:py-20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+
+          <div className="grid grid-cols-2 items-center gap-6 md:gap-12 lg:gap-16">
 
             {/* IMAGE SIDE */}
-            <div className="relative flex justify-center order-1 lg:order-none">
+            <div className="relative flex justify-center">
+
               {/* Decorative frames */}
-              <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 w-20 h-20 md:w-28 md:h-28 border border-[#c8a24d]/70" />
-              <div className="absolute -bottom-6 -right-6 md:-bottom-8 md:-right-8 w-20 h-20 md:w-28 md:h-28 border border-[#c8a24d]/70" />
+              <div className="absolute -top-4 -left-4 md:-top-8 md:-left-8 
+                        w-14 h-14 md:w-28 md:h-28 
+                        border border-[#c8a24d]/70" />
+              <div className="absolute -bottom-4 -right-4 md:-bottom-8 md:-right-8 
+                        w-14 h-14 md:w-28 md:h-28 
+                        border border-[#c8a24d]/70" />
 
               <img
                 src="/images/signature-model.png"
                 alt="Signature Collection"
-                className="relative z-10 w-full max-w-sm md:max-w-md object-cover shadow-xl"
+                className="relative z-10 
+                     w-full 
+                     max-w-[160px] 
+                     md:max-w-sm 
+                     lg:max-w-md 
+                     object-cover 
+                     shadow-xl"
               />
             </div>
 
-            {/* CONTENT CARD */}
-            <div className="relative bg-[#f7e9dd] p-8 md:p-14 order-2 lg:order-none">
+            {/* CONTENT SIDE */}
+            <div className="relative bg-[#f7e9dd] p-2 md:p-10 lg:p-14">
 
-              {/* subtle accent */}
+              {/* Accent line */}
               <div className="absolute top-0 left-0 w-full h-[2px] bg-[#c8a24d]" />
 
-              <span className="text-xs tracking-[0.3em] uppercase text-[#8b4a16]">
+              <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-[#8b4a16]">
                 New Arrivals
               </span>
 
-              <h2 className="mt-4 md:mt-6 font-serif text-3xl md:text-5xl text-black leading-[1.15]">
+              <h2 className="mt-3 md:mt-6 font-serif 
+                       text-lg md:text-4xl lg:text-5xl 
+                       text-black leading-[1.15]">
                 Signature <br /> Collection
               </h2>
 
-              <div className="w-20 h-px bg-black my-6 md:my-8" />
+              <div className="w-12 md:w-20 h-px bg-black my-4 md:my-8" />
 
-              <p className="text-sm md:text-base leading-relaxed text-black/80 max-w-md">
+              <p className="text-[11px] md:text-base 
+                      leading-relaxed text-black/80 
+                      max-w-xs md:max-w-md">
                 Exquisite pieces meticulously handcrafted by master artisans.
                 Each creation embodies timeless elegance, refined artistry,
                 and the pursuit of perfection — an investment in heritage
@@ -254,19 +298,25 @@ export default function Home() {
               </p>
 
               <button
-                className="mt-8 md:mt-10 inline-flex items-center gap-3
-                     border border-[#8b4a16] text-[#8b4a16]
-                     px-8 md:px-10 py-3 md:py-4 text-xs tracking-widest uppercase
-                     hover:bg-[#8b4a16] hover:text-white
-                     transition duration-300 cursor-pointer"
+                className="mt-4 md:mt-10 inline-flex items-center 
+             gap-1 md:gap-3
+             border border-[#8b4a16] text-[#8b4a16]
+             px-3 md:px-10 
+             py-1.5 md:py-4
+             text-[9px] md:text-xs 
+             tracking-widest uppercase
+             hover:bg-[#8b4a16] hover:text-white
+             transition duration-300 cursor-pointer"
               >
                 Explore Collection
-                <span className="text-base">→</span>
+                <span className="text-xs md:text-base">→</span>
               </button>
+
 
             </div>
 
           </div>
+
         </div>
       </section>
 
@@ -335,87 +385,114 @@ export default function Home() {
       </section>
 
       {/* ================= TESTIMONIALS ================= */}
-      <section className="relative py-16 md:py-28 bg-gradient-to-r from-[#1b0f08] via-[#2a150b] to-[#1b0f08] overflow-hidden">
+      <section className="relative py-20 md:py-32  bg-gradient-to-r from-[#1b0f08] via-[#2a150b] to-[#1b0f08]  overflow-hidden">
+
         <div className="max-w-7xl mx-auto px-6 md:px-10">
 
-          {/* HEADER */}
-          <div className="mb-12 md:mb-20 text-center md:text-left">
+          {/* HEADER + NAV */}
+          <div className="flex items-center justify-between mb-16 md:mb-24">
 
-            <h2 className="font-serif text-3xl md:text-5xl text-[#c8a24d]">
-              What They Say
-            </h2>
-            <span className="text-xs tracking-widest uppercase text-[#c8a24d]">
-              Client Stories
-            </span>
+            <div>
+              <h2 className="font-serif text-3xl md:text-5xl text-[#c8a24d] leading-tight">
+                What They Say
+              </h2>
+              <span className="text-xs tracking-[0.3em] uppercase text-[#c8a24d]/80">
+                Client Stories
+              </span>
+            </div>
+
+            {/* NAVIGATION */}
+            <div className="flex gap-3">
+              <button
+                onClick={() =>
+                  setCurrent((prev) =>
+                    prev === 0
+                      ? testimonials.length - 1
+                      : prev - 1
+                  )
+                }
+                className="w-9 h-9 md:w-11 md:h-11 
+                           rounded-full 
+                           border border-[#c8a24d] 
+                           text-[#c8a24d]
+                           hover:bg-[#c8a24d] 
+                           hover:text-black
+                           hover:scale-105
+                           transition duration-300
+                           flex items-center justify-center">
+                ‹
+              </button>
+
+              <button
+                onClick={() =>
+                  setCurrent((prev) =>
+                    prev === testimonials.length - 1
+                      ? 0
+                      : prev + 1
+                  )
+                }
+                className="w-9 h-9 md:w-11 md:h-11  rounded-full  border border-[#c8a24d]  text-[#c8a24d]
+                           hover:bg-[#c8a24d]  hover:text-black hover:scale-105 transition duration-300
+                           flex items-center justify-center"> ›
+              </button>
+            </div>
           </div>
 
+
+          {/* MAIN GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-2 
-                gap-12 md:gap-16 lg:gap-32 
-                items-center">
+                    gap-14 md:gap-20 lg:gap-28 
+                    items-center">
 
             {/* IMAGE */}
             <div className="relative max-w-sm md:max-w-md mx-auto lg:mx-0 w-full">
-              <div className="absolute -top-5 -left-5 w-20 h-20 border border-[#c8a24d]" />
+
+              <div className="absolute -top-6 -left-6 w-20 h-20 border border-[#c8a24d]/70" />
 
               <img
-                src="/images/testinomial.png"
-                alt="Client"
-                className="relative z-10 w-full 
-               aspect-[3/4] 
-               object-cover"
+                src={activeTestimonial.image_url}
+                alt={activeTestimonial.name}
+                className="relative z-10 w-full aspect-[3/4] object-cover shadow-xl"
               />
 
-              <div className="absolute -bottom-5 -right-5 w-20 h-20 border border-[#c8a24d]" />
-            </div>
 
+              <div className="absolute -bottom-6 -right-6 w-20 h-20 border border-[#c8a24d]/70" />
+            </div>
 
             {/* CONTENT */}
-            <div className="relative text-white 
-                max-w-xl mx-auto lg:mx-0 
-                flex flex-col 
-                gap-8 md:gap-10">
+            <div className="text-white max-w-xl mx-auto lg:mx-0">
 
-
-              {/* TOP CONTENT */}
-              <div>
-
-                {/* NAV ARROWS */}
-                <div className="flex gap-4 justify-end lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2">
-
-                  <button className="w-8 h-8 md:w-10 md:h-10 border border-[#c8a24d] text-[#c8a24d]
-                             hover:bg-[#c8a24d] hover:text-black transition flex items-center justify-center">
-                    ‹
-                  </button>
-                  <button className="w-8 h-8 md:w-10 md:h-10 border border-[#c8a24d] text-[#c8a24d]
-                             hover:bg-[#c8a24d] hover:text-black transition flex items-center justify-center">
-                    ›
-                  </button>
-                </div>
-
-                {/* QUOTE ICON */}
-                <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/10 flex items-center justify-center mb-6 md:mb-8">
-                  <span className="text-xl md:text-3xl text-[#c8a24d]">“</span>
-                </div>
-
-                {/* TESTIMONIAL TEXT */}
-                <p className="font-serif text-lg md:text-xl leading-relaxed text-white/90 pr-12 md:pr-0">
-                  The moment I wore my engagement ring, I felt the weight of a
-                  thousand love stories before mine. RASIKA doesn’t just create
-                  jewelry — they craft heirlooms that transcend time.
-                </p>
+              {/* Quote Icon */}
+              <div className="w-12 h-12 md:w-16 md:h-16 
+                        rounded-full 
+                        bg-white/10 
+                        flex items-center justify-center 
+                        mb-8 md:mb-10">
+                <span className="text-2xl md:text-4xl text-[#c8a24d]">“</span>
               </div>
 
+              {/* TEXT */}
+              <p className="font-serif text-lg md:text-2xl 
+              leading-relaxed text-white/90 
+              mb-10">
+                {activeTestimonial.message}
+              </p>
+
+
               {/* CLIENT INFO */}
-              <div className="mt-6 md:mt-0">
-                <p className="font-serif text-lg text-white">
-                  Isabella Montgomery
+              <div>
+                <p className="font-serif text-xl text-white">
+                  {activeTestimonial.name}
                 </p>
-                <p className="text-sm text-[#c8a24d] tracking-wide">
-                  London, United Kingdom
+
+                <p className="text-sm text-[#c8a24d] tracking-widest uppercase mt-1">
+                  {activeTestimonial.location}
                 </p>
+
               </div>
 
             </div>
+
           </div>
         </div>
       </section>

@@ -31,6 +31,7 @@ export default function AdminSidebar() {
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
     { name: "Products", href: "/admin/products", icon: Package },
+    { name: "Testimonials", href: "/admin/testimonials", icon: Package },
   ];
 
   return (
