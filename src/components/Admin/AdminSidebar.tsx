@@ -19,15 +19,16 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const [showModal, setShowModal] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", {
+      method: "POST",
+    });
 
     toast.success("Logout successful!");
 
-    setTimeout(() => {
-      router.push('/admin/login');
-    }, 800);
+    router.replace("/admin/login");
   };
+
 
   const menuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
