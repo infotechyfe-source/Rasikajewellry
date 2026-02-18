@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
+export const runtime = "nodejs";
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ✅ Allow login page without token
+  // Allow login page without token
   if (pathname === "/admin/login") {
     return NextResponse.next();
   }
