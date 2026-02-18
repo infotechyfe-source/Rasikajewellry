@@ -20,8 +20,10 @@ export function middleware(req: NextRequest) {
 
   try {
     jwt.verify(token, process.env.JWT_SECRET as string);
+    console.log("JWT VERIFIED SUCCESS");
     return NextResponse.next();
   } catch {
+    console.log("JWT VERIFY FAILED", err);
     return NextResponse.redirect(new URL("/admin/login", req.url));
   }
 }
