@@ -28,9 +28,8 @@ export default function AdminLogin() {
       const data = await res.json();
 
       if (data.success) {
-        
-        localStorage.setItem('adminToken', 'loggedIn');
-        router.push('/admin');
+        // No localStorage needed (cookie handles auth)
+        router.replace('/admin'); // replace is better than push
       } else {
         setError(data.error);
       }
@@ -40,6 +39,7 @@ export default function AdminLogin() {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-zinc-50">
@@ -100,8 +100,8 @@ export default function AdminLogin() {
 }
 
 
-   {/* --- Global Styles --- */}
-      <style jsx global>{`
+{/* --- Global Styles --- */ }
+<style jsx global>{`
         @keyframes pulse-slow {
           0%, 100% { opacity: 0.3; transform: scale(1); }
           50% { opacity: 0.5; transform: scale(1.1); }
