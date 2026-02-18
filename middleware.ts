@@ -23,7 +23,7 @@ export function middleware(req: NextRequest) {
     console.log("JWT VERIFIED SUCCESS");
     return NextResponse.next();
   } catch {
-    console.log("JWT VERIFY FAILED", err);
+    console.log("JWT VERIFY FAILED");
     return NextResponse.redirect(new URL("/admin/login", req.url));
   }
 }
