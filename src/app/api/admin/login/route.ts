@@ -37,8 +37,8 @@ export async function POST(req: Request) {
     //  Set HTTP-only cookie
     response.cookies.set("admin_token", token, {
       httpOnly: true,
-      secure: false,        // ✅ force false for localhost
-      sameSite: "lax",      // ✅ change from strict
+      secure: process.env.NODE_ENV === "production",       // force false for localhost
+      sameSite: "lax",      //  change from strict
       path: "/",
       maxAge: 60 * 60 * 24,
     });
