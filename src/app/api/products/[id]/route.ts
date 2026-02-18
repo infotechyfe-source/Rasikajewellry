@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseServer } from "@/lib/supabaseServer";
 
 // UPDATE product
 export async function PUT(
@@ -16,7 +16,7 @@ export async function PUT(
     // Never allow updating id
     delete data.id;
 
-    const { data: updatedProduct, error } = await supabase
+    const { data: updatedProduct, error } = await supabaseServer
       .from("products")
       .update(data)
       .eq("id", id)
@@ -60,7 +60,7 @@ export async function DELETE(
     const resolvedParams = await params;
     const { id } = resolvedParams;
 
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from("products")
       .delete()
       .eq("id", id);

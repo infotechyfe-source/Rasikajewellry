@@ -34,28 +34,42 @@ const videos = [
   "/videos/hero-jewels2.mp4", // second video
 ];
 
-
 export default function Home() {
-
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(0); // for videos
   const [isTransitioning, setIsTransitioning] = useState(true);
+  const [testimonials, setTestimonials] = useState([]);
+  const [testimonialIndex, setTestimonialIndex] = useState(0); // for testimonials
+
+  //  Corrected testimonial logic
+  const defaultTestimonial = {
+    name: "Isabella Montgomery",
+    location: "London, United Kingdom",
+    message:
+      "The moment I wore my engagement ring, I felt the weight of a thousand love stories before mine. RASIKA doesn’t just create jewelry — they craft heirlooms that transcend time.",
+    image_url: "/images/testinomial.png",
+  };
 
   const extendedVideos = [...videos, videos[0]]; // duplicate first
-  const [testimonials, setTestimonials] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await supabase
-        .from("testimonials")
-        .select("*")
-        .order("created_at", { ascending: false });
+ // Fetch from Supabase
+useEffect(() => {
+  const fetchData = async () => {
+    const { data } = await supabase
+      .from("testimonials")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-      setTestimonials(data || []);
-    };
+    if (data && data.length > 0) {
+      // Prepend default testimonial to Supabase testimonials
+      setTestimonials([defaultTestimonial, ...data]);
+    }
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
+
+  // video auto-slide
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => prev + 1);
@@ -69,26 +83,38 @@ export default function Home() {
       setTimeout(() => {
         setIsTransitioning(false);
         setCurrent(0);
-      }, 1000); // must match transition duration
+      }, 1000);
     } else {
       setIsTransitioning(true);
     }
   }, [current]);
-
-  const defaultTestimonial = {
-    name: "Isabella Montgomery",
-    location: "London, United Kingdom",
-    message:
-      "The moment I wore my engagement ring, I felt the weight of a thousand love stories before mine. RASIKA doesn’t just create jewelry — they craft heirlooms that transcend time.",
-    image_url: "/images/testinomial.png",
-  };
+ 
 
   const activeTestimonial =
     testimonials.length > 0
-      ? testimonials[current]
+      ? testimonials[testimonialIndex]
       : defaultTestimonial;
 
+  // testimonial navigation handlers
+  const prevTestimonial = () => {
+    setTestimonialIndex((prev) =>
+      testimonials.length === 0
+        ? 0
+        : prev === 0
+          ? testimonials.length - 1
+          : prev - 1
+    );
+  };
 
+  const nextTestimonial = () => {
+    setTestimonialIndex((prev) =>
+      testimonials.length === 0
+        ? 0
+        : prev === testimonials.length - 1
+          ? 0
+          : prev + 1
+    );
+  };
 
   return (
     <main className="bg-[#f8f7e2] text-gray-800 w-full overflow-x-hidden">
@@ -404,38 +430,34 @@ export default function Home() {
             {/* NAVIGATION */}
             <div className="flex gap-3">
               <button
-                onClick={() =>
-                  setCurrent((prev) =>
-                    prev === 0
-                      ? testimonials.length - 1
-                      : prev - 1
-                  )
-                }
+                onClick={prevTestimonial}
                 className="w-9 h-9 md:w-11 md:h-11 
-                           rounded-full 
-                           border border-[#c8a24d] 
-                           text-[#c8a24d]
-                           hover:bg-[#c8a24d] 
-                           hover:text-black
-                           hover:scale-105
-                           transition duration-300
-                           flex items-center justify-center">
+               rounded-full 
+               border border-[#c8a24d] 
+               text-[#c8a24d]
+               hover:bg-[#c8a24d] 
+               hover:text-black
+               hover:scale-105
+               transition duration-300
+               flex items-center justify-center">
                 ‹
               </button>
 
               <button
-                onClick={() =>
-                  setCurrent((prev) =>
-                    prev === testimonials.length - 1
-                      ? 0
-                      : prev + 1
-                  )
-                }
-                className="w-9 h-9 md:w-11 md:h-11  rounded-full  border border-[#c8a24d]  text-[#c8a24d]
-                           hover:bg-[#c8a24d]  hover:text-black hover:scale-105 transition duration-300
-                           flex items-center justify-center"> ›
+                onClick={nextTestimonial}
+                className="w-9 h-9 md:w-11 md:h-11  
+               rounded-full  
+               border border-[#c8a24d]  
+               text-[#c8a24d]
+               hover:bg-[#c8a24d]  
+               hover:text-black 
+               hover:scale-105 
+               transition duration-300
+               flex items-center justify-center">
+                ›
               </button>
             </div>
+
           </div>
 
 

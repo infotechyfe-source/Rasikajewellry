@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseServer } from "@/lib/supabaseServer";
 
 /* =========================
    GET ALL ORDERS WITH PRODUCT INFO
@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 export async function GET() {
   try {
     // Fetch all orders
-    const { data: orders, error } = await supabase
+    const { data: orders, error } = await supabaseServer
       .from("orders")
       .select("*")
       .order("created_at", { ascending: false });
@@ -21,7 +21,7 @@ export async function GET() {
       orders.map(async (order) => {
         if (!order.product_id) return { ...order, product: null };
 
-        const { data: product } = await supabase
+        const { data: product } = await supabaseServer
           .from("products")
           .select("*")
           .eq("id", order.product_id)
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     }
 
     // Fetch product
-    const { data: product, error: productError } = await supabase
+    const { data: product, error: productError } = await supabaseServer
       .from("products")
       .select("*")
       .eq("id", productId)
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
     const totalPrice = Number(product.price) * quantity;
 
     // Insert order
-    const { data: orderData, error } = await supabase
+    const { data: orderData, error } = await supabaseServer
       .from("orders")
       .insert([
         {

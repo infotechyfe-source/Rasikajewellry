@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseServer } from "@/lib/supabaseServer";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
@@ -18,7 +18,7 @@ const allowedStatuses = [
    VERIFY ADMIN
 ========================= */
 async function verifyAdmin() {
-  const cookieStore = await cookies(); // ✅ await cookies
+  const cookieStore = await cookies(); // await cookies
   const token = cookieStore.get("admin_token")?.value;
 
   if (!token) return false;
@@ -36,14 +36,14 @@ async function verifyAdmin() {
 ========================= */
 export async function PATCH(
   req: Request,
-  context: { params: Promise<{ id: string }> } // ✅ Must be a Promise
+  context: { params: Promise<{ id: string }> } // Must be a Promise
 ) {
   try {
     if (!verifyAdmin()) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = await context.params; // ✅ await the Promise
+    const { id } = await context.params; //  await the Promise
 
     if (!id) {
       return NextResponse.json({ success: false, error: "Order ID is required" }, { status: 400 });
@@ -56,7 +56,7 @@ export async function PATCH(
       return NextResponse.json({ success: false, error: "Invalid status" }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from("orders")
       .update({ status, updated_at: new Date().toISOString() })
       .eq("id", id)
@@ -85,11 +85,11 @@ export async function DELETE(
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = await context.params; // ✅ await the Promise
+    const { id } = await context.params; //  await the Promise
 
     if (!id) return NextResponse.json({ success: false, error: "Order ID is required" }, { status: 400 });
 
-    const { error } = await supabase.from("orders").delete().eq("id", id);
+    const { error } = await supabaseServer.from("orders").delete().eq("id", id);
 
     if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
 

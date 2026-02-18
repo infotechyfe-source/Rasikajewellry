@@ -13,24 +13,25 @@ export default function AdminDashboard() {
   const [productCount, setProductCount] = useState(0);
 
   useEffect(() => {
-    // Fetch Orders
-    fetch("/api/orders")
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setOrders(data.orders || []);
-        }
-      });
+  // Fetch Orders
+  fetch("/api/orders")
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        setOrders(data.orders || []);
+      }
+    });
 
-    // Fetch Products
-    fetch("/api/products?page=1")
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setProductCount(data.total || 0); // FIXED
-        }
-      });
-  }, []);
+  // Fetch Products
+  fetch("/api/products")
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        setProductCount(data.products.length); //  fixed
+      }
+    });
+}, []);
+
 
   // Calculate revenue using new column name
   const totalRevenue = orders.reduce(
