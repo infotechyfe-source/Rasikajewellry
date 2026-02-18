@@ -28,22 +28,29 @@ const features = [
   { icon: HeartHandshake, title: "Trusted Brand", desc: "Loved across generations." },
 ];
 
+type Testimonial = {
+  name: string;
+  location: string;
+  message: string;
+  image_url: string;
+};
+
+const defaultTestimonial: Testimonial = {
+  name: "Isabella Montgomery",
+  location: "London, United Kingdom",
+  message:
+    "The moment I wore my engagement ring, I felt the weight of a thousand love stories before mine. RASIKA doesn’t just create jewelry — they craft heirlooms that transcend time.",
+  image_url: "/images/testinomial.png",
+};
+
 export default function Home() {
-  const [current, setCurrent] = useState(0); // for videos
+  const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(true);
-  const [testimonials, setTestimonials] = useState([]);
-  const [testimonialIndex, setTestimonialIndex] = useState(0); // for testimonials
-
-  //  Corrected testimonial logic
-  const defaultTestimonial = {
-    name: "Isabella Montgomery",
-    location: "London, United Kingdom",
-    message:
-      "The moment I wore my engagement ring, I felt the weight of a thousand love stories before mine. RASIKA doesn’t just create jewelry — they craft heirlooms that transcend time.",
-    image_url: "/images/testinomial.png",
-  };
-
   const [videos, setVideos] = useState<string[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
+
+  /* ================= FETCH HERO VIDEOS ================= */
   useEffect(() => {
     const fetchVideos = async () => {
       const { data } = await supabase
@@ -51,7 +58,7 @@ export default function Home() {
         .select("video_url")
         .order("created_at", { ascending: true });
 
-      if (data) {
+      if (data && data.length > 0) {
         setVideos(data.map((v) => v.video_url));
       }
     };
@@ -59,7 +66,7 @@ export default function Home() {
     fetchVideos();
   }, []);
 
-  // Fetch from Supabase
+  /* ================= FETCH TESTIMONIALS ================= */
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await supabase
@@ -68,59 +75,58 @@ export default function Home() {
         .order("created_at", { ascending: false });
 
       if (data && data.length > 0) {
-        // Prepend default testimonial to Supabase testimonials
-        setTestimonials([defaultTestimonial, ...data]);
+        const formatted: Testimonial[] = data.map((item) => ({
+          name: item.name,
+          location: item.location,
+          message: item.message,
+          image_url: item.image_url,
+        }));
+
+        setTestimonials([defaultTestimonial, ...formatted]);
+      } else {
+        setTestimonials([defaultTestimonial]);
       }
     };
 
     fetchData();
   }, []);
 
-
-  // video auto-slide
+  /* ================= VIDEO AUTO SLIDE ================= */
   useEffect(() => {
+    if (videos.length === 0) return;
+
     const interval = setInterval(() => {
-      setCurrent((prev) => prev + 1);
+      setCurrent((prev) => (prev + 1) % videos.length);
     }, 6000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [videos]);
 
+  /* ================= TRANSITION CONTROL ================= */
   useEffect(() => {
-    if (current === videos.length) {
-      setTimeout(() => {
-        setIsTransitioning(false);
-        setCurrent(0);
-      }, 1000);
-    } else {
-      setIsTransitioning(true);
-    }
+    setIsTransitioning(true);
   }, [current]);
 
-
+  /* ================= TESTIMONIAL ACTIVE ================= */
   const activeTestimonial =
     testimonials.length > 0
       ? testimonials[testimonialIndex]
       : defaultTestimonial;
 
-  // testimonial navigation handlers
+  /* ================= TESTIMONIAL NAVIGATION ================= */
   const prevTestimonial = () => {
+    if (testimonials.length === 0) return;
+
     setTestimonialIndex((prev) =>
-      testimonials.length === 0
-        ? 0
-        : prev === 0
-          ? testimonials.length - 1
-          : prev - 1
+      prev === 0 ? testimonials.length - 1 : prev - 1
     );
   };
 
   const nextTestimonial = () => {
+    if (testimonials.length === 0) return;
+
     setTestimonialIndex((prev) =>
-      testimonials.length === 0
-        ? 0
-        : prev === testimonials.length - 1
-          ? 0
-          : prev + 1
+      prev === testimonials.length - 1 ? 0 : prev + 1
     );
   };
 
