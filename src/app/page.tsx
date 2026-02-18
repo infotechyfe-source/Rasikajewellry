@@ -68,28 +68,25 @@ export default function Home() {
 
   /* ================= FETCH TESTIMONIALS ================= */
   useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await supabase
-        .from("testimonials")
-        .select("*")
-        .order("created_at", { ascending: false });
+  const fetchData = async () => {
+    const { data } = await supabase
+      .from("testimonials")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-      if (data && data.length > 0) {
-        const formatted: Testimonial[] = data.map((item) => ({
-          name: item.name,
-          location: item.location,
-          message: item.message,
-          image_url: item.image_url,
-        }));
+    const formatted: Testimonial[] = (data ?? []).map((item: any) => ({
+      name: item.name,
+      location: item.location,
+      message: item.message,
+      image_url: item.image_url,
+    }));
 
-        setTestimonials([defaultTestimonial, ...formatted]);
-      } else {
-        setTestimonials([defaultTestimonial]);
-      }
-    };
+    setTestimonials([defaultTestimonial, ...formatted]);
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
+
 
   /* ================= VIDEO AUTO SLIDE ================= */
   useEffect(() => {
