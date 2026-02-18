@@ -3,9 +3,16 @@ import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
 export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // ✅ Allow login page without token
+  if (pathname === "/admin/login") {
+    return NextResponse.next();
+  }
+
   const token = req.cookies.get("admin_token")?.value;
 
-  // If no token → redirect to login
+  // ❌ If no token → redirect to login
   if (!token) {
     return NextResponse.redirect(new URL("/admin/login", req.url));
   }
@@ -13,7 +20,7 @@ export function middleware(req: NextRequest) {
   try {
     jwt.verify(token, process.env.JWT_SECRET as string);
     return NextResponse.next();
-  } catch (error) {
+  } catch {
     return NextResponse.redirect(new URL("/admin/login", req.url));
   }
 }
