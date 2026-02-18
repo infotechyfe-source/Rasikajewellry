@@ -1,23 +1,30 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { supabaseServer } from "@/lib/supabaseServer";
 
-export const POST = async (req: Request) => {
-  try {
-    const data = await req.formData();
-    const file = data.get("file") as File;
+export async function POST(req: Request) {
+  const formData = await req.formData();
+  const file = formData.get("file") as File;
 
-    if (!file) return NextResponse.json({ success: false, error: "No file uploaded" });
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const fileName = `${Date.now()}-${file.name}`;
-    const filePath = path.join(process.cwd(), "public", "images", fileName);
-
-    fs.writeFileSync(filePath, buffer);
-
-    return NextResponse.json({ success: true, path: `/images/${fileName}` });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ success: false, error: "Failed to upload image" });
+  if (!file) {
+    return NextResponse.json({ success: false, error: "No file provided" });
   }
-};
+
+  const fileName = `testimonial-${Date.now()}-${file.name}`;
+
+  const { error } = await supabaseServer.storage
+    .from("testimonials")
+    .upload(fileName, file, { upsert: true });
+
+  if (error) {
+    return NextResponse.json({ success: false, error: error.message });
+  }
+
+  const { data } = supabaseServer.storage
+    .from("testimonials")
+    .getPublicUrl(fileName);
+
+  return NextResponse.json({
+    success: true,
+    publicUrl: data.publicUrl,
+  });
+}

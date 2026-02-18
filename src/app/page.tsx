@@ -9,9 +9,8 @@ import { ShieldCheck, MessageCircle, HeartHandshake, Truck, RefreshCcw, } from "
 const WHATSAPP_NUMBER = "919120797254";
 
 const categories = [
-  { title: "Artificial Jewellery", image: "/images/artificial.jpeg", desc: "Trendy & affordable styles", },
   { title: "Nose Ring", image: "/images/nose.png", desc: "Traditional & modern nose pins", },
-  { title: "Ear Ring", image: "/images/ear1.jpeg", desc: "Earrings for every occasion", },
+  { title: "Earring", image: "/images/ear1.jpeg", desc: "Earrings for every occasion", },
   { title: "Hand Wear", image: "/images/hand.jpg", desc: "Bangles, bracelets & rings", },
   { title: "Rings", image: "/images/ring1.webp", desc: "All kinds of rings" },
   { title: "Necklace Set", image: "/images/necklace.jpeg", desc: "Elegant necklace collections" },
@@ -29,11 +28,6 @@ const features = [
   { icon: HeartHandshake, title: "Trusted Brand", desc: "Loved across generations." },
 ];
 
-const videos = [
-  "/videos/hero-jewels.mp4",
-  "/videos/hero-jewels2.mp4", // second video
-];
-
 export default function Home() {
   const [current, setCurrent] = useState(0); // for videos
   const [isTransitioning, setIsTransitioning] = useState(true);
@@ -49,24 +43,38 @@ export default function Home() {
     image_url: "/images/testinomial.png",
   };
 
-  const extendedVideos = [...videos, videos[0]]; // duplicate first
+  const [videos, setVideos] = useState<string[]>([]);
+  useEffect(() => {
+    const fetchVideos = async () => {
+      const { data } = await supabase
+        .from("hero_videos")
+        .select("video_url")
+        .order("created_at", { ascending: true });
 
- // Fetch from Supabase
-useEffect(() => {
-  const fetchData = async () => {
-    const { data } = await supabase
-      .from("testimonials")
-      .select("*")
-      .order("created_at", { ascending: false });
+      if (data) {
+        setVideos(data.map((v) => v.video_url));
+      }
+    };
 
-    if (data && data.length > 0) {
-      // Prepend default testimonial to Supabase testimonials
-      setTestimonials([defaultTestimonial, ...data]);
-    }
-  };
+    fetchVideos();
+  }, []);
 
-  fetchData();
-}, []);
+  // Fetch from Supabase
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await supabase
+        .from("testimonials")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (data && data.length > 0) {
+        // Prepend default testimonial to Supabase testimonials
+        setTestimonials([defaultTestimonial, ...data]);
+      }
+    };
+
+    fetchData();
+  }, []);
 
 
   // video auto-slide
@@ -88,7 +96,7 @@ useEffect(() => {
       setIsTransitioning(true);
     }
   }, [current]);
- 
+
 
   const activeTestimonial =
     testimonials.length > 0
@@ -126,7 +134,7 @@ useEffect(() => {
           className={`absolute inset-0 flex ${isTransitioning ? "transition-transform duration-1000 ease-in-out" : ""}`}
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
-          {extendedVideos.map((video, index) => (
+          {videos.map((video, index) => (
             <div key={index} className="w-full h-full flex-shrink-0">
               <video
                 className="w-full h-full object-cover"
@@ -431,35 +439,19 @@ useEffect(() => {
             <div className="flex gap-3">
               <button
                 onClick={prevTestimonial}
-                className="w-9 h-9 md:w-11 md:h-11 
-               rounded-full 
-               border border-[#c8a24d] 
-               text-[#c8a24d]
-               hover:bg-[#c8a24d] 
-               hover:text-black
-               hover:scale-105
-               transition duration-300
-               flex items-center justify-center">
+                className="w-9 h-9 md:w-11 md:h-11  rounded-full  border border-[#c8a24d]  text-[#c8a24d]
+               hover:bg-[#c8a24d]  hover:text-black  hover:scale-105  transition duration-300  flex items-center justify-center cursor-pointer">
                 ‹
               </button>
 
               <button
                 onClick={nextTestimonial}
-                className="w-9 h-9 md:w-11 md:h-11  
-               rounded-full  
-               border border-[#c8a24d]  
-               text-[#c8a24d]
-               hover:bg-[#c8a24d]  
-               hover:text-black 
-               hover:scale-105 
-               transition duration-300
-               flex items-center justify-center">
+                className="w-9 h-9 md:w-11 md:h-11 rounded-full border border-[#c8a24d] text-[#c8a24d] hover:bg-[#c8a24d] hover:text-black hover:scale-105 transition duration-300 flex items-center justify-center cursor-pointer">
                 ›
               </button>
             </div>
 
           </div>
-
 
           {/* MAIN GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-2 
@@ -484,14 +476,7 @@ useEffect(() => {
             {/* CONTENT */}
             <div className="text-white max-w-xl mx-auto lg:mx-0">
 
-              {/* Quote Icon */}
-              <div className="w-12 h-12 md:w-16 md:h-16 
-                        rounded-full 
-                        bg-white/10 
-                        flex items-center justify-center 
-                        mb-8 md:mb-10">
-                <span className="text-2xl md:text-4xl text-[#c8a24d]">“</span>
-              </div>
+
 
               {/* TEXT */}
               <p className="font-serif text-lg md:text-2xl 
@@ -499,7 +484,6 @@ useEffect(() => {
               mb-10">
                 {activeTestimonial.message}
               </p>
-
 
               {/* CLIENT INFO */}
               <div>
@@ -599,20 +583,27 @@ useEffect(() => {
       </section>
 
       {/* ================= JOIN OUR INNER CIRCLE ================= */}
-      <section className="bg-black py-16">
-        <div className="max-w-7xl mx-auto px-6 text-center">
+      <section className="relative py-16 overflow-hidden">
+
+        {/* Subtle Gold Glow Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#c8a24d]/10 via-transparent to-[#8b4a16]/10 pointer-events-none" />
+
+        <div className="relative max-w-4xl mx-auto px-6 text-center">
 
           {/* HEADING */}
-          <h2 className="font-serif text-3xl md:text-5xl text-[#c8a24d] mb-4">
+          <h2 className="font-serif text-4xl md:text-6xl text-[#c8a24d] mb-6 tracking-wide">
             Join Our Inner Circle
           </h2>
 
-          <p className="italic text-sm text-white/60 mb-6">
+          {/* Elegant Divider */}
+          <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#c8a24d] to-transparent mx-auto mb-6" />
+
+          <p className="italic text-sm md:text-base text-gray/70 mb-6">
             Indulge in what we offer.
           </p>
 
           {/* DESCRIPTION */}
-          <p className="max-w-2xl mx-auto text-sm text-white/50 leading-relaxed mb-10">
+          <p className="max-w-2xl mx-auto text-sm md:text-base text-black/60 leading-relaxed mb-12">
             Be the first to discover new collections, receive exclusive offers,
             and enjoy VIP access to private viewings and special events.
           </p>
@@ -623,20 +614,23 @@ useEffect(() => {
               href="https://wa.me/919120797254"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#8b4a16] text-white px-10 md:px-12 py-3 md:py-4 text-xs tracking-widest uppercase
-                   hover:bg-[#c8a24d] hover:text-black transition duration-300"
+              className="relative group bg-[#8b4a16] text-white px-12 py-4 text-xs md:text-sm tracking-[0.2em] uppercase rounded overflow-hidden transition-all duration-500 hover:scale-105"
             >
-              Join via WhatsApp
+              <span className="relative z-10">Join via WhatsApp</span>
+
+              {/* Hover Gold Effect */}
+              <span className="absolute inset-0 bg-[#c8a24d] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out" />
             </a>
           </div>
 
           {/* PRIVACY NOTE */}
-          <p className="mt-6 text-xs text-white/40">
+          <p className="mt-8 text-xs text-black/40">
             We respect your privacy. Unsubscribe anytime.
           </p>
 
         </div>
       </section>
+
 
       <Footer />
 

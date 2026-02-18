@@ -48,7 +48,7 @@ export function Navbar() {
                        text-black/60
                        hover:border-[#8B4513]
                        hover:bg-white/40
-                       transition-all"
+                       transition-all cursor-pointer"
                   >
                     <Search size={16} />
                     <span className="tracking-wide">
@@ -60,7 +60,7 @@ export function Navbar() {
                 {/* Mobile Search Icon */}
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="md:hidden text-[#512403]"
+                  className="md:hidden text-[#512403] cursor-pointer"
                 >
                   <Search size={22} />
                 </button>

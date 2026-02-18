@@ -5,164 +5,254 @@ import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 
 interface Testimonial {
-  id: string;
-  name: string;
-  location: string;
-  message: string;
-  image_url?: string;
+    id: string;
+    name: string;
+    location: string;
+    message: string;
+    image_url?: string;
 }
 
 export default function AdminTestimonials() {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [form, setForm] = useState({
-    name: "",
-    location: "",
-    message: "",
-    image: null as File | null,
-  });
-  const [loading, setLoading] = useState(false);
+    const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(true);
 
-  const fetchTestimonials = async () => {
-    try {
-      const res = await fetch("/api/testimonials");
-      const data = await res.json();
-      if (data.success) setTestimonials(data.testimonials);
-      else toast.error(data.error || "Failed to fetch testimonials");
-    } catch {
-      toast.error("Failed to fetch testimonials");
-    }
-  };
+    const [form, setForm] = useState({
+        name: "",
+        location: "",
+        message: "",
+        image: null as File | null,
+    });
 
-  useEffect(() => {
-    fetchTestimonials();
-  }, []);
+    const [preview, setPreview] = useState<string | null>(null);
 
-  // Upload image to Supabase Storage
-  const uploadImage = async (file: File) => {
-    const fileName = `${Date.now()}-${file.name}`;
-    const formData = new FormData();
-    formData.append("file", file);
-    try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!data.success) throw new Error("Upload failed");
-      return data.path; // return public URL path
-    } catch (err) {
-      toast.error("Image upload failed");
-      console.error(err);
-      return "";
-    }
-  };
+    /* ---------------- FETCH TESTIMONIALS ---------------- */
+    const fetchTestimonials = async () => {
+        try {
+            setFetching(true);
+            const res = await fetch("/api/testimonials");
+            const data = await res.json();
 
-  const handleSubmit = async () => {
-    if (!form.name || !form.location || !form.message)
-      return toast.error("Fill all fields");
+            if (data.success) {
+                setTestimonials(data.testimonials);
+            } else {
+                toast.error(data.error || "Failed to fetch testimonials");
+            }
+        } catch {
+            toast.error("Failed to fetch testimonials");
+        } finally {
+            setFetching(false);
+        }
+    };
 
-    setLoading(true);
-
-    let image_url = "";
-    if (form.image) image_url = await uploadImage(form.image);
-
-    try {
-      const res = await fetch("/api/testimonials", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, image_url }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        toast.success("Testimonial added!");
-        setForm({ name: "", location: "", message: "", image: null });
+    useEffect(() => {
         fetchTestimonials();
-      } else toast.error(data.error);
-    } catch (err) {
-      toast.error("Failed to add testimonial");
-    } finally {
-      setLoading(false);
-    }
-  };
+    }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this testimonial?")) return;
-    try {
-      const res = await fetch(`/api/testimonials?id=${id}`, { method: "DELETE" });
-      const data = await res.json();
-      if (data.success) {
-        toast.success("Deleted successfully!");
-        fetchTestimonials();
-      } else toast.error(data.error);
-    } catch {
-      toast.error("Failed to delete testimonial");
-    }
-  };
+    /* ---------------- IMAGE UPLOAD ---------------- */
+    const uploadImage = async (file: File) => {
+        const formData = new FormData();
+        formData.append("file", file);
 
-  return (
-    <div className="p-10">
-      <Toaster position="top-right" />
-      <h1 className="text-2xl mb-6">Manage Testimonials</h1>
+        const res = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+        });
 
-      {/* FORM */}
-      <div className="space-y-3 mb-10">
-        <input
-          placeholder="Name"
-          className="border p-2 w-full"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <input
-          placeholder="Location"
-          className="border p-2 w-full"
-          value={form.location}
-          onChange={(e) => setForm({ ...form, location: e.target.value })}
-        />
-        <textarea
-          placeholder="Message"
-          className="border p-2 w-full"
-          value={form.message}
-          onChange={(e) => setForm({ ...form, message: e.target.value })}
-        />
-        <input
-          type="file"
-          onChange={(e) => setForm({ ...form, image: e.target.files?.[0] || null })}
-        />
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="bg-black text-white px-6 py-2 disabled:opacity-50"
-        >
-          {loading ? "Saving..." : "Add Testimonial"}
-        </button>
-      </div>
+        const data = await res.json();
 
-      {/* LIST */}
-      <div className="space-y-4">
-        {testimonials.map((t) => (
-          <div key={t.id} className="border p-4 flex justify-between items-start">
-            <div>
-              <p className="font-bold">{t.name}</p>
-              <p className="text-sm text-gray-500">{t.location}</p>
-              <p>{t.message}</p>
-            </div>
-            <div className="flex flex-col items-end gap-2">
-              {t.image_url && (
-                <Image
-                  src={t.image_url}
-                  alt={t.name}
-                  width={80}
-                  height={80}
-                  className="rounded"
+        if (!data.success) {
+            toast.error("Image upload failed");
+            return "";
+        }
+
+        return data.publicUrl;
+    };
+
+
+    /* ---------------- SUBMIT ---------------- */
+    const handleSubmit = async () => {
+        if (!form.name || !form.location || !form.message) {
+            toast.error("Please fill all fields");
+            return;
+        }
+
+        setLoading(true);
+
+        let image_url = "";
+        if (form.image) {
+            image_url = await uploadImage(form.image);
+            if (!image_url) {
+                setLoading(false);
+                return;
+            }
+        }
+
+        try {
+            const res = await fetch("/api/testimonials", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: form.name,
+                    location: form.location,
+                    message: form.message,
+                    image_url,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                toast.success("Testimonial added!");
+                setForm({ name: "", location: "", message: "", image: null });
+                setPreview(null);
+                fetchTestimonials();
+            } else {
+                toast.error(data.error);
+            }
+        } catch {
+            toast.error("Failed to add testimonial");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /* ---------------- DELETE ---------------- */
+    const handleDelete = async (id: string) => {
+        if (!confirm("Delete this testimonial?")) return;
+
+        try {
+            const res = await fetch(`/api/testimonials?id=${id}`, {
+                method: "DELETE",
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                toast.success("Deleted successfully!");
+                fetchTestimonials();
+            } else {
+                toast.error(data.error);
+            }
+        } catch {
+            toast.error("Failed to delete testimonial");
+        }
+    };
+
+    /* ---------------- UI ---------------- */
+    return (
+        <div className="min-h-screen bg-gray-50 p-6 md:p-10">
+            <Toaster position="top-right" />
+
+            <h1 className="text-3xl font-bold mb-8">Manage Testimonials</h1>
+
+            {/* ---------------- FORM CARD ---------------- */}
+            <div className="bg-white p-6 rounded-xl shadow-md mb-10">
+                <h2 className="text-xl font-semibold mb-4">Add New Testimonial</h2>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                        placeholder="Name"
+                        className="border rounded-lg p-3 focus:ring-2 focus:ring-black outline-none"
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    />
+
+                    <input
+                        placeholder="Location"
+                        className="border rounded-lg p-3 focus:ring-2 focus:ring-black outline-none"
+                        value={form.location}
+                        onChange={(e) => setForm({ ...form, location: e.target.value })}
+                    />
+                </div>
+
+                <textarea
+                    placeholder="Message"
+                    rows={4}
+                    className="border rounded-lg p-3 w-full mt-4 focus:ring-2 focus:ring-black outline-none"
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
                 />
-              )}
-              <button
-                onClick={() => handleDelete(t.id)}
-                className="text-red-500 mt-2"
-              >
-                Delete
-              </button>
+
+                <div className="mt-4 flex items-center gap-4">
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                            const file = e.target.files?.[0] || null;
+                            setForm({ ...form, image: file });
+
+                            if (file) {
+                                setPreview(URL.createObjectURL(file));
+                            }
+                        }}
+                    />
+
+                    {preview && (
+                        <Image
+                            src={preview}
+                            alt="Preview"
+                            width={80}
+                            height={80}
+                            className="rounded-lg object-cover"
+                        />
+                    )}
+                </div>
+
+                <button
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className="mt-6 bg-black text-white px-6 py-3 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+                >
+                    {loading ? "Saving..." : "Add Testimonial"}
+                </button>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+
+            {/* ---------------- LIST ---------------- */}
+            <div>
+                <h2 className="text-xl font-semibold mb-4">All Testimonials</h2>
+
+                {fetching ? (
+                    <p className="text-gray-500">Loading testimonials...</p>
+                ) : testimonials.length === 0 ? (
+                    <p className="text-gray-500">No testimonials yet.</p>
+                ) : (
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {testimonials.map((t) => (
+                            <div
+                                key={t.id}
+                                className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition"
+                            >
+                                <div className="flex justify-between">
+                                    <div>
+                                        <p className="font-bold text-lg">{t.name}</p>
+                                        <p className="text-sm text-gray-500">{t.location}</p>
+                                    </div>
+
+                                    {t.image_url && (
+                                        <Image
+                                            src={t.image_url}
+                                            alt={t.name}
+                                            width={70}
+                                            height={70}
+                                            className="rounded-lg object-cover"
+                                        />
+                                    )}
+                                </div>
+
+                                <p className="mt-4 text-gray-700">{t.message}</p>
+
+                                <button
+                                    onClick={() => handleDelete(t.id)}
+                                    className="mt-4 text-red-500 hover:underline"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 }

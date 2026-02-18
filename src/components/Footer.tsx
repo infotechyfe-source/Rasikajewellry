@@ -11,7 +11,7 @@ export default function Footer() {
         {/* BRAND */}
         <div>
           <h3 className="font-serif text-2xl text-[#c8a24d] mb-4">
-            Rasika <span className="text-white">Jewels</span>
+            Rasika Style <span className="text-white">Jewels</span>
           </h3>
 
           <p className="text-sm text-white/50 leading-relaxed max-w-sm">

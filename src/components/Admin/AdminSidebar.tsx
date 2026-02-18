@@ -5,9 +5,11 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Package,
+  FileBox,
   ShoppingCart,
   LogOut,
   X,
+  LayoutIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -29,9 +31,10 @@ export default function AdminSidebar() {
 
   const menuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
     { name: "Products", href: "/admin/products", icon: Package },
-    { name: "Testimonials", href: "/admin/testimonials", icon: Package },
+    { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+    { name: "Hero-videos", href: "/admin/hero", icon: FileBox },
+    { name: "Testimonials", href: "/admin/testimonials", icon: LayoutIcon },
   ];
 
   return (
