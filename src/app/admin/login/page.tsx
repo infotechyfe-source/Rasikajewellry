@@ -28,7 +28,7 @@ export default function AdminLogin() {
       const data = await res.json();
 
       if (data.success) {
-        // ✅ Save flag to localStorage so admin page knows user is logged in
+        //  Save flag to localStorage so admin page knows user is logged in
         localStorage.setItem('adminToken', 'loggedIn');
         router.push('/admin');
       } else {
