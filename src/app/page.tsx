@@ -395,7 +395,6 @@ export default function Home() {
                     />
                   </div>
 
-
                   {/* DARK OVERLAY */}
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
 
