@@ -23,13 +23,14 @@ export default function AdminLogin() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
-        credentials: 'include', // <-- essential for cookies
+        credentials: 'include',
       });
 
       const data = await res.json();
 
       if (data.success) {
-        router.replace('/admin'); // redirect to admin dashboard
+        // No localStorage needed (cookie handles auth)
+        router.replace('/admin'); // replace is better than push
       } else {
         setError(data.error);
       }
@@ -44,11 +45,18 @@ export default function AdminLogin() {
     <div className="flex items-center justify-center min-h-screen bg-zinc-50">
       <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-lg">
         <div className="mb-6 text-center">
-          <Image src="/images/rasika-logo.png" alt="Rasika Style Jewels" width={80} height={80} />
+          <Image
+            src="/images/rasika-logo.png"
+            alt="Rasika Style Jewels"
+            width={80}
+            height={80}
+          />
           <h2 className="mt-4 text-xl font-bold">Admin Portal</h2>
         </div>
 
-        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
+        )}
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <input
@@ -90,6 +98,7 @@ export default function AdminLogin() {
     </div>
   );
 }
+
 
 {/* --- Global Styles --- */ }
 <style jsx global>{`
