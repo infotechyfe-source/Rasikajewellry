@@ -19,13 +19,9 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const [showModal, setShowModal] = useState(false);
 
-  const handleLogout = async () => {
-    await fetch("/api/admin/logout", {
-      method: "POST",
-    });
-
+  const handleLogout = () => {
+    localStorage.removeItem("admin_token"); // 🔥 remove token
     toast.success("Logout successful!");
-
     router.replace("/admin/login");
   };
 

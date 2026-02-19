@@ -23,16 +23,18 @@ export default function AdminLogin() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
-        credentials: 'include',
       });
 
       const data = await res.json();
 
       if (data.success) {
-        // No localStorage needed (cookie handles auth)
-        router.replace('/admin'); // replace is better than push
+        // ✅ Save JWT in localStorage
+        localStorage.setItem('admin_token', data.token);
+
+        // ✅ Redirect to admin dashboard
+        router.replace('/admin');
       } else {
-        setError(data.error);
+        setError(data.error || 'Login failed');
       }
     } catch (err) {
       setError('Connection failed. Please try again.');
@@ -55,7 +57,9 @@ export default function AdminLogin() {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+            {error}
+          </div>
         )}
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
@@ -98,26 +102,3 @@ export default function AdminLogin() {
     </div>
   );
 }
-
-
-{/* --- Global Styles --- */ }
-<style jsx global>{`
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(1.1); }
-        }
-        .animate-pulse-slow {
-          animation: pulse-slow 6s ease-in-out infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-          20%, 40%, 60%, 80% { transform: translateX(4px); }
-        }
-        .animate-shake {
-          animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
-      `}</style>

@@ -164,100 +164,93 @@ export default function ShopPage() {
           )}
 
           {/* FILTER PANEL */}
-<aside
-  className={`
-    fixed top-0 right-0 z-50 w-72 max-w-[80vw] h-screen bg-white p-6 shadow-lg
-    transform transition-transform duration-300
-    ${showFilters ? "translate-x-0" : "translate-x-full"}
-    lg:relative lg:top-auto lg:w-auto lg:max-w-none lg:h-auto lg:translate-x-0
-    flex flex-col
-  `}
->
-  {/* Header with Close and Clear */}
-  <div className="flex justify-between items-center mb-4">
-    <span className="font-medium text-lg">Filters</span>
-    <div className="flex gap-2">
-      <button
-        onClick={clearFilters}
-        className="text-xs underline text-gray-400"
-      >
-        Clear
-      </button>
-      <button
-        onClick={() => setShowFilters(false)}
-        className="text-gray-500 text-xl font-bold lg:hidden"
-      >
-        ×
-      </button>
-    </div>
-  </div>
-
-  {/* Scrollable Content */}
-  <div className="overflow-y-auto flex-1 pr-2">
-    {/* CATEGORY */}
-    <div className="mb-6">
-      <h4 className="uppercase text-xs tracking-widest mb-2">Category</h4>
-      {categories.map((cat) => (
-        <button
-          key={cat}
-          onClick={() => { setSelectedCategory(cat); setSelectedType(null); }}
-          className={`block w-full text-left px-2 py-1 rounded mb-1 cursor-pointer ${
-            selectedCategory === cat ? "bg-black text-white" : "hover:bg-gray-100"
-          }`}
-        >
-          {cat.charAt(0).toUpperCase() + cat.slice(1)}
-        </button>
-      ))}
-    </div>
-
-    {/* TYPE */}
-    {types.length > 0 && (
-      <div className="mb-6">
-        <h4 className="uppercase text-xs tracking-widest mb-2">Type</h4>
-        {types.map((type) => (
-          <button
-            key={type}
-            onClick={() => setSelectedType(type)}
-            className={`block w-full text-left px-2 py-1 rounded mb-1 cursor-pointer ${
-              selectedType === type ? "bg-black text-white" : "hover:bg-gray-100"
-            }`}
+          <aside
+            className={`fixed top-0 right-0 z-50 md:z-30 w-72 max-w-[80vw] h-screen bg-white p-6 shadow-lg
+    transform transition-transform duration-300 ${showFilters ? "translate-x-0" : "translate-x-full"}
+    lg:relative lg:top-auto lg:w-auto lg:max-w-none lg:h-auto lg:translate-x-0 flex flex-col`}
           >
-            {type}
-          </button>
-        ))}
-      </div>
-    )}
+            {/* Header with Close and Clear */}
+            <div className="flex justify-between items-center mb-4">
+              <span className="font-medium text-lg">Filters</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={clearFilters}
+                  className="text-xs underline text-gray-400"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="text-gray-500 text-xl font-bold lg:hidden"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
 
-    {/* PRICE */}
-    <div className="mb-6">
-      <h4 className="uppercase text-xs tracking-widest mb-2">Price</h4>
-      <input
-        type="range"
-        min={0}
-        max={2000}
-        step={50}
-        value={maxPrice}
-        onChange={(e) => setMaxPrice(Number(e.target.value))}
-        className="w-full accent-[#8b4a16]"
-      />
-      <div className="flex justify-between text-xs mt-2">
-        <span>₹0</span>
-        <span>₹{maxPrice}</span>
-      </div>
-    </div>
+            {/* Scrollable Content */}
+            <div className="overflow-y-auto flex-1 pr-2">
+              {/* CATEGORY */}
+              <div className="mb-6">
+                <h4 className="uppercase text-xs tracking-widest mb-2">Category</h4>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => { setSelectedCategory(cat); setSelectedType(null); }}
+                    className={`block w-full text-left px-2 py-1 rounded mb-1 cursor-pointer ${selectedCategory === cat ? "bg-black text-white" : "hover:bg-gray-100"
+                      }`}
+                  >
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </button>
+                ))}
+              </div>
 
-    {/* STOCK */}
-    <label className="flex items-center gap-2 text-sm mb-4">
-      <input
-        type="checkbox"
-        checked={inStockOnly}
-        onChange={(e) => setInStockOnly(e.target.checked)}
-      />
-      In stock only
-    </label>
-  </div>
-</aside>
+              {/* TYPE */}
+              {types.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="uppercase text-xs tracking-widest mb-2">Type</h4>
+                  {types.map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setSelectedType(type)}
+                      className={`block w-full text-left px-2 py-1 rounded mb-1 cursor-pointer ${selectedType === type ? "bg-black text-white" : "hover:bg-gray-100"
+                        }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+              )}
 
+              {/* PRICE */}
+              <div className="mb-6">
+                <h4 className="uppercase text-xs tracking-widest mb-2">Price</h4>
+                <input
+                  type="range"
+                  min={0}
+                  max={2000}
+                  step={50}
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  className="w-full accent-[#8b4a16]"
+                />
+                <div className="flex justify-between text-xs mt-2">
+                  <span>₹0</span>
+                  <span>₹{maxPrice}</span>
+                </div>
+              </div>
+
+              {/* STOCK */}
+              <label className="flex items-center gap-2 text-sm mb-4">
+                <input
+                  type="checkbox"
+                  checked={inStockOnly}
+                  onChange={(e) => setInStockOnly(e.target.checked)}
+                />
+                In stock only
+              </label>
+            </div>
+          </aside>
 
           {/* PRODUCTS */}
           <div>

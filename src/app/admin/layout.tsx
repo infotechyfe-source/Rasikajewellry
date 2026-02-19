@@ -6,31 +6,37 @@ import AdminSidebar from '@/components/Admin/AdminSidebar';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname(); // get current path
+  const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
+    const token = localStorage.getItem('admin_token'); // ✅ fixed key
+
     if (!token && pathname !== '/admin/login') {
-      // redirect to login only if not already on login page
-      router.push('/admin/login');
+      router.replace('/admin/login');
     } else if (token) {
       setIsLoggedIn(true);
     }
-    setLoading(false);
-  }, [router, pathname]);
 
+    setLoading(false);
+  }, [pathname, router]);
+
+  // Loading state
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Checking authentication...
+      </div>
+    );
   }
 
-  // If we are on login page, don't show sidebar
+  // If on login page → no sidebar
   if (pathname === '/admin/login') {
     return <>{children}</>;
   }
 
-  // Only render sidebar + main content after login
+  // If not logged in → render nothing (redirect already triggered)
   if (!isLoggedIn) return null;
 
   return (

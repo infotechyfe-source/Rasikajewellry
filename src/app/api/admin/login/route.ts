@@ -7,8 +7,9 @@ export async function POST(req: Request) {
 
     const adminUser = process.env.ADMIN_USERNAME;
     const adminPass = process.env.ADMIN_PASSWORD;
+    const jwtSecret = process.env.JWT_SECRET;
 
-    if (!adminUser || !adminPass || !process.env.JWT_SECRET) {
+    if (!adminUser || !adminPass || !jwtSecret) {
       return NextResponse.json(
         { success: false, error: "Server configuration error" },
         { status: 500 }
@@ -22,29 +23,22 @@ export async function POST(req: Request) {
       );
     }
 
-    //  Create JWT
+    // ✅ Create JWT
     const token = jwt.sign(
       { role: "admin", username },
-      process.env.JWT_SECRET,
+      jwtSecret,
       { expiresIn: "1d" }
     );
 
-    const response = NextResponse.json(
-      { success: true, message: "Login successful" },
+    // ✅ Return token instead of setting cookie
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Login successful",
+        token,
+      },
       { status: 200 }
     );
-
-    //  Set HTTP-only cookie
-    response.cookies.set("admin_token", token, {
-      httpOnly: true,
-      secure: true,      // force false for localhost
-      sameSite: "none",      //  change from strict
-      path: "/",
-      maxAge: 60 * 60 * 24,
-    });
-
-
-    return response;
 
   } catch (err) {
     console.error("Admin login error:", err);
