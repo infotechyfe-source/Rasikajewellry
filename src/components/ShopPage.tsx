@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import Footer from "@/components/Footer";
 import { useState, useEffect, useMemo } from "react";
 import { categories as allCategories } from "@/data/categories";
+import Image from "next/image";
 
 type Product = {
   id: string;
@@ -125,17 +126,20 @@ export default function ShopPage() {
   /* -------------------- UI -------------------- */
   return (
     <main className="bg-[#f2f1e6]">
-      {/* HERO */}
-      <section className="relative h-[360px] md:h-[520px] overflow-hidden mt-12">
-        <img
+      {/* {Hero} */}
+      <section className="relative w-full aspect-video overflow-hidden mt-12">
+        <Image
           src={currentHeroImage}
           alt="Luxury Jewellery"
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          className="object-cover"
+          priority
         />
       </section>
 
+
       {/* SHOP */}
-      <section className="max-w-[1600px] mx-auto px-4 py-16">
+      <section className="max-w-[1600px] mx-auto px-4 py-4">
         <h1 className="text-[#8B4513] text-3xl md:text-5xl font-serif tracking-wide text-center">
           {selectedCategory ? selectedCategory.toUpperCase() : "OUR COLLECTION"}
         </h1>
@@ -149,6 +153,7 @@ export default function ShopPage() {
           </p>
 
           <select
+            title="recommended"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
             className="border border-[#8B4513] px-4 py-2 text-sm bg-[#f2f1e6]"
@@ -169,15 +174,22 @@ export default function ShopPage() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4 relative">
+          {/* MOBILE OVERLAY */}
+          {showFilters && (
+            <div
+              onClick={() => setShowFilters(false)}
+              className="fixed inset-0 bg-black/30 z-40 lg:hidden"
+            />
+          )}
+
           {/* FILTER PANEL */}
           <aside
             className={`bg-white p-6 text-sm
               lg:sticky lg:top-28
-              fixed inset-0 z-50 w-64 h-full shadow-lg transition-transform transform
+              fixed top-0 left-0 z-50 w-64 h-full shadow-lg transition-transform duration-300 transform
               lg:transform-none lg:relative lg:w-auto lg:h-auto
-              ${showFilters ? "translate-x-0" : "translate-x-full"} 
-              lg:translate-x-0
+              ${showFilters ? "translate-x-0" : "-translate-x-full"} 
             `}
           >
             {/* Mobile Close Button */}
@@ -265,9 +277,6 @@ export default function ShopPage() {
               In stock only
             </label>
           </aside>
-
-          {/* MOBILE OVERLAY */}
-          {showFilters && <div onClick={() => setShowFilters(false)} className="fixed inset-0 bg-black/30 z-40 lg:hidden" />}
 
           {/* PRODUCTS */}
           <div>

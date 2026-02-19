@@ -385,14 +385,16 @@ export default function Home() {
                 <div className="relative overflow-hidden bg-[#111]">
 
                   {/* IMAGE */}
-                  <div className="relative w-full aspect-[3/4] overflow-hidden">
+                  <div className="relative w-full aspect-3/4 overflow-hidden">
                     <Image
                       src={cat.image}
                       alt={cat.title}
                       fill
                       className="object-cover group-hover:scale-105 transition duration-700 ease-out"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                   </div>
+
 
                   {/* DARK OVERLAY */}
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
