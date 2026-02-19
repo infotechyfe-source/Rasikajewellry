@@ -68,24 +68,24 @@ export default function Home() {
 
   /* ================= FETCH TESTIMONIALS ================= */
   useEffect(() => {
-  const fetchData = async () => {
-    const { data } = await supabase
-      .from("testimonials")
-      .select("*")
-      .order("created_at", { ascending: false });
+    const fetchData = async () => {
+      const { data } = await supabase
+        .from("testimonials")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    const formatted: Testimonial[] = (data ?? []).map((item: any) => ({
-      name: item.name,
-      location: item.location,
-      message: item.message,
-      image_url: item.image_url,
-    }));
+      const formatted: Testimonial[] = (data ?? []).map((item: any) => ({
+        name: item.name,
+        location: item.location,
+        message: item.message,
+        image_url: item.image_url,
+      }));
 
-    setTestimonials([defaultTestimonial, ...formatted]);
-  };
+      setTestimonials([defaultTestimonial, ...formatted]);
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
 
   /* ================= VIDEO AUTO SLIDE ================= */
@@ -156,7 +156,7 @@ export default function Home() {
         {/* 🖤 DARK GRADIENT OVERLAY */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
 
-        <div className="relative z-10 text-center max-w-3xl px-6">
+        <div className="relative z-10 text-center max-w-3xl px-6 mt-24">
 
           <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
             <span className="text-[#e6c36a] block">
@@ -219,7 +219,7 @@ export default function Home() {
 
       {/* ================= FEATURES STRIP ================= */}
       <section className="bg-[#EEE2DA] border-t border-[#e6c36a]/50">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-10 md:py-20">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-10 md:py-12">
 
           {/* Reduced gap from 14 to 8 for mobile, centered items on mobile */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-14">
@@ -412,7 +412,7 @@ export default function Home() {
           <div className="mt-10 md:mt-14 flex justify-center">
             <Link
               href="/shop"
-              className="border bg-[#8b4a16] text-white px-10 py-3 text-xs tracking-widest uppercase hover:bg-[#8b4a16] hover:text-[#e6c36a] transition"
+              className="border text-[#8b4a16] px-10 py-3 text-xs tracking-widest uppercase hover:bg-[#8b4a16] hover:text-[#e6c36a] transition"
             >
               View All
             </Link>

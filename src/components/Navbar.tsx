@@ -124,7 +124,7 @@ export function Navbar() {
                   <Link
                     href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
                     className={`
-                inline-flex items-center justify-center px-3 py-2 rounded-full text-[11px] tracking-[0.22em] uppercase transition-all duration-300 ${isActive
+                inline-flex items-center justify-center px-3 py-1.5 rounded text-[11px] tracking-[0.22em] uppercase transition-all duration-300 ${isActive
                         ? "bg-[#EEE2DA]/90 text-[#512403] shadow-md scale-[1.05]"
                         : "text-black/60 hover:text-[#512403] hover:bg-white/70"
                       }`}>
@@ -138,7 +138,7 @@ export function Navbar() {
             <li className="flex-shrink-0">
               <Link
                 href="/shop"
-                className="inline-flex items-center justify-center px-6 py-2.5 rounded bg-[#EEE2DA]/90 text-[#512403] text-[11px] tracking-[0.22em] uppercase shadow-md hover:bg-[#7a3b10]
+                className="inline-flex items-center justify-center px-6 py-2 rounded bg-[#EEE2DA]/90 text-[#512403] text-[11px] tracking-[0.22em] uppercase shadow-md hover:bg-[#7a3b10]
            hover:text-white transition">
                 Explore More
               </Link>
