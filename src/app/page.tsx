@@ -266,55 +266,52 @@ export default function Home() {
       </div>
 
       {/* ================= FEATURES STRIP ================= */}
-      <section className="bg-[#EEE2DA] border-t border-[#e6c36a]/50">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-10 md:py-12">
+      <section className="bg-[#EEE2DA] border-t border-[#e6c36a]/40">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-12">
 
-          {/* Reduced gap from 14 to 8 for mobile, centered items on mobile */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-14">
+          {/* 3 columns on mobile for compact look */}
+          <div className="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-14 text-center md:text-left">
 
             {/* FREE SHIPPING */}
-            <div className="flex items-center md:items-start gap-4 md:gap-6">
-              <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full
-                        bg-white shadow-sm">
-                <Truck className="text-[#5C2B06] w-6 h-6 md:w-8 md:h-8" />
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-6">
+              <div className="flex items-center justify-center w-9 h-9 md:w-14 md:h-14 rounded-full bg-white shadow-sm">
+                <Truck className="text-[#5C2B06] w-4 h-4 md:w-8 md:h-8" />
               </div>
-              <div className="text-left">
-                <p className="text-[11px] md:text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-1 md:mb-2">
+              <div>
+                <p className="text-[9px] md:text-[13px] font-semibold tracking-wider md:tracking-[0.35em] text-[#5C2B06]">
                   FREE SHIPPING
                 </p>
-                <span className="text-xs md:text-sm text-[#7a4a2c] leading-relaxed">
+                <span className="hidden md:block text-sm text-[#7a4a2c]">
                   Complimentary delivery on orders above ₹1,999
                 </span>
               </div>
             </div>
 
-            {/* FREE RETURNS */}
-            <div className="flex items-center md:items-start gap-4 md:gap-6">
-              <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full
-                        bg-white shadow-sm">
-                <RefreshCcw className="text-[#5C2B06] w-6 h-6 md:w-8 md:h-8" />
+            {/* EASY RETURNS */}
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-6">
+              <div className="flex items-center justify-center w-9 h-9 md:w-14 md:h-14 rounded-full bg-white shadow-sm">
+                <RefreshCcw className="text-[#5C2B06] w-4 h-4 md:w-8 md:h-8" />
               </div>
-              <div className="text-left">
-                <p className="text-[11px] md:text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-1 md:mb-2">
+              <div>
+                <p className="text-[9px] md:text-[13px] font-semibold tracking-wider md:tracking-[0.35em] text-[#5C2B06]">
                   EASY RETURNS
                 </p>
-                <span className="text-xs md:text-sm text-[#7a4a2c] leading-relaxed">
+                <span className="hidden md:block text-sm text-[#7a4a2c]">
                   Hassle-free in-store & online returns
                 </span>
               </div>
             </div>
 
-            {/* SECURE CHECKOUT */}
-            <div className="flex items-center md:items-start gap-4 md:gap-6">
-              <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full
-                        bg-white shadow-sm">
-                <ShieldCheck className="text-[#5C2B06] w-6 h-6 md:w-8 md:h-8" />
+            {/* SECURE PAYMENTS */}
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-6">
+              <div className="flex items-center justify-center w-9 h-9 md:w-14 md:h-14 rounded-full bg-white shadow-sm">
+                <ShieldCheck className="text-[#5C2B06] w-4 h-4 md:w-8 md:h-8" />
               </div>
-              <div className="text-left">
-                <p className="text-[11px] md:text-[13px] font-semibold tracking-[0.35em] text-[#5C2B06] mb-1 md:mb-2">
+              <div>
+                <p className="text-[9px] md:text-[13px] font-semibold tracking-wider md:tracking-[0.35em] text-[#5C2B06]">
                   SECURE PAYMENTS
                 </p>
-                <span className="text-xs md:text-sm text-[#7a4a2c] leading-relaxed">
+                <span className="hidden md:block text-sm text-[#7a4a2c]">
                   Encrypted & trusted checkout experience
                 </span>
               </div>
