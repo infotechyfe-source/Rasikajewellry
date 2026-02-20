@@ -131,54 +131,101 @@ export default function Home() {
     <main className="bg-[#f8f7e2] text-gray-800 w-full overflow-x-hidden">
 
       {/* ================= HERO ================= */}
-      <section className="relative min-h-screen overflow-hidden flex items-center justify-center">
+      <section className="relative overflow-hidden flex flex-col md:min-h-screen">
 
-        <div
-          className={`absolute inset-0 flex ${isTransitioning ? "transition-transform duration-1000 ease-in-out" : ""}`}
-          style={{ transform: `translateX(-${current * 100}%)` }}
-        >
-          {videos.map((video, index) => (
-            <div key={index} className="w-full h-full flex-shrink-0">
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-              >
-                <source src={video} type="video/mp4" />
-              </video>
-            </div>
-          ))}
-        </div>
+        {/* 🎥 VIDEO CONTAINER */}
+        <div className="relative w-full h-[41vh] md:h-screen overflow-hidden">
 
-
-        {/* 🖤 DARK GRADIENT OVERLAY */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
-
-        <div className="relative z-10 text-center max-w-3xl px-6 mt-24">
-
-          <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
-            <span className="text-[#e6c36a] block">
-              ELEGANCE REDEFINED
-            </span>
-          </h1>
-
-          <p className="mt-4 mb-6 text-sm sm:text-base md:text-lg text-white max-w-lg mx-auto">
-            Discover the timeless beauty of handcrafted jewelry made to celebrate your moments.
-          </p>
-
-          <a
-            href="/shop"
-            className="inline-block mt-2 px-8 py-3 text-xs sm:text-sm font-semibold bg-[#8B4513] text-white tracking-widest
-            hover:bg-[#EEE2DA]/95 hover:text-[#8B4513] transition duration-300"
+          <div
+            className={`absolute inset-0 flex ${isTransitioning ? "transition-transform duration-1000 ease-in-out" : ""
+              }`}
+            style={{ transform: `translateX(-${current * 100}%)` }}
           >
-            SHOP NOW
-          </a>
+            {videos.map((video, index) => (
+              <div key={index} className="relative w-full h-full shrink-0">
 
+                <video
+                  className="absolute top-0 left-0 w-full h-full
+                     object-cover md:object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                >
+                  <source src={video} type="video/mp4" />
+                </video>
+
+              </div>
+            ))}
+          </div>
+
+          {/* 🖤 DARK GRADIENT OVERLAY */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+
+          {/* TEXT CONTENT */}
+          <div className="absolute inset-0 flex items-center justify-center px-6 text-center z-10">
+            <div className="max-w-3xl">
+
+              <h1 className="font-playfair text-2xl sm:text-3xl md:text-5xl lg:text-6xl leading-tight">
+                <span className="text-[#e6c36a] block">
+                  ELEGANCE REDEFINED
+                </span>
+              </h1>
+
+              <p className="mt-3 mb-5 text-xs sm:text-sm md:text-lg text-white max-w-lg mx-auto">
+                Discover the timeless beauty of handcrafted jewelry made to celebrate your moments.
+              </p>
+
+              <a
+                href="/shop"
+                className="inline-block px-6 py-2 md:px-8 md:py-3 text-xs sm:text-sm font-semibold 
+          bg-[#8B4513] text-white tracking-widest
+          hover:bg-[#EEE2DA]/95 hover:text-[#8B4513] transition duration-300"
+              >
+                SHOP NOW
+              </a>
+
+            </div>
+          </div>
+
+          {/* MOBILE SOCIAL ICONS */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 
+                flex md:hidden gap-5 z-20">
+
+            {/* WhatsApp */}
+            <a href="#" className="group">
+              <div className="w-10 h-10 rounded-full bg-[#EEE2DA] flex items-center justify-center
+        group-hover:bg-[#e6c36a] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#8B4513">
+                  <path d="M20.52 3.48A11.76 11.76 0 0 0 12.04 0C5.4 0 .02 5.38.02 12c0 2.12.55 4.2 1.6 6.04L0 24l6.14-1.6a11.94 11.94 0 0 0 5.9 1.5h.01c6.63 0 12.01-5.38 12.01-12a11.9 11.9 0 0 0-3.54-8.42ZM12.04 22a9.95 9.95 0 0 1-5.1-1.4l-.37-.22-3.64.95.97-3.55-.24-.36A9.94 9.94 0 1 1 12.04 22Zm5.44-7.45c-.3-.15-1.77-.87-2.05-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.89-.8-1.49-1.8-1.67-2.1-.17-.3-.02-.47.13-.62.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.57-.48-.5-.67-.5-.17 0-.37-.02-.57-.02-.2 0-.52.07-.8.37-.27.3-1.05 1.02-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.13 3.25 5.17 4.56.72.3 1.28.48 1.72.62.72.23 1.37.2 1.89.12.58-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35Z" />
+                </svg>
+              </div>
+            </a>
+
+            {/* Instagram */}
+            <a href="#" className="group">
+              <div className="w-10 h-10 rounded-full bg-[#EEE2DA] flex items-center justify-center
+        group-hover:bg-[#e6c36a] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#8B4513">
+                  <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.24 2.22.4a4.6 4.6 0 0 1 1.66 1.08 4.6 4.6 0 0 1 1.08 1.66c.16.42.35 1.05.4 2.22.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.24 1.8-.4 2.22a4.6 4.6 0 0 1-1.08 1.66 4.6 4.6 0 0 1-1.66 1.08c-.42.16-1.05.35-2.22.4-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.24-2.22-.4a4.6 4.6 0 0 1-1.66-1.08 4.6 4.6 0 0 1-1.08-1.66c-.16-.42-.35-1.05-.4-2.22C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.24-1.8.4-2.22a4.6 4.6 0 0 1 1.08-1.66A4.6 4.6 0 0 1 5.37 2.63c.42-.16 1.05-.35 2.22-.4C8.42 2.17 8.8 2.16 12 2.16Zm0 3.68A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84Zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4Zm6.4-10.8a1.44 1.44 0 1 1-1.44-1.44 1.44 1.44 0 0 1 1.44 1.44Z" />
+                </svg>
+              </div>
+            </a>
+
+            {/* Facebook */}
+            <a href="#" className="group">
+              <div className="w-10 h-10 rounded-full bg-[#EEE2DA] flex items-center justify-center
+        group-hover:bg-[#e6c36a] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#8B4513">
+                  <path d="M22.68 0H1.32A1.32 1.32 0 0 0 0 1.32v21.36A1.32 1.32 0 0 0 1.32 24h11.5v-9.3H9.69v-3.62h3.13V8.41c0-3.1 1.89-4.78 4.65-4.78 1.32 0 2.45.1 2.78.14v3.22h-1.91c-1.5 0-1.79.71-1.79 1.76v2.3h3.58l-.47 3.62h-3.11V24h6.09A1.32 1.32 0 0 0 24 22.68V1.32A1.32 1.32 0 0 0 22.68 0Z" />
+                </svg>
+              </div>
+            </a>
+
+          </div>
         </div>
 
-        {/* 📱 SOCIAL ICONS (RIGHT SIDE) - Hidden on mobile, visible on md+ */}
+        {/* 💻 DESKTOP SOCIAL ICONS */}
         <div className="hidden md:flex absolute right-6 md:right-10 top-1/2 -translate-y-1/2 z-20 flex-col gap-5">
 
           {/* WhatsApp */}
@@ -212,6 +259,7 @@ export default function Home() {
           </a>
 
         </div>
+
       </section>
 
       <div className="bg-gray-800 p-0 m-0">
@@ -235,7 +283,7 @@ export default function Home() {
                   FREE SHIPPING
                 </p>
                 <span className="text-xs md:text-sm text-[#7a4a2c] leading-relaxed">
-                  Complimentary delivery on orders above ₹49,999
+                  Complimentary delivery on orders above ₹1,999
                 </span>
               </div>
             </div>

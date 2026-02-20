@@ -9,4 +9,5 @@ export const categories = [
   "pendant",
   "nose ring",
   "maang tikka",
+  "hand wear",
 ];

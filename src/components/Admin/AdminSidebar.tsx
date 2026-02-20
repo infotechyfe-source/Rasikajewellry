@@ -20,11 +20,10 @@ export default function AdminSidebar() {
   const [showModal, setShowModal] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("admin_token"); // 🔥 remove token
+    localStorage.removeItem("admin_token"); // remove token
     toast.success("Logout successful!");
     router.replace("/admin/login");
   };
-
 
   const menuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },

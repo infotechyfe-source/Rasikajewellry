@@ -21,10 +21,7 @@ export function Navbar() {
       <header className="fixed top-0 w-full z-50">
 
         {/* INFO BAR */}
-        <div className="bg-[#EEE2DA]/95 backdrop-blur
-                        text-center text-[10px]
-                        tracking-[0.22em] text-[#512403] py-0.5">
-          Complimentary Shipping on Orders Above ₹1,999
+        <div className="bg-[#8B4513]/95 backdrop-blur text-center text-[10px] tracking-[0.22em] text-white py-0.5"> Complimentary Shipping on Orders Above ₹1,999
         </div>
 
         {/* MAIN NAV */}
