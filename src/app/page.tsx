@@ -8,20 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { ShieldCheck, MessageCircle, HeartHandshake, Truck, RefreshCcw, } from "lucide-react";
 const WHATSAPP_NUMBER = "919120797254";
 
-const categories = [
-  { title: "Nose Ring", image: "/images/nose.png", desc: "Traditional & modern nose pins", },
-  { title: "Earring", image: "/images/ear1.jpeg", desc: "Earrings for every occasion", },
-  { title: "Hand Wear", image: "/images/hand.jpg", desc: "Bangles, bracelets & rings", },
-  { title: "Rings", image: "/images/ring1.webp", desc: "All kinds of rings" },
-  { title: "Necklace Set", image: "/images/necklace.jpeg", desc: "Elegant necklace collections" },
-  { title: "Mangalsutra", image: "/images/mangalsutra.webp", desc: "Daily wear & bridal mangalsutras" },
-  { title: "Payal", image: "/images/payal.jpg", desc: "Anklets for every style" },
-  { title: "Toe Ring", image: "/images/toering.webp", desc: "Chutki / Bichhiya designs" },
-  { title: "Bangles", image: "/images/bangle.jpg", desc: "Traditional & modern bangles" },
-  { title: "Pendant", image: "/images/pendant.jpeg", desc: "Elegant pendant chains" },
-  { title: "Maang Tikka", image: "/images/tikka.webp", desc: "Bridal & festive tikka" },
-  { title: "Bracelet", image: "/images/1.jpg", desc: "Bridal & festive tikka" },
-];
+import { categories, categoryImages } from "@/data/categories";
 
 const features = [
   { icon: ShieldCheck, title: "Certified Quality", desc: "Carefully selected materials..." },
@@ -424,32 +411,29 @@ export default function Home() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {categories.map((cat) => (
               <Link
-                key={cat.title}
-                href={`/shop?category=${encodeURIComponent(cat.title.toLowerCase())}`}
+                key={cat}
+                href={`/shop?category=${encodeURIComponent(cat)}`}
                 className="group"
               >
                 <div className="relative overflow-hidden bg-[#111]">
 
-                  {/* IMAGE */}
                   <div className="relative w-full aspect-3/4 overflow-hidden">
                     <Image
-                      src={cat.image}
-                      alt={cat.title}
+                      src={categoryImages[cat]}
+                      alt={cat}
                       fill
                       className="object-cover group-hover:scale-105 transition duration-700 ease-out"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                   </div>
 
-                  {/* DARK OVERLAY */}
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
 
-                  {/* CATEGORY NAME */}
                   <div className="absolute bottom-0 left-0 w-full bg-black/80 py-2 md:py-3 text-center">
-                    <span className="font-serif text-xs md:text-sm text-white tracking-wide">
-                      {cat.title}
+                    <span className="font-serif text-xs md:text-sm text-white tracking-wide capitalize">
+                      {cat}
                     </span>
                   </div>
+
                 </div>
               </Link>
             ))}
