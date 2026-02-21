@@ -1,70 +1,57 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Trash2, Pencil, Plus, X, Check } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import {
+  Trash2,
+  Pencil,
+  Plus,
+  X,
+  Check,
+  Search,
+} from 'lucide-react';
 import Image from 'next/image';
 import toast, { Toaster } from 'react-hot-toast';
-import { categories } from '@/data/categories';
+import { categories, categoriesWithTypes } from '@/data/categories';
 
 interface Product {
   id: string;
   name: string;
   category: string;
   type?: string;
-  price: string | number;
+  price: number;
   image: string;
   active: boolean;
 }
 
-// Type for grouped products
-type GroupedProducts = Record<string, Product[]>;
-
 export default function ProductsPage() {
-  const [products, setProducts] = useState<GroupedProducts>({});
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [search, setSearch] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+  const [sortBy, setSortBy] = useState('latest');
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [saveLoading, setSaveLoading] = useState(false);
 
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState('');
-  const [type, setType] = useState('');
-  const [price, setPrice] = useState('');
-  const [image, setImage] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    name: '',
+    category: '',
+    type: '',
+    price: '',
+    image: '',
+  });
 
-  // Fetch all products
+  // ================= FETCH PRODUCTS =================
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/products`);
+      const res = await fetch('/api/products');
       const data = await res.json();
-
-      if (data.success) {
-        const mappedProducts: Product[] = data.products.map((p: any) => ({
-          id: p.id,
-          name: p.name,
-          category: p.category,
-          type: p.type,
-          price: p.price,
-          image: p.image,
-          active: p.active,
-        }));
-
-        // Group products by category
-        const grouped: GroupedProducts = mappedProducts.reduce((acc, product) => {
-          if (!acc[product.category]) acc[product.category] = [];
-          acc[product.category].push(product);
-          return acc;
-        }, {} as GroupedProducts);
-
-        setProducts(grouped);
-      } else {
-        toast.error(data.error || 'Failed to fetch products');
-      }
-    } catch (err) {
-      console.error(err);
+      if (data.success) setProducts(data.products);
+      else toast.error(data.error);
+    } catch {
       toast.error('Failed to fetch products');
     } finally {
       setLoading(false);
@@ -75,233 +62,485 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
-  // Open add modal
-  const openAddModal = () => {
-    setEditingProduct(null);
-    setName('');
-    setCategory('');
-    setType('');
-    setPrice('');
-    setImage(null);
-    setModalOpen(true);
-  };
+  // ================= FILTER + SEARCH + SORT =================
+  const filteredProducts = useMemo(() => {
+    let filtered = [...products];
 
-  // Open edit modal
-  const openEditModal = (product: Product) => {
-    setEditingProduct(product);
-    setName(product.name);
-    setCategory(product.category);
-    setType(product.type || '');
-    setPrice(product.price.toString());
-    setImage(product.image);
-    setModalOpen(true);
-  };
+    if (search) {
+      filtered = filtered.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
 
-  // Upload image
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (filterCategory) {
+      filtered = filtered.filter((p) => p.category === filterCategory);
+    }
+
+    if (sortBy === 'price-low')
+      filtered.sort((a, b) => a.price - b.price);
+    if (sortBy === 'price-high')
+      filtered.sort((a, b) => b.price - a.price);
+    if (sortBy === 'name')
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+    return filtered;
+  }, [products, search, filterCategory, sortBy]);
+
+  // ================= IMAGE UPLOAD =================
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('bucket', 'products');
 
     try {
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const res = await fetch('/api/images', {
+        method: 'POST',
+        body: formData,
+      });
+
       const data = await res.json();
-      if (data.success) setImage(data.path);
-      else toast.error('Image upload failed');
-    } catch (err) {
-      console.error(err);
-      toast.error('Image upload failed');
+      if (data.success) {
+        setForm((prev) => ({ ...prev, image: data.path }));
+        toast.success('Image uploaded');
+      } else toast.error(data.error);
+    } catch {
+      toast.error('Upload failed');
     }
   };
 
-  // Save product (add or edit)
+  // ================= SAVE PRODUCT =================
   const handleSave = async () => {
-    if (!name || !category || !price || !image) return toast.error('Please fill all fields');
+    if (!form.name || !form.category || !form.price || !form.image)
+      return toast.error('Please fill all fields');
+
     setSaveLoading(true);
 
+    const payload = {
+      ...form,
+      price: Number(form.price),
+      active: editingProduct?.active ?? true,
+    };
+
     try {
-      const payload = {
-        name,
-        category,
-        type,
-        price: Number(price),
-        image,
-        active: editingProduct?.active ?? true,
-      };
-
-      if (editingProduct) {
-        const res = await fetch(`/api/products/${editingProduct.id}`, {
-          method: 'PUT',
+      const res = await fetch(
+        editingProduct
+          ? `/api/products/${editingProduct.id}`
+          : '/api/products',
+        {
+          method: editingProduct ? 'PUT' : 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
-        });
-        const data = await res.json();
+        }
+      );
 
-        if (data.success) toast.success('Product updated successfully!');
-        else toast.error(data.error);
-      } else {
-        const res = await fetch('/api/products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        const data = await res.json();
-
-        if (data.success) toast.success('Product added successfully!');
-        else toast.error(data.error);
-      }
-
-      setModalOpen(false);
-      fetchProducts();
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to save product');
+      const data = await res.json();
+      if (data.success) {
+        toast.success(
+          editingProduct
+            ? 'Product updated'
+            : 'Product added'
+        );
+        setModalOpen(false);
+        fetchProducts();
+      } else toast.error(data.error);
+    } catch {
+      toast.error('Save failed');
     } finally {
       setSaveLoading(false);
     }
   };
 
-  // Delete product
-  const handleDelete = async (productId: string) => {
+  // ================= DELETE =================
+  const handleDelete = async (id: string) => {
     if (!confirm('Delete this product?')) return;
 
     try {
-      const res = await fetch(`/api/products/${productId}`, { method: 'DELETE' });
+      const res = await fetch(`/api/products/${id}`, {
+        method: 'DELETE',
+      });
       const data = await res.json();
-
       if (data.success) {
-        toast.success('Product deleted successfully!');
+        toast.success('Product deleted');
         fetchProducts();
       } else toast.error(data.error);
     } catch {
-      toast.error('An error occurred while deleting the product.');
+      toast.error('Delete failed');
     }
   };
 
-  // Toggle active/inactive
-  const toggleProduct = async (product: Product) => {
-    setActionLoadingId(product.id);
+  // ================= TOGGLE =================
+  const toggleStatus = async (product: Product) => {
     try {
-      const res = await fetch(`/api/products/${product.id}`, {
+      await fetch(`/api/products/${product.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ active: !product.active }),
       });
-      const data = await res.json();
-      if (data.success) toast.success(`Product ${!product.active ? 'Activated' : 'Deactivated'}`);
       fetchProducts();
     } catch {
       toast.error('Status update failed');
-    } finally {
-      setActionLoadingId(null);
     }
   };
 
-  if (loading) return <p className="p-6 text-gray-500">Loading products...</p>;
+  const openAddModal = () => {
+    setEditingProduct(null);
+    setForm({
+      name: '',
+      category: '',
+      type: '',
+      price: '',
+      image: '',
+    });
+    setModalOpen(true);
+  };
+
+  const openEditModal = (product: Product) => {
+    setEditingProduct(product);
+    setForm({
+      name: product.name,
+      category: product.category,
+      type: product.type || '',
+      price: product.price.toString(),
+      image: product.image,
+    });
+    setModalOpen(true);
+  };
+
+  if (loading)
+    return (
+      <div className="p-10 text-center text-gray-500">
+        Loading products...
+      </div>
+    );
 
   return (
     <>
       <Toaster position="top-right" />
-      <div className="p-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Products</h1>
-          <button onClick={openAddModal} className="flex items-center gap-2 bg-[#8B4513] text-white px-4 py-2 rounded-lg cursor-pointer">
-            <Plus size={16} /> Add Product
+      <div className="p-8 bg-gray-50 min-h-screen">
+
+        {/* HEADER */}
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">
+              Product Management
+            </h1>
+            <p className="text-gray-500">
+              Manage your jewellery inventory professionally
+            </p>
+          </div>
+
+          <button
+            onClick={openAddModal}
+            className="flex items-center gap-2 bg-black text-white px-5 py-3 rounded-xl shadow hover:opacity-90 cursor-pointer"
+          >
+            <Plus size={18} />
+            Add Product
           </button>
         </div>
 
-        {/* Products grouped by category */}
-        {Object.entries(products).map(([categoryName, items]) => (
-          <div key={categoryName} className="mb-8">
-            <h2 className="text-xl font-bold mb-3">{categoryName}</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse shadow-md rounded-lg overflow-hidden">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="p-3 text-left text-gray-600 uppercase text-sm font-medium">ID</th>
-                    <th className="p-3 text-left text-gray-600 uppercase text-sm font-medium">Image</th>
-                    <th className="p-3 text-left text-gray-600 uppercase text-sm font-medium">Name</th>
-                    <th className="p-3 text-left text-gray-600 uppercase text-sm font-medium">Type</th>
-                    <th className="p-3 text-left text-gray-600 uppercase text-sm font-medium">Price</th>
-                    <th className="p-3 text-left text-gray-600 uppercase text-sm font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {items.map((p, i) => (
-                    <tr key={p.id} className={`transition hover:bg-gray-50 ${i % 2 === 0 ? 'bg-gray-50' : ''}`}>
-                      <td className="p-3 text-gray-700">{p.id}</td>
-                      <td className="p-3">
-                        <Image src={p.image} alt={p.name} width={64} height={64} className="object-cover rounded shadow-sm border" unoptimized />
-                      </td>
-                      <td className="p-3 text-gray-700 font-medium">{p.name}</td>
-                      <td className="p-3 text-gray-500">{p.type}</td>
-                      <td className="p-3 text-gray-700 font-semibold">₹{p.price}</td>
-                      <td className="p-3 flex gap-2">
-                        <button onClick={() => openEditModal(p)} className="p-1 rounded hover:bg-blue-100 text-blue-600 transition" title="Edit"><Pencil size={18} /></button>
-                        <button disabled={actionLoadingId === p.id} onClick={() => handleDelete(p.id)} className="p-1 rounded hover:bg-red-100 text-red-600 transition disabled:opacity-50">{actionLoadingId === p.id ? '...' : <Trash2 size={18} />}</button>
-                        <button disabled={actionLoadingId === p.id} onClick={() => toggleProduct(p)} className={`px-3 py-1 rounded text-xs font-medium text-white transition ${p.active ? 'bg-green-500' : 'bg-red-500'} disabled:opacity-50`}>
-                          {actionLoadingId === p.id ? 'Updating...' : p.active ? 'Active' : 'Inactive'}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+        {/* FILTERS */}
+        <div className="bg-white p-4 rounded-xl shadow mb-6 flex flex-col md:flex-row gap-4 md:items-center justify-between">
+          <div className="flex items-center border rounded-lg px-3 py-2 w-full md:w-80">
+            <Search size={18} className="text-gray-400 mr-2" />
+            <input
+              type="text"
+              placeholder="Search product..."
+              className="w-full outline-none"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
-        ))}
+
+          <div className="flex gap-3">
+            <select
+              value={filterCategory}
+              onChange={(e) =>
+                setFilterCategory(e.target.value)
+              }
+              className="border rounded-lg px-3 py-2"
+            >
+              <option value="">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat}>{cat}</option>
+              ))}
+            </select>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="border rounded-lg px-3 py-2"
+            >
+              <option value="latest">Latest</option>
+              <option value="price-low">
+                Price: Low to High
+              </option>
+              <option value="price-high">
+                Price: High to Low
+              </option>
+              <option value="name">Name</option>
+            </select>
+          </div>
+        </div>
+
+        {/* TABLE */}
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+          <table className="min-w-full">
+            <thead className="bg-gray-100 text-sm text-gray-600">
+              <tr>
+                <th className="p-4 text-left">Product</th>
+                <th className="p-4 text-left">Category</th>
+                <th className="p-4 text-left">Price</th>
+                <th className="p-4 text-left">Status</th>
+                <th className="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {filteredProducts.map((p) => (
+                <tr
+                  key={p.id}
+                  className="border-t hover:bg-gray-50 transition"
+                >
+                  <td className="p-4 flex items-center gap-3">
+                    <Image
+                      src={p.image}
+                      alt={p.name}
+                      width={50}
+                      height={50}
+                      className="rounded-lg object-cover"
+                      unoptimized
+                    />
+                    <div>
+                      <p className="font-medium">
+                        {p.name}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {p.type}
+                      </p>
+                    </div>
+                  </td>
+
+                  <td className="p-4">{p.category}</td>
+
+                  <td className="p-4 font-semibold">
+                    ₹{p.price}
+                  </td>
+
+                  <td className="p-4">
+                    <span
+                      onClick={() => toggleStatus(p)}
+                      className={`px-3 py-1 text-xs rounded-full cursor-pointer ${p.active
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-600'
+                        }`}
+                    >
+                      {p.active ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+
+                  <td className="p-4 text-right flex justify-end gap-3">
+                    <button
+                      onClick={() => openEditModal(p)}
+                      className="text-blue-600 hover:scale-110 transition"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleDelete(p.id)
+                      }
+                      className="text-red-600 hover:scale-110 transition"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {filteredProducts.length === 0 && (
+            <div className="p-10 text-center text-gray-500">
+              No products found
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Modal for add/edit */}
+      {/* MODAL */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto relative p-6">
-            <button title="close" onClick={() => setModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition cursor-pointer"><X size={20} /></button>
-            <h2 className="text-2xl font-semibold mb-1">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
-            <p className="text-sm text-gray-500 mb-6">Manage your jewellery inventory</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
+          <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl relative overflow-hidden">
 
-            <div className="space-y-4">
+            {/* HEADER */}
+            <div className="flex justify-between items-center px-8 py-6 border-b bg-gray-50">
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Product Name</label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Eg. Oxidised Ring" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
+                <h2 className="text-2xl font-bold">
+                  {editingProduct ? 'Edit Product' : 'Add Product'}
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Manage product information and inventory details
+                </p>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Category</label>
-                <select value={category} onChange={e => setCategory(e.target.value)} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black">
-                  <option value="">Select Category</option>
-                  {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                </select>
-              </div>
+              <button
+                onClick={() => setModalOpen(false)}
+                className="p-2 rounded-full hover:bg-gray-200 transition"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Type (optional)</label>
-                <input type="text" value={type} onChange={e => setType(e.target.value)} placeholder="Eg. Oxidised Ring" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-              </div>
+            {/* BODY */}
+            <div className="grid md:grid-cols-2 gap-10 p-8">
 
+              {/* LEFT SIDE - IMAGE */}
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Price (₹)</label>
-                <input type="number" value={price} onChange={e => setPrice(e.target.value)} placeholder="Eg. 199" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-2">Product Image</label>
-                <label className="flex items-center justify-center border-2 border-dashed rounded-xl p-4 cursor-pointer hover:border-black transition">
-                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                  <span className="text-sm text-gray-500">Click to upload image</span>
+                <label className="block text-sm font-medium text-gray-600 mb-3">
+                  Product Image
                 </label>
-                {image && <div className="mt-3 flex justify-center"><Image src={image} alt="Preview" width={112} height={112} className="rounded-lg shadow object-cover" unoptimized /></div>}
+
+                <label className="border-2 border-dashed border-gray-300 rounded-2xl h-72 flex items-center justify-center cursor-pointer hover:border-black transition bg-gray-50">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+
+                  {!form.image ? (
+                    <div className="text-center">
+                      <p className="text-gray-500 text-sm">
+                        Click to upload product image
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        PNG, JPG up to 1MB
+                      </p>
+                    </div>
+                  ) : (
+                    <Image
+                      src={form.image}
+                      alt="Preview"
+                      width={300}
+                      height={300}
+                      className="object-cover rounded-2xl h-full"
+                      unoptimized
+                    />
+                  )}
+                </label>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
-                <button onClick={() => setModalOpen(false)} className="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-100 cursor-pointer">Cancel</button>
-                <button disabled={saveLoading} onClick={handleSave} className="flex items-center gap-2 px-5 py-2 rounded-lg bg-black text-white disabled:opacity-50">
-                  {saveLoading ? 'Saving...' : (<><Check size={16} />{editingProduct ? 'Save Changes' : 'Add Product'}</>)}
-                </button>
+              {/* RIGHT SIDE - DETAILS */}
+              <div className="space-y-5">
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Product Name
+                  </label>
+                  <input
+                    type="text"
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm({ ...form, name: e.target.value })
+                    }
+                    placeholder="Eg. Gold Plated Necklace"
+                    className="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Category
+                  </label>
+                  <select
+                    value={form.category}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        category: e.target.value,
+                        type: "", // reset type when category changes
+                      });
+                    }}
+                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black"
+                  >
+                    <option value="">Select Category</option>
+
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Type (Optional)
+                  </label>
+                  <select
+                    value={form.type}
+                    onChange={(e) =>
+                      setForm({ ...form, type: e.target.value })
+                    }
+                    disabled={!form.category}
+                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black disabled:bg-gray-100"
+                  >
+                    <option value="">
+                      {form.category ? "Select Type" : "Select Category First"}
+                    </option>
+
+                    {form.category &&
+                      categoriesWithTypes[form.category]?.map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Price (₹)
+                  </label>
+                  <input
+                    type="number"
+                    value={form.price}
+                    onChange={(e) =>
+                      setForm({ ...form, price: e.target.value })
+                    }
+                    placeholder="Eg. 1999"
+                    className="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"
+                  />
+                </div>
+
               </div>
+            </div>
+
+            {/* FOOTER */}
+            <div className="flex justify-end gap-4 px-8 py-6 border-t bg-gray-50">
+              <button
+                onClick={() => setModalOpen(false)}
+                className="px-6 py-3 rounded-xl border text-gray-600 hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+
+              <button
+                disabled={saveLoading}
+                onClick={handleSave}
+                className="px-8 py-3 rounded-xl bg-black text-white font-medium hover:opacity-90 transition disabled:opacity-50"
+              >
+                {saveLoading
+                  ? 'Saving...'
+                  : editingProduct
+                    ? 'Update Product'
+                    : 'Add Product'}
+              </button>
             </div>
           </div>
         </div>

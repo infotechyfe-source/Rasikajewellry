@@ -20,6 +20,7 @@ const categories = [
   { title: "Bangles", image: "/images/bangle.jpg", desc: "Traditional & modern bangles" },
   { title: "Pendant", image: "/images/pendant.jpeg", desc: "Elegant pendant chains" },
   { title: "Maang Tikka", image: "/images/tikka.webp", desc: "Bridal & festive tikka" },
+  { title: "Bracelet", image: "/images/1.jpg", desc: "Bridal & festive tikka" },
 ];
 
 const features = [

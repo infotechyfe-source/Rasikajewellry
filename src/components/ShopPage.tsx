@@ -3,7 +3,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { useSearchParams } from "next/navigation";
 import Footer from "@/components/Footer";
 import { useState, useEffect, useMemo } from "react";
-import { categories as allCategories } from "@/data/categories";
+import { categories, categoriesWithTypes } from "@/data/categories";
 import Image from "next/image";
 
 type Product = {
@@ -44,7 +44,8 @@ export default function ShopPage() {
 
   const normalizedCategory = selectedCategory?.trim().toLowerCase();
   const currentHeroImage =
-    (normalizedCategory && heroImages[normalizedCategory]) || "/images/shop-hero.png";
+    (selectedCategory && heroImages[selectedCategory]) ||
+    "/images/shop-hero.png";
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -75,25 +76,16 @@ export default function ShopPage() {
     setSelectedType(null);
   }, [urlCategory]);
 
-  const categories = allCategories;
 
   const types = useMemo(() => {
     if (!selectedCategory) return [];
-    return [
-      ...new Set(
-        shopProducts
-          .filter(p => p.category?.toLowerCase().trim() === selectedCategory?.toLowerCase().trim())
-          .map(p => p.type)
-          .filter(Boolean)
-      ),
-    ];
-  }, [shopProducts, selectedCategory]);
+    return categoriesWithTypes[selectedCategory] || [];
+  }, [selectedCategory]);
 
   const filteredProducts = useMemo(() => {
     let list = shopProducts.filter(p => {
       const price = Number(p.price);
-      const productCategory = p.category?.toLowerCase().trim();
-      if (selectedCategory && productCategory !== normalizedCategory) return false;
+      if (selectedCategory && p.category !== selectedCategory) return false;
       if (selectedType && p.type !== selectedType) return false;
       if (price > maxPrice) return false;
       if (inStockOnly && !p.active) return false;
@@ -129,14 +121,17 @@ export default function ShopPage() {
       </section>
 
       {/* SHOP */}
-      <section className="max-w-[1600px] mx-auto px-4 py-16">
-        <h1 className="text-[#8B4513] text-3xl md:text-5xl font-serif tracking-wide text-center">
+      <section className="max-w-[1600px] mx-auto px-4 py-8 md:py-16">
+        <h1 className="text-[#8B4513] text-3xl md:text-5xl font-serif tracking-wide text-center mb-4">
           {selectedCategory ? selectedCategory.toUpperCase() : "OUR COLLECTION"}
         </h1>
-
-        {/* Top bar - sort and mobile filter button */}
-        <div className="flex justify-between items-center mb-4 lg:hidden">
+        <div className="flex items-center justify-between gap-3 p-4">
+          <p className="text-sm text-gray-600">
+            {filteredProducts.length} Products
+          </p>
+          
           <select
+          title="rec"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
             className="border border-[#8B4513] px-4 py-1 text-sm bg-[#f2f1e6]"
@@ -145,6 +140,12 @@ export default function ShopPage() {
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
           </select>
+        </div>
+
+        {/* Top bar - sort and mobile filter button */}
+        <div className="flex justify-between items-center mb-4 lg:hidden">
+
+
 
           <button
             onClick={() => setShowFilters(true)}
