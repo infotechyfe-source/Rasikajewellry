@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { ShieldCheck, MessageCircle, HeartHandshake, Truck, RefreshCcw, } from "lucide-react";
-const WHATSAPP_NUMBER = "919120797254";
+import { ProductCard } from "@/components/ProductCard";
 
 import { categories, categoryImages } from "@/data/categories";
 
@@ -32,6 +32,7 @@ export default function Home() {
   const [videos, setVideos] = useState<string[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [products, setProducts] = useState<any[]>([]);
 
   /* ================= FETCH ALL DATA + SPLASH CONTROL ================= */
   useEffect(() => {
@@ -64,6 +65,28 @@ export default function Home() {
 
         setTestimonials([defaultTestimonial, ...formatted]);
 
+         /* ================= PRODUCTS (FROM API) ================= */
+      const productRes = await fetch("/api/products");
+      const productJson = await productRes.json();
+
+      if (productJson.success) {
+        const formattedProducts = (productJson.products || [])
+          .filter((p: any) => p.active)
+          .slice(0, 8)
+          .map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            category: p.category || "unknown",
+            type: p.type || "unknown",
+            price: Number(p.price),
+            image: p.image,
+            active: Boolean(p.active),
+          }));
+
+        setProducts(formattedProducts);
+      }
+
+
       } catch (error) {
         console.error("Error loading homepage data:", error);
       } finally {
@@ -82,7 +105,6 @@ export default function Home() {
 
     fetchAllData();
   }, []);
-
 
   /* ================= VIDEO AUTO SLIDE ================= */
   useEffect(() => {
@@ -349,6 +371,43 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ================= OUR COLLECTION ================= */}
+<section className="bg-[#f8f7e2] py-16 md:py-24">
+  <div className="max-w-7xl mx-auto px-6 md:px-10">
+
+    <div className="text-center mb-12 md:mb-16">
+      <h2 className="font-serif text-3xl md:text-5xl text-[#c8a24d]">
+        Our Collection
+      </h2>
+      <p className="text-black/60 mt-3 text-sm tracking-widest uppercase">
+        Curated for Timeless Elegance
+      </p>
+    </div>
+
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+      {products.length > 0 ? (
+        products.map((product) => (
+          <ProductCard key={product.id} {...product} />
+        ))
+      ) : (
+        <p className="col-span-full text-center text-gray-400">
+          No products available.
+        </p>
+      )}
+    </div>
+
+    <div className="mt-12 flex justify-center">
+      <Link
+        href="/shop"
+        className="border border-[#8b4a16] text-[#8b4a16] px-10 py-3 text-xs tracking-widest uppercase hover:bg-[#8b4a16] hover:text-white transition duration-300"
+      >
+        View All
+      </Link>
+    </div>
+
+  </div>
+</section>
 
       {/* ================= SIGNATURE COLLECTION ================= */}
 
