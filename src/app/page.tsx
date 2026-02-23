@@ -119,10 +119,10 @@ export default function Home() {
     <main className="bg-[#f8f7e2] text-gray-800 w-full overflow-x-hidden">
 
       {/* ================= HERO ================= */}
-      <section className="relative overflow-hidden flex flex-col md:min-h-screen">
+      <section className="relative overflow-hidden flex flex-col md:min-h-screen pt-20 md:pt-24">
 
         {/* 🎥 VIDEO CONTAINER */}
-        <div className="relative w-full h-[41vh] md:h-screen overflow-hidden">
+        <div className="relative w-full h-[50vh] md:h-screen overflow-hidden">
 
           <div
             className={`absolute inset-0 flex ${isTransitioning ? "transition-transform duration-1000 ease-in-out" : ""

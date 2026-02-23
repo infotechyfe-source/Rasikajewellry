@@ -123,16 +123,32 @@ export default function ShopPage() {
     <main className="bg-[#f2f1e6]">
 
       {/* CLEAN HERO */}
-      <section className="relative w-full h-[55vh] md:h-[65vh] overflow-hidden mt-10">
-        <Image
-          src={currentHeroImage}
-          alt="Luxury Jewellery Collection"
-          fill
-          priority
-          quality={100}
-          className="object-cover object-center"
-          sizes="100vw"
-        />
+      <section className="relative w-full mt-10 md:h-[60vh] lg:h-[65vh] overflow-hidden">
+
+        {/* MOBILE */}
+        <div className="block md:hidden">
+          <Image
+            src={currentHeroImage}
+            alt="Luxury Jewellery Collection"
+            width={1200}
+            height={1600}  // adjust to your real image ratio
+            priority
+            className="w-full h-auto"
+          />
+        </div>
+
+        {/* DESKTOP */}
+        <div className="hidden md:block relative w-full h-full">
+          <Image
+            src={currentHeroImage}
+            alt="Luxury Jewellery Collection"
+            fill
+            priority
+            quality={100}
+            className="object-cover"
+          />
+        </div>
+
       </section>
       {/* SHOP */}
       <section className="max-w-[1600px] mx-auto px-4 py-4 md:py-12">

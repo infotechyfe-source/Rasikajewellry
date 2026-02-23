@@ -55,8 +55,8 @@ export function Navbar() {
                 </div>
 
                 {/* Mobile Search Icon */}
-                <button 
-                 title="mobile search"
+                <button
+                  title="mobile search"
                   onClick={() => setSearchOpen(true)}
                   className="md:hidden text-[#512403] cursor-pointer"
                 >
@@ -148,64 +148,69 @@ export function Navbar() {
 
       {/* ================= MOBILE DRAWER ================= */}
       {open && (
-        <div className="md:hidden fixed inset-0 z-50
-                  bg-[#2b1a12]/95 backdrop-blur-xl">
+        <div className="md:hidden fixed inset-0 z-50">
 
-          {/* TOP BAR */}
-          <div className="sticky top-0 z-10
-                    flex items-center justify-between
-                    px-6 py-4
-                    border-b border-white/10">
-            <span className="text-[12px] tracking-[0.25em] text-white/80 uppercase">
-              Menu
-            </span>
+          {/* BACKDROP */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          />
 
-            <button
-              onClick={() => setOpen(false)}
-              className="p-2 rounded-full
-                   hover:bg-white/10
-                   transition"
-              aria-label="Close menu"
-            >
-              <X size={22} className="text-white" />
-            </button>
-          </div>
+          {/* DRAWER PANEL */}
+          <div className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-[#EEE2DA]/90
+                    shadow-2xl animate-slideIn flex flex-col">
+            {/* TOP BAR */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+              <span className="text-xs tracking-[0.3em] text-[#8B4513]/90 uppercase">
+                Menu
+              </span>
+              <button
+                onClick={() => setOpen(false)}
+                className="p-2 rounded-full hover:bg-white/10 transition"
+                aria-label="Close menu"
+              >
+                <X size={22} className="text-[#8B4513]" />
+              </button>
+            </div>
 
-          {/* MENU ITEMS */}
-          <ul className="flex flex-col px-6 py-6 gap-4
-                   text-sm tracking-wide text-white">
-            {uniqueCategories.map(cat => (
-              <li key={cat}>
+            {/* MENU ITEMS */}
+            <ul className="flex-1 overflow-y-auto px-6 py-6 space-y-5 text-[#8B4513] text-sm">
+              {uniqueCategories.map(cat => (
+                <li key={cat}>
+                  <Link
+                    href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
+                    onClick={() => setOpen(false)}
+                    className="block pb-3 border-b border-white/10 uppercase tracking-widest text-[13px]
+                         hover:text-[#e6c36a] transition">
+                    {cat}
+                  </Link>
+                </li>
+
+              ))}
+              {/* Highlighted Collection */}
+              <li className="flex-shrink-0">
                 <Link
-                  href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
-                  onClick={() => setOpen(false)}
-                  className="block py-3
-                       border-b border-white/10
-                       uppercase tracking-widest text-[12px]
-                       hover:text-[#c8a24d]
-                       transition"
-                >
-                  {cat}
+                  href="/shop"
+                  className="w-full inline-flex items-center justify-center px-6 py-2 rounded bg-[#EEE2DA]/90 text-[#512403] text-[11px] tracking-[0.22em] uppercase shadow-md hover:bg-[#7a3b10]
+           hover:text-white transition">
+                  Explore More
                 </Link>
               </li>
-            ))}
+            </ul>
 
-            {/* CTA */}
-            <li className="mt-8">
+            {/* BOTTOM CTA */}
+            <div className="p-6 border-t border-white/10">
+
               <a
                 href="https://wa.me/919120797254"
-                className="block text-center rounded-full
-                     bg-[#c8a24d]
-                     text-black
-                     py-3
-                     text-[11px]
-                     tracking-[0.3em]
-                     shadow-lg"
-              >
+                target="_blank"
+                className="block w-full text-center bg-[#EEE2DA]/90  text-[#512403] py-4 rounded text-xs tracking-[0.3em] font-semibold shadow-xl active:scale-95 transition border border-[#512403] hover:bg-[#512403] hover:text-white">
                 CHAT & ORDER ON WHATSAPP
               </a>
-            </li>
-          </ul>
+
+            </div>
+
+          </div>
         </div>
       )}
 
