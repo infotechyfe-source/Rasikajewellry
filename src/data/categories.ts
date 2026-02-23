@@ -5,6 +5,8 @@ export const categoriesWithTypes: Record<string, string[]> = {
     "Hoops",
     "Drop Earrings",
     "Chandbali",
+    "Korean",
+    "Fancy",
   ],
 
   rings: [

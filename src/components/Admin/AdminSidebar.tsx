@@ -96,6 +96,7 @@ export default function AdminSidebar() {
 
             {/* Close Icon */}
             <button
+              title='close'
               onClick={() => setShowModal(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-black"
             >

@@ -55,7 +55,8 @@ export function Navbar() {
                 </div>
 
                 {/* Mobile Search Icon */}
-                <button
+                <button 
+                 title="mobile search"
                   onClick={() => setSearchOpen(true)}
                   className="md:hidden text-[#512403] cursor-pointer"
                 >
@@ -84,10 +85,11 @@ export function Navbar() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-6 py-2 rounded
-                       bg-[#8B4513]/90
+                       bg-[#EEE2DA]/90
                        text-[11px] tracking-[0.3em]
-                       text-white
+                       text-[#8B4513]
                        hover:bg-[#8B4513]
+                       hover:text-white
                        transition-all shadow-md">
                     ORDER ON WHATSAPP
                   </a>

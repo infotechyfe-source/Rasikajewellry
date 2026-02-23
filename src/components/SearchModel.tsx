@@ -73,6 +73,7 @@ export function SearchModal({ open, onClose }: Props) {
 
           {query && (
             <button
+              title="close"
               onClick={() => setQuery("")}
               className="text-gray-400 hover:text-black transition"
             >

@@ -538,7 +538,7 @@ export default function Home() {
       </section>
 
       {/* ================= SPOTTED IN RASIKA ================= */}
-      <section className="bg-[#efe5f0] py-16 md:py-28">
+      <section className="bg-[#efe5f0] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
 
           {/* HEADING */}
@@ -552,7 +552,7 @@ export default function Home() {
           </div>
 
           {/* IMAGE GRID */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
 
             {/* TOP LEFT */}
             <div className="relative overflow-hidden rounded-lg md:rounded-xl group">

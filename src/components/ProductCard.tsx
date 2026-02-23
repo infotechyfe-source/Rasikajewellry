@@ -98,7 +98,7 @@ Order ID: ${data.orderId}
           ${active ? "hover:shadow-lg" : "opacity-70"}
         `}
       >
-        <div className="relative aspect-[3/4] bg-[#efece6]">
+        <div className="relative aspect-3/4 bg-[#efece6]">
           {!active && (
             <div className="absolute top-3 left-3 z-10 bg-black text-white text-[10px] px-3 py-1 tracking-widest">
               OUT OF STOCK
