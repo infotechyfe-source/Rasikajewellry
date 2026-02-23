@@ -10,19 +10,12 @@ const WHATSAPP_NUMBER = "919120797254";
 
 import { categories, categoryImages } from "@/data/categories";
 
-const features = [
-  { icon: ShieldCheck, title: "Certified Quality", desc: "Carefully selected materials..." },
-  { icon: MessageCircle, title: "Personal Assistance", desc: "One-on-one WhatsApp support..." },
-  { icon: HeartHandshake, title: "Trusted Brand", desc: "Loved across generations." },
-];
-
 type Testimonial = {
   name: string;
   location: string;
   message: string;
   image_url: string;
 };
-
 const defaultTestimonial: Testimonial = {
   name: "Isabella Montgomery",
   location: "London, United Kingdom",
@@ -32,47 +25,62 @@ const defaultTestimonial: Testimonial = {
 };
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [videos, setVideos] = useState<string[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
 
-  /* ================= FETCH HERO VIDEOS ================= */
+  /* ================= FETCH ALL DATA + SPLASH CONTROL ================= */
   useEffect(() => {
-    const fetchVideos = async () => {
-      const { data } = await supabase
-        .from("hero_videos")
-        .select("video_url")
-        .order("created_at", { ascending: true });
+    const fetchAllData = async () => {
+      try {
+        // Fetch videos
+        const { data: videoData } = await supabase
+          .from("hero_videos")
+          .select("video_url")
+          .order("created_at", { ascending: true });
 
-      if (data && data.length > 0) {
-        setVideos(data.map((v) => v.video_url));
+        if (videoData?.length) {
+          setVideos(videoData.map((v) => v.video_url));
+        }
+
+        // Fetch testimonials
+        const { data: testimonialData } = await supabase
+          .from("testimonials")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        const formatted: Testimonial[] = (testimonialData ?? []).map(
+          (item: any) => ({
+            name: item.name,
+            location: item.location,
+            message: item.message,
+            image_url: item.image_url,
+          })
+        );
+
+        setTestimonials([defaultTestimonial, ...formatted]);
+
+      } catch (error) {
+        console.error("Error loading homepage data:", error);
+      } finally {
+        // Luxury minimum delay
+        setTimeout(() => {
+          setLoading(false);
+
+          // Fade out animation delay
+          setTimeout(() => {
+            setShowSplash(false);
+          }, 600);
+
+        }, 1200);
       }
     };
 
-    fetchVideos();
-  }, []);
-
-  /* ================= FETCH TESTIMONIALS ================= */
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await supabase
-        .from("testimonials")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      const formatted: Testimonial[] = (data ?? []).map((item: any) => ({
-        name: item.name,
-        location: item.location,
-        message: item.message,
-        image_url: item.image_url,
-      }));
-
-      setTestimonials([defaultTestimonial, ...formatted]);
-    };
-
-    fetchData();
+    fetchAllData();
   }, []);
 
 
@@ -114,6 +122,39 @@ export default function Home() {
       prev === testimonials.length - 1 ? 0 : prev + 1
     );
   };
+
+  if (showSplash) {
+    return (
+      <div
+        className={`fixed inset-0 z-999 flex items-center justify-center bg-[#f8f7e2] transition-opacity duration-700 ${loading ? "opacity-100" : "opacity-0"
+          }`}
+      >
+        <div className="flex flex-col items-center">
+
+          {/* Brand Logo */}
+          <div className="relative">
+            <Image
+              src="/images/rasika-logo.png" // change if needed
+              alt="Brand Logo"
+              width={150}
+              height={150}
+              priority
+              className="object-contain"
+            />
+
+            {/* Gold shimmer overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#e6c36a]/40 to-transparent animate-shimmer"></div>
+          </div>
+
+          {/* Elegant loading line */}
+          <div className="mt-8 w-40 h-[2px] bg-[#8b4a16]/20 overflow-hidden">
+            <div className="h-full w-1/3 bg-[#8b4a16] animate-slide"></div>
+          </div>
+
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="bg-[#f8f7e2] text-gray-800 w-full overflow-x-hidden">
@@ -367,26 +408,15 @@ export default function Home() {
                 that transcends generations.
               </p>
 
-              <button
-                className="mt-4 md:mt-10 inline-flex items-center 
-             gap-1 md:gap-3
-             border border-[#8b4a16] text-[#8b4a16]
-             px-3 md:px-10 
-             py-1.5 md:py-4
-             text-[9px] md:text-xs 
-             tracking-widest uppercase
-             hover:bg-[#8b4a16] hover:text-white
-             transition duration-300 cursor-pointer"
+              <Link
+                href="/shop"
+                className="mt-4 md:mt-10 inline-flex items-center gap-1 md:gap-3 border border-[#8b4a16] text-[#8b4a16] px-3 md:px-10 py-1.5 md:py-4 text-[9px] md:text-xs tracking-widest uppercase hover:bg-[#8b4a16] hover:text-white transition duration-300 cursor-pointer"
               >
                 Explore Collection
                 <span className="text-xs md:text-base">→</span>
-              </button>
-
-
+              </Link>
             </div>
-
           </div>
-
         </div>
       </section>
 

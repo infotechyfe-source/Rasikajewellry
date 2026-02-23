@@ -33,3 +33,21 @@
 .animate-scaleIn {
   animation: scaleIn 0.25s ease-out;
 }
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+@keyframes slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+.animate-slide {
+  animation: slide 1.5s ease-in-out infinite;
+}
