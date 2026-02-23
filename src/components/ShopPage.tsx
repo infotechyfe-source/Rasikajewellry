@@ -23,11 +23,12 @@ export default function ShopPage() {
 
   const [shopProducts, setShopProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<string | null | undefined>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
   const [maxPrice, setMaxPrice] = useState(2000);
   const [inStockOnly, setInStockOnly] = useState(false);
-  const [sortBy, setSortBy] = useState<"recommended" | "price-low" | "price-high">("recommended");
-  const [showFilters, setShowFilters] = useState(false); // mobile drawer
+  const [sortBy, setSortBy] =
+    useState<"recommended" | "price-low" | "price-high">("recommended");
+  const [showFilters, setShowFilters] = useState(false);
 
   const heroImages: Record<string, string> = {
     rings: "/images/hero-rings.jpeg",
@@ -42,61 +43,72 @@ export default function ShopPage() {
     earring: "/images/hero-earring.jpeg",
   };
 
-  const normalizedCategory = selectedCategory?.trim().toLowerCase();
   const currentHeroImage =
     (selectedCategory && heroImages[selectedCategory]) ||
     "/images/shop-hero.png";
 
+  // Fetch Products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await fetch("/api/products");
         const data = await res.json();
+
         if (data.success) {
-          const activeProducts: Product[] = (data.products || [])
-            .filter((p: Product) => p.active)
-            .map((p: Product) => ({
+          const formattedProducts: Product[] = (data.products || []).map(
+            (p: Product) => ({
               ...p,
               category: p.category || "unknown",
               type: p.type || "unknown",
               price: Number(p.price),
               active: Boolean(p.active),
-            }));
-          setShopProducts(activeProducts);
+            })
+          );
+
+          setShopProducts(formattedProducts);
         }
       } catch (error) {
         console.error("Failed to fetch products", error);
       }
     };
+
     fetchProducts();
   }, []);
 
+  // Sync category from URL
   useEffect(() => {
-    setSelectedCategory(urlCategory);
-    setSelectedType(null);
+    if (urlCategory !== selectedCategory) {
+      setSelectedCategory(urlCategory);
+      setSelectedType(null);
+    }
   }, [urlCategory]);
 
-
+  // Get Types
   const types = useMemo(() => {
     if (!selectedCategory) return [];
     return categoriesWithTypes[selectedCategory] || [];
   }, [selectedCategory]);
 
+  // Filtering Logic
   const filteredProducts = useMemo(() => {
-    let list = shopProducts.filter(p => {
-      const price = Number(p.price);
+    let list = shopProducts.filter((p) => {
       if (selectedCategory && p.category !== selectedCategory) return false;
       if (selectedType && p.type !== selectedType) return false;
-      if (price > maxPrice) return false;
+      if (p.price > maxPrice) return false;
       if (inStockOnly && !p.active) return false;
       return true;
     });
 
-    if (sortBy === "price-low") list.sort((a, b) => Number(a.price) - Number(b.price));
-    if (sortBy === "price-high") list.sort((a, b) => Number(b.price) - Number(a.price));
+    if (sortBy === "price-low") {
+      return [...list].sort((a, b) => a.price - b.price);
+    }
+
+    if (sortBy === "price-high") {
+      return [...list].sort((a, b) => b.price - a.price);
+    }
 
     return list;
-  }, [shopProducts, selectedCategory, selectedType, maxPrice, inStockOnly, sortBy, normalizedCategory]);
+  }, [shopProducts, selectedCategory, selectedType, maxPrice, inStockOnly, sortBy]);
 
   const clearFilters = () => {
     setSelectedCategory(urlCategory);
@@ -106,35 +118,38 @@ export default function ShopPage() {
     setSortBy("recommended");
   };
 
+
   return (
     <main className="bg-[#f2f1e6]">
-      {/* HERO IMAGE - 16:9 responsive */}
-      <section className="relative w-full aspect-video overflow-hidden mt-12">
+
+      {/* CLEAN HERO */}
+      <section className="relative w-full h-[55vh] md:h-[65vh] overflow-hidden mt-10">
         <Image
           src={currentHeroImage}
-          alt="Luxury Jewellery"
+          alt="Luxury Jewellery Collection"
           fill
-          className="object-cover"
           priority
-          sizes="(max-width: 768px) 100vw, 100vw"
+          quality={100}
+          className="object-cover object-center"
+          sizes="100vw"
         />
       </section>
-
       {/* SHOP */}
-      <section className="max-w-[1600px] mx-auto px-4 py-8 md:py-16">
+      <section className="max-w-[1600px] mx-auto px-4 py-4 md:py-12">
         <h1 className="text-[#8B4513] text-3xl md:text-5xl font-serif tracking-wide text-center mb-4">
           {selectedCategory ? selectedCategory.toUpperCase() : "OUR COLLECTION"}
         </h1>
+        <div className="w-full h-px bg-[#C6A75E] mx-auto mt-4"></div>
         <div className="flex items-center justify-between gap-3 p-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-[#8B4513]">
             {filteredProducts.length} Products
           </p>
-          
+
           <select
-          title="rec"
+            title="rec"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="border border-[#8B4513] px-4 py-1 text-sm bg-[#f2f1e6]"
+            className="border border-[#8B4513] px-4 py-1 text-sm text-[#8B4513] bg-[#f2f1e6]"
           >
             <option value="recommended">Recommended</option>
             <option value="price-low">Price: Low to High</option>
