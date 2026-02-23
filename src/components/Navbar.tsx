@@ -89,7 +89,7 @@ export function Navbar() {
                        bg-[#8B4513]
                        text-[11px] tracking-[0.3em]
                        text-white
-                       hover:text-[#c8a24d]
+                       hover:text-[#8B4513]
                        hover:bg-[#EEE2DA]/90
                        transition-all shadow-md">
                     ORDER ON WHATSAPP
