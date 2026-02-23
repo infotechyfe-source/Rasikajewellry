@@ -157,13 +157,13 @@ export default function Home() {
   }
 
   return (
-    <main className="bg-[#f8f7e2] text-gray-800 w-full overflow-x-hidden">
+     <main className="bg-[#f8f7e2] text-gray-800 w-full overflow-x-hidden pt-[82px] md:pt-[90px]">
 
       {/* ================= HERO ================= */}
-      <section className="relative overflow-hidden flex flex-col md:min-h-screen pt-20 md:pt-24">
+      <section className="relative overflow-hidden flex flex-col md:min-h-screen">
 
         {/* 🎥 VIDEO CONTAINER */}
-        <div className="relative w-full h-[50vh] md:h-screen overflow-hidden">
+        <div className="relative w-full h-[45vh] md:h-screen overflow-hidden">
 
           <div
             className={`absolute inset-0 flex ${isTransitioning ? "transition-transform duration-1000 ease-in-out" : ""
