@@ -85,12 +85,12 @@ export function Navbar() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-6 py-2 rounded
+                    border border-[#8B4513]
                        bg-[#8B4513]
                        text-[11px] tracking-[0.3em]
                        text-white
                        hover:text-[#c8a24d]
                        hover:bg-[#EEE2DA]/90
-                       hover:border-[#8B4513]
                        transition-all shadow-md">
                     ORDER ON WHATSAPP
                   </a>
